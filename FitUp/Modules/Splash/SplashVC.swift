@@ -8,46 +8,50 @@ import UIKit
 
 class SplashScreenViewController: UIViewController {
     private let logoImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(systemName: "person.circle"))
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "logo")
         imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-    
-    private let activityIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .large)
-        indicator.color = .gray
-        return indicator
+    private let logotextView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "yazi")
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        activityIndicator.startAnimating()
-        
-        // Simulate a delay for the splash screen
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0) { [weak self] in
             self?.transitionToMainApp()
         }
     }
     
     private func setupUI() {
         view.backgroundColor = .white
-        
-        let stackView = UIStackView(arrangedSubviews: [logoImageView, activityIndicator])
-        stackView.axis = .vertical
-        stackView.spacing = 20
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(stackView)
+        view.addSubview(logoImageView)
+        view.addSubview(logotextView)
         
         NSLayoutConstraint.activate([
-            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            logoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            logoImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor,constant: -80),
+            logoImageView.widthAnchor.constraint(equalToConstant: 240),
+            logoImageView.heightAnchor.constraint(equalToConstant: 240),
+            
+            logotextView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            logotextView.bottomAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 72),
+            logotextView.widthAnchor.constraint(equalToConstant: 360),
+            logotextView.heightAnchor.constraint(equalToConstant: 72)
         ])
     }
     
     private func transitionToMainApp() {
-        guard let window = UIApplication.shared.windows.first else { return }
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first else { return }
+        
         let navigationController = UINavigationController()
         let appCoordinator = AppCoordinator(navigationController: navigationController)
         appCoordinator.start()
