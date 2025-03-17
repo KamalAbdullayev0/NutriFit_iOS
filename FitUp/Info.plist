@@ -21,5 +21,13 @@
 			</array>
 		</dict>
 	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Helpers/Fonts/Satoshi-Black.ttf</string>
+		<string>Helpers/Fonts/Satoshi-Bold.otf</string>
+		<string>Helpers/Fonts/Satoshi-Light.otf</string>
+		<string>Helpers/Fonts/Satoshi-Medium.otf</string>
+		<string>Helpers/Fonts/Satoshi-Regular.otf</string>
+	</array>
 </dict>
 </plist>
