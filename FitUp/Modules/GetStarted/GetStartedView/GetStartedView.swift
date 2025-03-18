@@ -52,11 +52,23 @@ class GetStartedView: UIViewController, UIPageViewControllerDataSource, UIPageVi
         title: "Login",
         height: 60,
         textColor: .white,
-        backgroundColor: Resources.Colors.background,
-        fontSize: 20
+        backgroundColor: Resources.Colors.orange,
+        fontSize: 20,
+        cornerRadius: 16
     ) {
         print("basdun")
     }
+    let registerButton = ButtonAuth(
+        title: "Register",
+        height: 60,
+        textColor: .white,
+        backgroundColor: Resources.Colors.green,
+        fontSize: 20,
+        cornerRadius: 16
+    ) {
+        print("Basdunn")
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -91,7 +103,11 @@ class GetStartedView: UIViewController, UIPageViewControllerDataSource, UIPageVi
         view.addSubview(logoImageView)
         view.addSubview(logotextView)
         view.addSubview(signUpButton)
+        view.addSubview(registerButton)
         
+        signUpButton.translatesAutoresizingMaskIntoConstraints = false
+        registerButton.translatesAutoresizingMaskIntoConstraints = false
+
         pageViewController.view.translatesAutoresizingMaskIntoConstraints = false
         pageViewController.didMove(toParent: self)
         
@@ -110,16 +126,23 @@ class GetStartedView: UIViewController, UIPageViewControllerDataSource, UIPageVi
             pageViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             pageViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             pageViewController.view.heightAnchor.constraint(equalToConstant: 120),
-            signUpButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            signUpButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
-            signUpButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -32)
+            
+            signUpButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
+            signUpButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
+            signUpButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -200),
+            signUpButton.heightAnchor.constraint(equalToConstant: 70),
+            
+            registerButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
+            registerButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
+            registerButton.topAnchor.constraint(equalTo: signUpButton.bottomAnchor, constant: 15),
+            registerButton.heightAnchor.constraint(equalToConstant: 70)
             
         ])
     }
     
     private func setupUI() {
         view.addSubview(pageControl)
-        
+
         NSLayoutConstraint.activate([
             pageControl.topAnchor.constraint(equalTo: pageViewController.view.bottomAnchor, constant: 10),
             pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor)
