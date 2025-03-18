@@ -49,7 +49,8 @@ class ButtonAuth: UIButton {
         setTitle(title, for: .normal)
         setTitleColor(textColor, for: .normal)
         self.backgroundColor = backgroundColor
-        titleLabel?.font = UIFont.systemFont(ofSize: fontSize, weight: .semibold)
+        titleLabel?.font = Resources.AppFont.bold.withSize(fontSize)
+
         
         layer.cornerRadius = cornerRadius ?? height / 2
         
