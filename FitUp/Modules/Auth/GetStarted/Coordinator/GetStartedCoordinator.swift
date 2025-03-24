@@ -23,7 +23,7 @@ class GetStartedCoordinator: Coordinator {
         viewModel.onRegister = { [weak self] in
             self?.showRegisterPage()
         }
-        
+
         navigationController.setViewControllers([getStartedVC], animated: false)
     }
     
@@ -35,6 +35,7 @@ class GetStartedCoordinator: Coordinator {
     
     private func showRegisterPage() {
         let registerCoordinator = RegisterCoordinator(navigationController: navigationController)
+        addChildCoordinator(registerCoordinator)
         registerCoordinator.start()
     }
 }

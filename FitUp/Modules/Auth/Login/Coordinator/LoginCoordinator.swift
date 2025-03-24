@@ -9,14 +9,14 @@ import UIKit
 final class LoginCoordinator: Coordinator {
     
     override init(navigationController: UINavigationController) {
-            super.init(navigationController: navigationController)
-        }
+        super.init(navigationController: navigationController)
+    }
     
     func start() {
-            let viewModel = LoginViewModel()
-            let loginVC = LoginController(viewModel: viewModel)
-            navigationController.pushViewController(loginVC, animated: true)
-        }
+        let viewModel = LoginViewModel()
+        let loginVC = LoginController(viewModel: viewModel)
+        navigationController.pushViewController(loginVC, animated: true)
+    }
     
     func goToRegister() {
         let registerCoordinator = RegisterCoordinator(navigationController: navigationController)
