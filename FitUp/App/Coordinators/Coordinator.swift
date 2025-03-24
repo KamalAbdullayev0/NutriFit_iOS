@@ -7,7 +7,7 @@
 import UIKit
 
 class Coordinator: NSObject {
-    var navigationController: UINavigationController  // Убрали `weak` и `?`
+    var navigationController: UINavigationController
     
     private var childCoordinators: [Coordinator] = []
     
@@ -22,5 +22,8 @@ class Coordinator: NSObject {
     
     func removeChildCoordinator(_ coordinator: Coordinator) {
         childCoordinators.removeAll { $0 === coordinator }
+    }
+    func removeAllChildCoordinators() {
+        childCoordinators.removeAll()
     }
 }

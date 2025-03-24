@@ -1,6 +1,7 @@
 import UIKit
 
-class GetStartedView: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+class GetStartedController: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+    
     private let viewModel: GetStartedViewModel
     private let pageViewController: UIPageViewController
     
@@ -48,7 +49,7 @@ class GetStartedView: UIViewController, UIPageViewControllerDataSource, UIPageVi
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-    let signUpButton = ButtonAuth(
+    lazy var signUpButton = ButtonAuth(
         title: "Login",
         height: 60,
         textColor: .white,
@@ -56,16 +57,19 @@ class GetStartedView: UIViewController, UIPageViewControllerDataSource, UIPageVi
         fontSize: 20,
         cornerRadius: 16
     ) {
+        [weak self] in
+        self?.viewModel.didTapLogin()
         print("basdun")
     }
-    let registerButton = ButtonAuth(
+    lazy var registerButton = ButtonAuth(
         title: "Register",
         height: 60,
         textColor: .white,
         backgroundColor: Resources.Colors.green,
         fontSize: 20,
         cornerRadius: 16
-    ) {
+    ) {[weak self] in
+        self?.viewModel.didTapRegister()
         print("Basdunn")
     }
     
@@ -77,12 +81,7 @@ class GetStartedView: UIViewController, UIPageViewControllerDataSource, UIPageVi
         setupPageViewController()
         setupUI()
         startAutoScroll()
-        for familyName in UIFont.familyNames {
-            print("Family: \(familyName)")
-            for fontName in UIFont.fontNames(forFamilyName: familyName) {
-                print("Font: \(fontName)")
-            }
-        }
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
