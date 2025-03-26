@@ -32,6 +32,9 @@ final class RegisterController: UIViewController {
         imageView.backgroundColor = UIColor.systemGray6
         imageView.layer.cornerRadius = 20
         imageView.layer.masksToBounds = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([imageView.heightAnchor.constraint(equalToConstant: 50),
+             imageView.widthAnchor.constraint(equalToConstant: 50)])
         return imageView
     }()
     
@@ -123,11 +126,26 @@ final class RegisterController: UIViewController {
         return stack
     }()
     
+    private let nutrifitImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "yazi"))
+        imageView.contentMode = .scaleAspectFill
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([imageView.heightAnchor.constraint(equalToConstant: 50),
+             imageView.widthAnchor.constraint(equalToConstant: 150)])
+        return imageView
+    }()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-//        setupBindings()
+        //        setupBindings()
+        setupGestureRecognizers()
+        configureNavigationBar()
+    }
+    
+    
+    private func setupGestureRecognizers() {
         let appleTap = UITapGestureRecognizer(target: self, action: #selector(handleAppleSignIn))
         appleIcon.addGestureRecognizer(appleTap)
         
@@ -135,32 +153,63 @@ final class RegisterController: UIViewController {
         googleIcon.addGestureRecognizer(googleTap)
     }
     
+    
+    private func configureNavigationBar() {
+        navigationController?.navigationBar.tintColor = .orange
+        let backButton = UIBarButtonItem(image: UIImage(systemName: "chevron.left"),
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(backButtonTapped))
+        navigationItem.leftBarButtonItem = backButton
+  
+    }
+
+    
+    @objc private func backButtonTapped() {
+        navigationController?.popViewController(animated: true)
+    }
+    
     private func setupUI() {
         view.backgroundColor = .white
-        let stackView = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel,textFieldWithStack, registerButton])
+        
+        let stackView = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel, textFieldWithStack, registerButton])
         stackView.axis = .vertical
         stackView.spacing = 16
         stackView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(stackView)
+        
         registerWithStack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(registerWithStack)
         
+        let titleStackView = UIStackView(arrangedSubviews: [nutrifitImageView, logoImageView])
+        titleStackView.axis = .vertical
+        titleStackView.alignment = .center
+        titleStackView.spacing = 8
+        titleStackView.distribution = .equalSpacing
+        navigationItem.titleView = titleStackView
+        view.addSubview(titleStackView)
+
         
         NSLayoutConstraint.activate([
             stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            registerWithStack.topAnchor.constraint(equalTo: stackView.bottomAnchor,constant: 20),
+     
+            titleStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            titleStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+
+            registerWithStack.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 20),
             registerWithStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             registerWithStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
-            
         ])
     }
+
     
-//    private func setupBindings() {
-//        
-//    }
+    
+    //    private func setupBindings() {
+    //
+    //    }
     @objc private func handleAppleSignIn() {
         print("Apple Sign In tapped")
         // Здесь вызываем функцию авторизации через Apple
