@@ -1,6 +1,7 @@
 {
-  "colors" : [
+  "images" : [
     {
+      "filename" : "apple.pdf",
       "idiom" : "universal"
     }
   ],

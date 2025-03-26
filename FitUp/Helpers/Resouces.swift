@@ -10,11 +10,15 @@ import UIKit
 enum Resources {
     
     enum Colors {
+        static let black = UIColor(hexString: "#000000")
         static let background = UIColor(hexString: "#E8E8BF")
         static let orange = UIColor(hexString: "#FF9900")
         static let darkGreen = UIColor(hexString: "#1D9229")
         static let green = UIColor(hexString: "#42B83D")
         static let notification = UIColor(hexString: "#EEEEED")
+        static let redColor = UIColor(hexString: "#EA3325")
+        static let greyColor = UIColor(hexString: "#F0F0F0")
+        static let greyTextColor = UIColor(hexString: "#BBBBBB")
     }
     enum AppFont: String {
         case regular = "Satoshi-Regular"
@@ -23,8 +27,8 @@ enum Resources {
         case light = "Satoshi-Light"
         case black = "Satoshi-Black"
         
-        func withSize(_ size: CGFloat) -> UIFont? {
-            return UIFont(name: self.rawValue, size: size)
+        func withSize(_ size: CGFloat) -> UIFont {
+            return UIFont(name: self.rawValue, size: size)!
         }
     }
 }

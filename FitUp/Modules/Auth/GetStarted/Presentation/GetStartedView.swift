@@ -49,24 +49,24 @@ class GetStartedController: UIViewController, UIPageViewControllerDataSource, UI
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-    lazy var signUpButton = ButtonAuth(
+    lazy var signUpButton = CustomButtonAuth(
         title: "Login",
         height: 60,
         textColor: .white,
         backgroundColor: Resources.Colors.orange,
-        fontSize: 20,
+        font: Resources.AppFont.medium.withSize(20),
         cornerRadius: 16
     ) {
         [weak self] in
         self?.viewModel.didTapLogin()
         print("basdun")
     }
-    lazy var registerButton = ButtonAuth(
+    lazy var registerButton = CustomButtonAuth(
         title: "Register",
         height: 60,
         textColor: .white,
         backgroundColor: Resources.Colors.green,
-        fontSize: 20,
+        font: Resources.AppFont.medium.withSize(20),
         cornerRadius: 16
     ) {[weak self] in
         self?.viewModel.didTapRegister()

@@ -53,7 +53,6 @@ class SplashScreenViewController: UIViewController {
               let window = windowScene.windows.first else { return }
         
         let navigationController = UINavigationController()
-            print("🌍 Создан новый NavigationController: \(navigationController)")
         
         let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
         sceneDelegate?.appCoordinator = AppCoordinator(navigationController: navigationController)
@@ -61,6 +60,5 @@ class SplashScreenViewController: UIViewController {
         
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
-        print("🌐 Установлен rootViewController: \(navigationController)")
     }
 }

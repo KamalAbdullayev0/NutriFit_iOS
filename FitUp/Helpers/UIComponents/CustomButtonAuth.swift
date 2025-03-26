@@ -6,16 +6,14 @@
 //
 import UIKit
 
-import UIKit
-
-class ButtonAuth: UIButton {
-        init(
+class CustomButtonAuth: UIButton {
+    init(
         title: String,
         height: CGFloat = 60,
         width: CGFloat = 60,
         textColor: UIColor = .white,
         backgroundColor: UIColor = Resources.Colors.green,
-        fontSize: CGFloat = 18,
+        font: UIFont = Resources.AppFont.bold.withSize(18),
         cornerRadius: CGFloat? = 0,
         action: @escaping () -> Void
     ) {
@@ -26,7 +24,7 @@ class ButtonAuth: UIButton {
             width: width,
             textColor: textColor,
             backgroundColor: backgroundColor,
-            fontSize: fontSize,
+            font: font,
             cornerRadius: cornerRadius,
             action: action
         )
@@ -42,15 +40,15 @@ class ButtonAuth: UIButton {
         width: CGFloat?,
         textColor: UIColor,
         backgroundColor: UIColor,
-        fontSize: CGFloat,
+        font: UIFont,
         cornerRadius: CGFloat?,
         action: @escaping () -> Void
     ) {
         setTitle(title, for: .normal)
         setTitleColor(textColor, for: .normal)
         self.backgroundColor = backgroundColor
-        titleLabel?.font = Resources.AppFont.bold.withSize(fontSize)
-
+        titleLabel?.font = font
+        
         
         layer.cornerRadius = cornerRadius ?? height / 2
         
