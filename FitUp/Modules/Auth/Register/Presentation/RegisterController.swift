@@ -11,9 +11,8 @@ final class RegisterController: UIViewController {
     
     private let nutrifitImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "yazi"))
-        
-        imageView.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 48).isActive = true
+        imageView.widthAnchor.constraint(equalToConstant: 160).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
@@ -74,28 +73,28 @@ final class RegisterController: UIViewController {
     
     private let fullNameTextField = CustomTextField(
         placeholder: "Full Name",
-        height: 70,
+        height: 64,
         width: 320,
         icon: UIImage(systemName: "person.fill")
     )
     
     private let emailTextField = CustomTextField(
         placeholder: "Enter Email",
-        height: 70,
+        height: 64,
         width: 320,
         icon: UIImage(systemName: "envelope.fill")
     )
     
     private let passwordTextField = CustomTextField(
         placeholder: "Enter Password",
-        height: 70,
+        height: 64,
         width: 320,
         icon: UIImage(systemName: "lock.fill")
     )
     
     lazy var registerButton = CustomButtonAuth(
         title: "Register",
-        height: 70,
+        height: 64,
         textColor: .white,
         backgroundColor: Resources.Colors.green,
         font: Resources.AppFont.medium.withSize(22),
@@ -219,6 +218,7 @@ final class RegisterController: UIViewController {
         
         let googleTap = UITapGestureRecognizer(target: self, action: #selector(handleGoogleSignIn))
         googleIcon.addGestureRecognizer(googleTap)
+        
     }
     
     @objc private func backButtonTapped() {
