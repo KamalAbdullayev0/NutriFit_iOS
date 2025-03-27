@@ -26,15 +26,6 @@ class GetStartedController: UIViewController, UIPageViewControllerDataSource, UI
         pageControl.translatesAutoresizingMaskIntoConstraints = false
         return pageControl
     }()
-    init(viewModel: GetStartedViewModel) {
-        self.viewModel = viewModel
-        self.pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     private let logoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "logo")
@@ -73,15 +64,20 @@ class GetStartedController: UIViewController, UIPageViewControllerDataSource, UI
         print("Basdunn")
     }
     
+    init(viewModel: GetStartedViewModel) {
+        self.viewModel = viewModel
+        self.pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
+        super.init(nibName: nil, bundle: nil)
+    }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Resources.Colors.background
-        
-        setupPageViewController()
         setupUI()
         startAutoScroll()
-        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -89,115 +85,133 @@ class GetStartedController: UIViewController, UIPageViewControllerDataSource, UI
         stopAutoScroll()
     }
     
-    private func setupPageViewController() {
-        pageViewController.dataSource = self
-        pageViewController.delegate = self
-        
-        if let firstVC = createTextViewController(for: currentIndex) {
-            pageViewController.setViewControllers([firstVC], direction: .forward, animated: true)
-        }
-        
-        addChild(pageViewController)
-        view.addSubview(pageViewController.view)
-        view.addSubview(logoImageView)
-        view.addSubview(logotextView)
-        view.addSubview(signUpButton)
-        view.addSubview(registerButton)
-        
-        signUpButton.translatesAutoresizingMaskIntoConstraints = false
-        registerButton.translatesAutoresizingMaskIntoConstraints = false
-
-        pageViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        pageViewController.didMove(toParent: self)
-        
-        NSLayoutConstraint.activate([
-            logoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            logoImageView.centerYAnchor.constraint(equalTo: view.topAnchor,constant: 180),
-            logoImageView.widthAnchor.constraint(equalToConstant: 180),
-            logoImageView.heightAnchor.constraint(equalToConstant: 180),
-            
-            logotextView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            logotextView.bottomAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 64),
-            logotextView.widthAnchor.constraint(equalToConstant: 280),
-            logotextView.heightAnchor.constraint(equalToConstant: 56),
-            
-            pageViewController.view.topAnchor.constraint(equalTo: logotextView.topAnchor, constant: 160),
-            pageViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            pageViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            pageViewController.view.heightAnchor.constraint(equalToConstant: 120),
-            
-            signUpButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
-            signUpButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
-            signUpButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -200),
-            signUpButton.heightAnchor.constraint(equalToConstant: 70),
-            
-            registerButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
-            registerButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
-            registerButton.topAnchor.constraint(equalTo: signUpButton.bottomAnchor, constant: 15),
-            registerButton.heightAnchor.constraint(equalToConstant: 70)
-            
-        ])
-    }
-    
     private func setupUI() {
-        view.addSubview(pageControl)
+            pageViewController.dataSource = self
+            pageViewController.delegate = self
+            
+            if let firstVC = createTextViewController(for: currentIndex) {
+                pageViewController.setViewControllers([firstVC], direction: .forward, animated: true)
+            }
+            
+            addChild(pageViewController)
+            view.addSubview(pageViewController.view)
+            view.addSubview(logoImageView)
+            view.addSubview(logotextView)
+            view.addSubview(signUpButton)
+            view.addSubview(registerButton)
+            view.addSubview(pageControl)
+            
+            pageViewController.view.translatesAutoresizingMaskIntoConstraints = false
+            signUpButton.translatesAutoresizingMaskIntoConstraints = false
+            registerButton.translatesAutoresizingMaskIntoConstraints = false
+            pageViewController.didMove(toParent: self)
+            
+            NSLayoutConstraint.activate([
+                logoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                logoImageView.centerYAnchor.constraint(equalTo: view.topAnchor, constant: 180),
+                logoImageView.widthAnchor.constraint(equalToConstant: 180),
+                logoImageView.heightAnchor.constraint(equalToConstant: 180),
+                
+                logotextView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                logotextView.bottomAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 64),
+                logotextView.widthAnchor.constraint(equalToConstant: 280),
+                logotextView.heightAnchor.constraint(equalToConstant: 56),
+                
+                pageViewController.view.topAnchor.constraint(equalTo: logotextView.bottomAnchor, constant: 40),
+                pageViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+                pageViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+                pageViewController.view.heightAnchor.constraint(equalToConstant: 120),
+                
+                pageControl.topAnchor.constraint(equalTo: pageViewController.view.bottomAnchor, constant: 20),
+                pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                
+                signUpButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
+                signUpButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
+                signUpButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -200),
+                signUpButton.heightAnchor.constraint(equalToConstant: 70),
+                
+                registerButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
+                registerButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
+                registerButton.topAnchor.constraint(equalTo: signUpButton.bottomAnchor, constant: 15),
+                registerButton.heightAnchor.constraint(equalToConstant: 70)
+            ])
+        }
+        
+        private func createTextViewController(for index: Int) -> TextPageViewController? {
+            guard index >= 0 && index < texts.count else { return nil }
+            let textVC = TextPageViewController(index: index)
+            textVC.setText(texts[index])
+            return textVC
+        }
+        
+        private func startAutoScroll() {
+            timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
+                self?.goToNextPage()
+            }
+        }
+        
+        private func stopAutoScroll() {
+            timer?.invalidate()
+            timer = nil
+        }
+        
+        private func goToNextPage() {
+            currentIndex = (currentIndex + 1) % texts.count
+            if let nextVC = createTextViewController(for: currentIndex) {
+                pageViewController.setViewControllers([nextVC], direction: .forward, animated: true)
+                pageControl.currentPage = currentIndex
+            }
+        }
+        
+        func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+            guard let currentVC = viewController as? TextPageViewController else { return nil }
+            let previousIndex = currentVC.index - 1
+            return previousIndex >= 0 ? createTextViewController(for: previousIndex) : nil
+        }
+        
+        func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
+            guard let currentVC = viewController as? TextPageViewController else { return nil }
+            let nextIndex = currentVC.index + 1
+            return nextIndex < texts.count ? createTextViewController(for: nextIndex) : nil
+        }
+        
+        func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+            if completed,
+               let currentVC = pageViewController.viewControllers?.first as? TextPageViewController {
+                currentIndex = currentVC.index
+                pageControl.currentPage = currentIndex
+            }
+        }
+    }
 
-        NSLayoutConstraint.activate([
-            pageControl.topAnchor.constraint(equalTo: pageViewController.view.bottomAnchor, constant: 10),
-            pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
-    }
-    
-    private func createTextViewController(for index: Int) -> UIViewController? {
-        guard index >= 0 && index < texts.count else { return nil }
+    private class TextPageViewController: UIViewController {
+        let index: Int
+        private let label = UILabel()
         
-        let textVC = UIViewController()
-        let label = UILabel()
-        label.text = texts[index]
-        label.font = Resources.AppFont.medium.withSize(14)
-        label.textColor = .black
-        label.numberOfLines = 0
-        label.textAlignment = .left
-        label.translatesAutoresizingMaskIntoConstraints = false
+        init(index: Int) {
+            self.index = index
+            super.init(nibName: nil, bundle: nil)
+        }
         
-        textVC.view.addSubview(label)
-        textVC.view.backgroundColor = .clear
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
         
-        NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: textVC.view.leadingAnchor, constant: 30),
-            label.trailingAnchor.constraint(equalTo: textVC.view.trailingAnchor, constant: -30),
-            label.centerYAnchor.constraint(equalTo: textVC.view.centerYAnchor)
-        ])
-        
-        return textVC
-    }
-    
-    private func startAutoScroll() {
-        timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
-            self?.goToNextPage()
+        func setText(_ text: String) {
+            label.text = text
+            label.font = Resources.AppFont.medium.withSize(14)
+            label.textColor = .black
+            label.numberOfLines = 0
+            label.textAlignment = .left
+            label.translatesAutoresizingMaskIntoConstraints = false
+            
+            view.addSubview(label)
+            view.backgroundColor = .clear
+            
+            NSLayoutConstraint.activate([
+                label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
+                label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
+                label.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            ])
         }
     }
-    
-    private func stopAutoScroll() {
-        timer?.invalidate()
-        timer = nil
-    }
-    
-    private func goToNextPage() {
-        currentIndex = (currentIndex + 1) % texts.count
-        if let nextVC = createTextViewController(for: currentIndex) {
-            pageViewController.setViewControllers([nextVC], direction: .forward, animated: true)
-            pageControl.currentPage = currentIndex
-        }
-    }
-    
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        let previousIndex = (currentIndex - 1 + texts.count) % texts.count
-        return createTextViewController(for: previousIndex)
-    }
-    
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        let nextIndex = (currentIndex + 1) % texts.count
-        return createTextViewController(for: nextIndex)
-    }
-}
