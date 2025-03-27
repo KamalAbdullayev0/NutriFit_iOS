@@ -19,6 +19,9 @@ enum Resources {
         static let redColor = UIColor(hexString: "#EA3325")
         static let greyColor = UIColor(hexString: "#F0F0F0")
         static let greyTextColor = UIColor(hexString: "#BBBBBB")
+        static let logobackground = UIColor(hexString: "#F5F5ED")
+        static let notacountbackground = UIColor(hexString: "#DAD7D7")
+
     }
     enum AppFont: String {
         case regular = "Satoshi-Regular"

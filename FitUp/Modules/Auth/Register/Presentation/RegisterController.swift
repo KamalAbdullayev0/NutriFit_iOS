@@ -9,6 +9,52 @@ import UIKit
 final class RegisterController: UIViewController {
     private var viewModel: RegisterViewModel
     
+    private let nutrifitImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "yazi"))
+        
+        imageView.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 48).isActive = true
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
+    
+    private let logoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "logo")
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    private let logoContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Resources.Colors.logobackground
+        view.layer.cornerRadius = 25
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOpacity = 0.1
+        view.layer.shadowOffset = CGSize(width: 0, height: 3)
+        view.layer.shadowRadius = 8
+        view.layer.borderWidth = 1
+        view.layer.borderColor = UIColor.black.withAlphaComponent(0.01).cgColor
+        return view
+    }()
+    private func configureNavigationBar() {
+        navigationController?.navigationBar.tintColor = Resources.Colors.orange
+        let backImage = UIImage(systemName: "chevron.left")!
+            .withRenderingMode(.alwaysOriginal)
+            .withConfiguration(UIImage.SymbolConfiguration(pointSize: 24, weight: .bold))
+        
+        let backButton = UIBarButtonItem(image: backImage,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(backButtonTapped))
+        
+        navigationItem.leftBarButtonItem = backButton
+        let titleStackView = UIStackView(arrangedSubviews: [nutrifitImageView])
+        titleStackView.axis = .horizontal
+        titleStackView.alignment = .center
+        navigationItem.titleView = titleStackView
+        
+    }
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Start your journey"
@@ -24,18 +70,6 @@ final class RegisterController: UIViewController {
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
-    }()
-    
-    private let logoImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "logo"))
-        imageView.contentMode = .scaleAspectFit
-        imageView.backgroundColor = UIColor.systemGray6
-        imageView.layer.cornerRadius = 20
-        imageView.layer.masksToBounds = true
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([imageView.heightAnchor.constraint(equalToConstant: 50),
-             imageView.widthAnchor.constraint(equalToConstant: 50)])
-        return imageView
     }()
     
     private let fullNameTextField = CustomTextField(
@@ -102,14 +136,7 @@ final class RegisterController: UIViewController {
         stack.alignment = .center
         return stack
     }()
-    private lazy var registerWithStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [orRegisterLabel, iconStackView])
-        stack.axis = .horizontal
-        stack.spacing = 200
-        stack.alignment = .center
-        stack.distribution = .equalSpacing
-        return stack
-    }()
+    
     
     init(viewModel: RegisterViewModel) {
         self.viewModel = viewModel
@@ -125,25 +152,66 @@ final class RegisterController: UIViewController {
         stack.spacing = 10
         return stack
     }()
-    
-    private let nutrifitImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "yazi"))
-        imageView.contentMode = .scaleAspectFill
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([imageView.heightAnchor.constraint(equalToConstant: 50),
-             imageView.widthAnchor.constraint(equalToConstant: 150)])
-        return imageView
+    private lazy var registerstack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel, textFieldWithStack,registerButton])
+        stack.axis = .vertical
+        stack.spacing = 15
+        return stack
+    }()
+    private lazy var registerWithStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [orRegisterLabel, iconStackView])
+        stack.axis = .horizontal
+        stack.spacing = 160
+        stack.alignment = .center
+        stack.distribution = .equalSpacing
+        return stack
     }()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
-        //        setupBindings()
-        setupGestureRecognizers()
         configureNavigationBar()
+        setupUI()
+        setupGestureRecognizers()
     }
     
+    private func setupUI() {
+        view.backgroundColor = .white
+        
+        view.addSubview(logoContainerView)
+        logoContainerView.translatesAutoresizingMaskIntoConstraints = false
+        
+        logoContainerView.addSubview(logoImageView)
+        logoImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(registerstack)
+        registerstack.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(registerWithStack)
+        registerWithStack.translatesAutoresizingMaskIntoConstraints = false
+
+        
+        NSLayoutConstraint.activate([
+            logoContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            logoContainerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            logoContainerView.widthAnchor.constraint(equalToConstant: 200),
+            logoContainerView.heightAnchor.constraint(equalToConstant: 200),
+            
+            logoImageView.topAnchor.constraint(equalTo: logoContainerView.topAnchor, constant: 20),
+            logoImageView.bottomAnchor.constraint(equalTo: logoContainerView.bottomAnchor, constant: -20),
+            logoImageView.leadingAnchor.constraint(equalTo: logoContainerView.leadingAnchor, constant: 20),
+            logoImageView.trailingAnchor.constraint(equalTo: logoContainerView.trailingAnchor, constant: -20),
+            
+            registerstack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            registerstack.topAnchor.constraint(equalTo: logoContainerView.bottomAnchor, constant: 20),
+            registerstack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            registerstack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            
+            registerWithStack.topAnchor.constraint(equalTo: registerstack.bottomAnchor, constant: 20),
+            registerWithStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            registerWithStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+        ])
+    }
     
     private func setupGestureRecognizers() {
         let appleTap = UITapGestureRecognizer(target: self, action: #selector(handleAppleSignIn))
@@ -153,72 +221,16 @@ final class RegisterController: UIViewController {
         googleIcon.addGestureRecognizer(googleTap)
     }
     
-    
-    private func configureNavigationBar() {
-        navigationController?.navigationBar.tintColor = .orange
-        let backButton = UIBarButtonItem(image: UIImage(systemName: "chevron.left"),
-                                         style: .plain,
-                                         target: self,
-                                         action: #selector(backButtonTapped))
-        navigationItem.leftBarButtonItem = backButton
-  
-    }
-
-    
     @objc private func backButtonTapped() {
         navigationController?.popViewController(animated: true)
     }
     
-    private func setupUI() {
-        view.backgroundColor = .white
-        
-        let stackView = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel, textFieldWithStack, registerButton])
-        stackView.axis = .vertical
-        stackView.spacing = 16
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(stackView)
-        
-        registerWithStack.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(registerWithStack)
-        
-        let titleStackView = UIStackView(arrangedSubviews: [nutrifitImageView, logoImageView])
-        titleStackView.axis = .vertical
-        titleStackView.alignment = .center
-        titleStackView.spacing = 8
-        titleStackView.distribution = .equalSpacing
-        navigationItem.titleView = titleStackView
-        view.addSubview(titleStackView)
-
-        
-        NSLayoutConstraint.activate([
-            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-     
-            titleStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            titleStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-
-            registerWithStack.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 20),
-            registerWithStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            registerWithStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
-        ])
-    }
-
-    
-    
-    //    private func setupBindings() {
-    //
-    //    }
     @objc private func handleAppleSignIn() {
         print("Apple Sign In tapped")
-        // Здесь вызываем функцию авторизации через Apple
     }
     
-    // Действие по нажатию на Google Sign In
     @objc private func handleGoogleSignIn() {
         print("Google Sign In tapped")
-        // Здесь вызываем функцию авторизации через Google
     }
     
 }
