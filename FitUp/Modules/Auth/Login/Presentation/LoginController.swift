@@ -10,10 +10,9 @@ final class LoginController: UIViewController {
     private var viewModel: LoginViewModel
     
     private let nutrifitImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "yazi"))
-        
-        imageView.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 48).isActive = true
+        let imageView = UIImageView(image: UIImage(named: "yazi"))        
+        imageView.widthAnchor.constraint(equalToConstant: 160).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
@@ -73,20 +72,20 @@ final class LoginController: UIViewController {
     
     private let emailTextField = CustomTextField(
         placeholder: "Enter Email",
-        height: 70,
+        height: 64,
         width: 320,
         icon: UIImage(systemName: "envelope.fill")
     )
     
     private let passwordTextField = CustomTextField(
         placeholder: "Enter Password",
-        height: 70,
+        height: 64,
         width: 320,
         icon: UIImage(systemName: "lock.fill")
     )
     lazy var registerButton = CustomButtonAuth(
         title: "Sign In",
-        height: 70,
+        height: 64,
         textColor: .white,
         backgroundColor: Resources.Colors.green,
         font: Resources.AppFont.medium.withSize(22),
@@ -137,7 +136,7 @@ final class LoginController: UIViewController {
     }()
     lazy var createAccountButton = CustomButtonAuth(
         title: "Create Account",
-        height: 70,
+        height: 64,
         textColor: .white,
         backgroundColor: Resources.Colors.notacountbackground,
         font: Resources.AppFont.medium.withSize(22),
@@ -258,4 +257,3 @@ final class LoginController: UIViewController {
     }
     
 }
-

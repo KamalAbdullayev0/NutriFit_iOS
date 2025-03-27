@@ -7,15 +7,19 @@
 import Foundation
 
 class GetStartedViewModel {
+    weak var coordinator: GetStartedCoordinator?
 
-    var onLogin: (() -> Void)?
-    var onRegister: (() -> Void)?
-
+   
+    
+    init(coordinator: GetStartedCoordinator) {
+        self.coordinator = coordinator
+    }
+    
     func didTapLogin() {
-        onLogin?()
+        coordinator?.showLoginPage()
     }
     
     func didTapRegister() {
-        onRegister?()
+        coordinator?.showRegisterPage()
     }
 }

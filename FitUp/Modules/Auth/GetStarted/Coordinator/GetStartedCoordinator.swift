@@ -13,17 +13,7 @@ class GetStartedCoordinator: Coordinator {
     }
     
     func start() {
-        let viewModel = GetStartedViewModel()
-        let getStartedVC = GetStartedController(viewModel: viewModel)
-        
-        viewModel.onLogin = { [weak self] in
-            self?.showLoginPage()
-        }
-        
-        viewModel.onRegister = { [weak self] in
-            self?.showRegisterPage()
-        }
-
+        let getStartedVC = GetStartedController(viewModel: .init(coordinator: self))
         navigationController.setViewControllers([getStartedVC], animated: false)
     }
     
