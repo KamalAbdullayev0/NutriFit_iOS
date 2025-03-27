@@ -7,7 +7,7 @@
 import Foundation
 
 final class LoginViewModel {
-//    private weak var coordinator: LoginCoordinator?
+    private weak var coordinator: GetStartedCoordinator?
     
     var username: String = ""
     var password: String = ""
@@ -15,14 +15,12 @@ final class LoginViewModel {
 
     
     func login() {
-        // TODO: Implement login logic (API call, validation, etc.)
-        
-        // Simulate successful login
-//        coordinator?.loginSuccessful()
+
     }
     
     func goToRegister() {
-//        coordinator?.goToRegister()
+        print("salam")
+        coordinator?.showRegisterPage()
     }
 }
 

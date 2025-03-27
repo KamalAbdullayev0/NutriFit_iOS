@@ -27,13 +27,13 @@ class GetStartedCoordinator: Coordinator {
         navigationController.setViewControllers([getStartedVC], animated: false)
     }
     
-    private func showLoginPage() {
+    func showLoginPage() {
         let loginCoordinator = LoginCoordinator(navigationController: navigationController)
         addChildCoordinator(loginCoordinator)
         loginCoordinator.start()
     }
     
-    private func showRegisterPage() {
+    func showRegisterPage() {
         let registerCoordinator = RegisterCoordinator(navigationController: navigationController)
         addChildCoordinator(registerCoordinator)
         registerCoordinator.start()
