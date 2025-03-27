@@ -7,6 +7,7 @@
 import UIKit
 
 final class RegisterController: UIViewController {
+    private let scrollView = UIScrollView()
     private var viewModel: RegisterViewModel
     
     private let nutrifitImageView: UIImageView = {
@@ -166,33 +167,46 @@ final class RegisterController: UIViewController {
         return stack
     }()
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureNavigationBar()
         setupUI()
         setupGestureRecognizers()
+        addKeyboardObservers()
     }
-    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        removeKeyboardObservers()
+    }
     private func setupUI() {
         view.backgroundColor = .white
-        
-        view.addSubview(logoContainerView)
-        logoContainerView.translatesAutoresizingMaskIntoConstraints = false
+        configureNavigationBar()
+        setupScrollView()
+        setupConstraints()
+    }
+    private func setupScrollView() {
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.alwaysBounceVertical = true
+        scrollView.keyboardDismissMode = .interactive
+        view.addSubview(scrollView)
+    }
+    
+    private func setupConstraints() {
+        [logoContainerView, registerstack, registerWithStack].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            scrollView.addSubview($0)
+        }
         
         logoContainerView.addSubview(logoImageView)
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addSubview(registerstack)
-        registerstack.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(registerWithStack)
-        registerWithStack.translatesAutoresizingMaskIntoConstraints = false
-
-        
         NSLayoutConstraint.activate([
-            logoContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            logoContainerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            logoContainerView.centerXAnchor.constraint(equalTo: scrollView.contentLayoutGuide.centerXAnchor),
+            logoContainerView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 20),
             logoContainerView.widthAnchor.constraint(equalToConstant: 200),
             logoContainerView.heightAnchor.constraint(equalToConstant: 200),
             
@@ -201,24 +215,65 @@ final class RegisterController: UIViewController {
             logoImageView.leadingAnchor.constraint(equalTo: logoContainerView.leadingAnchor, constant: 20),
             logoImageView.trailingAnchor.constraint(equalTo: logoContainerView.trailingAnchor, constant: -20),
             
-            registerstack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            registerstack.centerXAnchor.constraint(equalTo: scrollView.contentLayoutGuide.centerXAnchor),
             registerstack.topAnchor.constraint(equalTo: logoContainerView.bottomAnchor, constant: 20),
-            registerstack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            registerstack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            registerstack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 20),
+            registerstack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -20),
             
             registerWithStack.topAnchor.constraint(equalTo: registerstack.bottomAnchor, constant: 20),
-            registerWithStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            registerWithStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            registerWithStack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 24),
+            registerWithStack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -24),
+            registerWithStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -20),
+            
+            scrollView.contentLayoutGuide.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
         ])
     }
     
+    private func addKeyboardObservers() {
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification, object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification, object: nil
+        )
+    }
+    
+    private func removeKeyboardObservers() {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc private func keyboardWillShow(notification: NSNotification) {
+        guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
+        
+        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardFrame.height, right: 0)
+        scrollView.contentInset = contentInsets
+        scrollView.scrollIndicatorInsets = contentInsets
+    }
+    
+    @objc private func keyboardWillHide() {
+        scrollView.contentInset = .zero
+        scrollView.scrollIndicatorInsets = .zero
+    }
+    
     private func setupGestureRecognizers() {
-        let appleTap = UITapGestureRecognizer(target: self, action: #selector(handleAppleSignIn))
-        appleIcon.addGestureRecognizer(appleTap)
+        addTapGesture(to: appleIcon, action: #selector(handleAppleSignIn))
+        addTapGesture(to: googleIcon, action: #selector(handleGoogleSignIn))
         
-        let googleTap = UITapGestureRecognizer(target: self, action: #selector(handleGoogleSignIn))
-        googleIcon.addGestureRecognizer(googleTap)
-        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+    
+    private func addTapGesture(to view: UIView, action: Selector) {
+        let tapGesture = UITapGestureRecognizer(target: self, action: action)
+        view.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
     
     @objc private func backButtonTapped() {
@@ -232,5 +287,4 @@ final class RegisterController: UIViewController {
     @objc private func handleGoogleSignIn() {
         print("Google Sign In tapped")
     }
-    
 }
