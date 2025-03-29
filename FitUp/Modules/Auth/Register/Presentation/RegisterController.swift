@@ -7,37 +7,11 @@
 import UIKit
 
 final class RegisterController: UIViewController {
-    private let scrollView = UIScrollView()
     private var viewModel: RegisterViewModel
-    
-    private let nutrifitImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "yazi"))
-        imageView.widthAnchor.constraint(equalToConstant: 160).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        imageView.contentMode = .scaleAspectFill
-        return imageView
-    }()
-    
-    private let logoImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "logo")
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
-    private let logoContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = Resources.Colors.logobackground
-        view.layer.cornerRadius = 25
-        view.layer.shadowColor = UIColor.black.cgColor
-        view.layer.shadowOpacity = 0.1
-        view.layer.shadowOffset = CGSize(width: 0, height: 3)
-        view.layer.shadowRadius = 8
-        view.layer.borderWidth = 1
-        view.layer.borderColor = UIColor.black.withAlphaComponent(0.01).cgColor
-        return view
-    }()
+    private let scrollView = UIScrollView()
+
     private func configureNavigationBar() {
-        navigationController?.navigationBar.tintColor = Resources.Colors.orange
+        navigationController?.navigationBar.tintColor = Resources.Colors.greyDark
         let backImage = UIImage(systemName: "chevron.left")!
             .withRenderingMode(.alwaysOriginal)
             .withConfiguration(UIImage.SymbolConfiguration(pointSize: 24, weight: .bold))
@@ -48,27 +22,24 @@ final class RegisterController: UIViewController {
                                          action: #selector(backButtonTapped))
         
         navigationItem.leftBarButtonItem = backButton
-        let titleStackView = UIStackView(arrangedSubviews: [nutrifitImageView])
-        titleStackView.axis = .horizontal
-        titleStackView.alignment = .center
-        navigationItem.titleView = titleStackView
-        
     }
     
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Start your journey"
-        label.font = Resources.AppFont.medium.withSize(36)
+        label.numberOfLines = 2
+        label.font = Resources.AppFont.bold.withSize(32)
         label.textAlignment = .center
         return label
     }()
     
     private let subtitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Join NutriFit today and unlock your personalized path to fitness, nutrition, and well-being."
+        label.text = "Join NutriFit today and unlock your personalized path to fitness, nutrition, and  well-being."
         label.font = Resources.AppFont.medium.withSize(16)
-        label.textAlignment = .center
-        label.numberOfLines = 0
+        label.textAlignment = .left
+        label.textColor = Resources.Colors.greyTextColor
+        label.numberOfLines = 3
         return label
     }()
     
@@ -136,6 +107,14 @@ final class RegisterController: UIViewController {
         stack.alignment = .center
         return stack
     }()
+    private lazy var registerWithStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [orRegisterLabel, iconStackView])
+        stack.axis = .horizontal
+        stack.spacing = 160
+        stack.alignment = .center
+        stack.distribution = .equalSpacing
+        return stack
+    }()
     
     
     init(viewModel: RegisterViewModel) {
@@ -146,23 +125,22 @@ final class RegisterController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    private lazy var labelWithStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
+        stack.axis = .vertical
+        stack.spacing = 20
+        return stack
+    }()
     private lazy var textFieldWithStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [fullNameTextField, emailTextField, passwordTextField])
         stack.axis = .vertical
-        stack.spacing = 10
+        stack.spacing = 12
         return stack
     }()
-    private lazy var registerstack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel, textFieldWithStack,registerButton])
+    private lazy var registerStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [ registerButton,registerWithStack])
         stack.axis = .vertical
-        stack.spacing = 15
-        return stack
-    }()
-    private lazy var registerWithStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [orRegisterLabel, iconStackView])
-        stack.axis = .horizontal
-        stack.spacing = 160
-        stack.alignment = .center
+        stack.spacing = 20
         stack.distribution = .equalSpacing
         return stack
     }()
@@ -191,13 +169,10 @@ final class RegisterController: UIViewController {
     }
     
     private func setupConstraints() {
-        [logoContainerView, registerstack, registerWithStack].forEach {
+        [labelWithStack, textFieldWithStack, registerStack].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             scrollView.addSubview($0)
         }
-        
-        logoContainerView.addSubview(logoImageView)
-        logoImageView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -205,28 +180,24 @@ final class RegisterController: UIViewController {
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            logoContainerView.centerXAnchor.constraint(equalTo: scrollView.contentLayoutGuide.centerXAnchor),
-            logoContainerView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 20),
-            logoContainerView.widthAnchor.constraint(equalToConstant: 200),
-            logoContainerView.heightAnchor.constraint(equalToConstant: 200),
+            labelWithStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 30),
+            labelWithStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            labelWithStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             
-            logoImageView.topAnchor.constraint(equalTo: logoContainerView.topAnchor, constant: 20),
-            logoImageView.bottomAnchor.constraint(equalTo: logoContainerView.bottomAnchor, constant: -20),
-            logoImageView.leadingAnchor.constraint(equalTo: logoContainerView.leadingAnchor, constant: 20),
-            logoImageView.trailingAnchor.constraint(equalTo: logoContainerView.trailingAnchor, constant: -20),
+            textFieldWithStack.topAnchor.constraint(equalTo: labelWithStack.bottomAnchor, constant: 40),
+            textFieldWithStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            textFieldWithStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             
-            registerstack.centerXAnchor.constraint(equalTo: scrollView.contentLayoutGuide.centerXAnchor),
-            registerstack.topAnchor.constraint(equalTo: logoContainerView.bottomAnchor, constant: 20),
-            registerstack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 20),
-            registerstack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -20),
-            
-            registerWithStack.topAnchor.constraint(equalTo: registerstack.bottomAnchor, constant: 20),
-            registerWithStack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 24),
-            registerWithStack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -24),
-            registerWithStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -20),
+            registerStack.topAnchor.constraint(equalTo: textFieldWithStack.bottomAnchor, constant: 40),
+            registerStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            registerStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            registerStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -40),
             
             scrollView.contentLayoutGuide.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
+            
         ])
+        
+    
     }
     
     private func addKeyboardObservers() {
@@ -288,3 +259,6 @@ final class RegisterController: UIViewController {
         print("Google Sign In tapped")
     }
 }
+//#Preview{
+//    RegisterController(viewModel:  RegisterViewModel() )
+//}

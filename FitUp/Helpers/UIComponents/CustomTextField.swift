@@ -20,9 +20,9 @@ class CustomTextField: UIView, UITextFieldDelegate {
         super.init(frame: .zero)
         
         containerView.backgroundColor = Resources.Colors.greyColor
-        containerView.layer.cornerRadius = height / 3
-        containerView.layer.borderWidth = 2
-        containerView.layer.borderColor = UIColor.clear.cgColor
+        containerView.layer.cornerRadius = height / 4
+        containerView.layer.borderWidth = 1
+        containerView.layer.borderColor = Resources.Colors.greyBorderColor.cgColor
         containerView.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(containerView)
@@ -39,12 +39,12 @@ class CustomTextField: UIView, UITextFieldDelegate {
         containerView.addSubview(textField)
         
         leftIconView.image = icon
-        leftIconView.tintColor = Resources.Colors.darkGreen
+        leftIconView.tintColor = Resources.Colors.greyDark
         leftIconView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(leftIconView)
         
         clearButton.setImage(UIImage(systemName: "xmark"), for: .normal)
-        clearButton.tintColor = Resources.Colors.darkGreen
+        clearButton.tintColor = Resources.Colors.greyDark
         clearButton.addTarget(self, action: #selector(clearText), for: .touchUpInside)
         clearButton.translatesAutoresizingMaskIntoConstraints = false
         clearButton.isHidden = true
@@ -60,8 +60,8 @@ class CustomTextField: UIView, UITextFieldDelegate {
             
             leftIconView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: padding),
             leftIconView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-            leftIconView.widthAnchor.constraint(equalToConstant: 24),
-            leftIconView.heightAnchor.constraint(equalToConstant: 24),
+            leftIconView.widthAnchor.constraint(equalToConstant: 20),
+            leftIconView.heightAnchor.constraint(equalToConstant: 20),
             
             textField.leadingAnchor.constraint(equalTo: leftIconView.trailingAnchor, constant: padding),
             textField.trailingAnchor.constraint(equalTo: clearButton.leadingAnchor, constant: -padding),
@@ -69,11 +69,9 @@ class CustomTextField: UIView, UITextFieldDelegate {
             
             clearButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -padding),
             clearButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-            clearButton.widthAnchor.constraint(equalToConstant: 24),
-            clearButton.heightAnchor.constraint(equalToConstant: 24)
+            clearButton.widthAnchor.constraint(equalToConstant: 20),
+            clearButton.heightAnchor.constraint(equalToConstant: 20)
         ])
-        
-        updateBorderColor()
     }
     
     required init?(coder: NSCoder) {
@@ -82,9 +80,13 @@ class CustomTextField: UIView, UITextFieldDelegate {
     
     private func updateBorderColor() {
         if hasError {
+            containerView.layer.borderWidth = 0.3
             containerView.layer.borderColor = Resources.Colors.redColor.cgColor
         } else {
-            containerView.layer.borderColor = textField.isFirstResponder ? Resources.Colors.green.cgColor : Resources.Colors.greyColor.cgColor
+            containerView.layer.borderWidth = textField.isFirstResponder ? 2 : 0.3
+            containerView.layer.borderColor = textField.isFirstResponder ?
+                Resources.Colors.green.cgColor :
+                Resources.Colors.greyDark.cgColor
         }
     }
         

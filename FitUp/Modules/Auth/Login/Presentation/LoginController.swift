@@ -8,35 +8,10 @@ import UIKit
 
 final class LoginController: UIViewController {
     private var viewModel: LoginViewModel
+    private let scrollView = UIScrollView()
     
-    private let nutrifitImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "yazi"))        
-        imageView.widthAnchor.constraint(equalToConstant: 160).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        imageView.contentMode = .scaleAspectFill
-        return imageView
-    }()
-    
-    private let logoImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "logo")
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
-    private let logoContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = Resources.Colors.logobackground
-        view.layer.cornerRadius = 25
-        view.layer.shadowColor = UIColor.black.cgColor
-        view.layer.shadowOpacity = 0.1
-        view.layer.shadowOffset = CGSize(width: 0, height: 3)
-        view.layer.shadowRadius = 8
-        view.layer.borderWidth = 1
-        view.layer.borderColor = UIColor.black.withAlphaComponent(0.01).cgColor
-        return view
-    }()
     private func configureNavigationBar() {
-        navigationController?.navigationBar.tintColor = Resources.Colors.orange
+        navigationController?.navigationBar.tintColor = Resources.Colors.greyDark
         let backImage = UIImage(systemName: "chevron.left")!
             .withRenderingMode(.alwaysOriginal)
             .withConfiguration(UIImage.SymbolConfiguration(pointSize: 24, weight: .bold))
@@ -47,16 +22,12 @@ final class LoginController: UIViewController {
                                          action: #selector(backButtonTapped))
         
         navigationItem.leftBarButtonItem = backButton
-        let titleStackView = UIStackView(arrangedSubviews: [nutrifitImageView])
-        titleStackView.axis = .horizontal
-        titleStackView.alignment = .center
-        navigationItem.titleView = titleStackView
-        
     }
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Welcome Back"
-        label.font = Resources.AppFont.medium.withSize(36)
+        label.numberOfLines = 2
+        label.font = Resources.AppFont.bold.withSize(32)
         label.textAlignment = .center
         return label
     }()
@@ -65,8 +36,9 @@ final class LoginController: UIViewController {
         let label = UILabel()
         label.text = "Welcome back! Let's continue your journey to a healthier, fitter you with NutriFit."
         label.font = Resources.AppFont.medium.withSize(16)
-        label.textAlignment = .center
-        label.numberOfLines = 0
+        label.textAlignment = .left
+        label.textColor = Resources.Colors.greyTextColor
+        label.numberOfLines = 3
         return label
     }()
     
@@ -83,7 +55,7 @@ final class LoginController: UIViewController {
         width: 320,
         icon: UIImage(systemName: "lock.fill")
     )
-    lazy var registerButton = CustomButtonAuth(
+    lazy var loginButton = CustomButtonAuth(
         title: "Sign In",
         height: 64,
         textColor: .white,
@@ -94,7 +66,7 @@ final class LoginController: UIViewController {
         [weak self] in
         print("basdun")
     }
-    private let orRegisterLabel: UILabel = {
+    private let orLoginLabel: UILabel = {
         let label = UILabel()
         label.text = "Login with"
         label.font = Resources.AppFont.regular.withSize(14)
@@ -126,16 +98,25 @@ final class LoginController: UIViewController {
         stack.alignment = .center
         return stack
     }()
+    private lazy var loginWithStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [orLoginLabel, iconStackView])
+        stack.axis = .horizontal
+        stack.spacing = 160
+        stack.alignment = .center
+        stack.distribution = .equalSpacing
+        return stack
+    }()
     
     private let notAcountLabel: UILabel = {
         let label = UILabel()
         label.text = "Don\'t have an account?"
         label.font = Resources.AppFont.regular.withSize(14)
+        label.textColor = Resources.Colors.greyTextColor
         label.textAlignment = .center
         return label
     }()
     lazy var createAccountButton = CustomButtonAuth(
-        title: "Create Account",
+        title: "Register Now",
         height: 64,
         textColor: .white,
         backgroundColor: Resources.Colors.notacountbackground,
@@ -154,30 +135,28 @@ final class LoginController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    private lazy var labelWithStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
+        stack.axis = .vertical
+        stack.spacing = 20
+        return stack
+    }()
     private lazy var textFieldWithStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [emailTextField, passwordTextField])
         stack.axis = .vertical
-        stack.spacing = 10
+        stack.spacing = 12
         return stack
     }()
     private lazy var loginstack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel,textFieldWithStack,registerButton])
+        let stack = UIStackView(arrangedSubviews: [loginWithStack,loginButton])
         stack.axis = .vertical
-        stack.spacing = 15
-        return stack
-    }()
-    private lazy var loginWithStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [orRegisterLabel, iconStackView])
-        stack.axis = .horizontal
-        stack.spacing = 160
-        stack.alignment = .center
-        stack.distribution = .equalSpacing
+        stack.spacing = 20
         return stack
     }()
     private lazy var notAccountStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [notAcountLabel, createAccountButton])
         stack.axis = .vertical
-        stack.spacing = 10
+        stack.spacing = 20
         stack.distribution = .equalSpacing
         return stack
     }()
@@ -185,63 +164,102 @@ final class LoginController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureNavigationBar()
         setupUI()
+        configureNavigationBar()
         setupGestureRecognizers()
     }
-    
-    
-    
     private func setupUI() {
         view.backgroundColor = .white
-        
-        view.addSubview(logoContainerView)
-        logoContainerView.translatesAutoresizingMaskIntoConstraints = false
-        
-        logoContainerView.addSubview(logoImageView)
-        logoImageView.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(loginstack)
-        loginstack.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(loginWithStack)
-        loginWithStack.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(notAccountStack)
+        configureNavigationBar()
+        setupScrollView()
+        setupConstraints()
+    }
+    
+    private func setupScrollView() {
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.alwaysBounceVertical = true
+        scrollView.keyboardDismissMode = .interactive
+        view.addSubview(scrollView)
+    }
+    
+    private func setupConstraints() {
+        [labelWithStack, textFieldWithStack, loginstack,notAccountStack].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            scrollView.addSubview($0)
+        }
         notAccountStack.translatesAutoresizingMaskIntoConstraints = false
-
+        view.addSubview(notAccountStack)
+        
         NSLayoutConstraint.activate([
-            logoContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            logoContainerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            logoContainerView.widthAnchor.constraint(equalToConstant: 200),
-            logoContainerView.heightAnchor.constraint(equalToConstant: 200),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            logoImageView.topAnchor.constraint(equalTo: logoContainerView.topAnchor, constant: 20),
-            logoImageView.bottomAnchor.constraint(equalTo: logoContainerView.bottomAnchor, constant: -20),
-            logoImageView.leadingAnchor.constraint(equalTo: logoContainerView.leadingAnchor, constant: 20),
-            logoImageView.trailingAnchor.constraint(equalTo: logoContainerView.trailingAnchor, constant: -20),
+            labelWithStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 30),
+            labelWithStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            labelWithStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             
-            loginstack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            loginstack.topAnchor.constraint(equalTo: logoContainerView.bottomAnchor, constant: 15),
-            loginstack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            loginstack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            textFieldWithStack.topAnchor.constraint(equalTo: labelWithStack.bottomAnchor, constant: 24),
+            textFieldWithStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            textFieldWithStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             
-            loginWithStack.topAnchor.constraint(equalTo: loginstack.bottomAnchor, constant: 15),
-            loginWithStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            loginWithStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            loginstack.topAnchor.constraint(equalTo: textFieldWithStack.bottomAnchor, constant: 30),
+            loginstack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            loginstack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             
-            notAccountStack.topAnchor.constraint(equalTo: loginWithStack.bottomAnchor, constant: 10),
-            notAccountStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            notAccountStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            notAccountStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            notAccountStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            notAccountStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            
+            scrollView.contentLayoutGuide.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
+            
         ])
+        
+    }
+    private func addKeyboardObservers() {
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification, object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification, object: nil
+        )
+    }
+    
+    private func removeKeyboardObservers() {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc private func keyboardWillShow(notification: NSNotification) {
+        guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
+        
+        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardFrame.height, right: 0)
+        scrollView.contentInset = contentInsets
+        scrollView.scrollIndicatorInsets = contentInsets
+    }
+    
+    @objc private func keyboardWillHide() {
+        scrollView.contentInset = .zero
+        scrollView.scrollIndicatorInsets = .zero
     }
     
     private func setupGestureRecognizers() {
-        let appleTap = UITapGestureRecognizer(target: self, action: #selector(handleAppleSignIn))
-        appleIcon.addGestureRecognizer(appleTap)
+        addTapGesture(to: appleIcon, action: #selector(handleAppleSignIn))
+        addTapGesture(to: googleIcon, action: #selector(handleGoogleSignIn))
         
-        let googleTap = UITapGestureRecognizer(target: self, action: #selector(handleGoogleSignIn))
-        googleIcon.addGestureRecognizer(googleTap)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+    private func addTapGesture(to view: UIView, action: Selector) {
+        let tapGesture = UITapGestureRecognizer(target: self, action: action)
+        view.addGestureRecognizer(tapGesture)
+    }
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
     
     @objc private func backButtonTapped() {
