@@ -7,7 +7,8 @@
 import UIKit
 
 final class LoginController: UIViewController {
-    private var viewModel: LoginViewModel
+    
+    private let viewModel: LoginViewModel
     private let scrollView = UIScrollView()
     
     private func configureNavigationBar() {
@@ -124,7 +125,8 @@ final class LoginController: UIViewController {
         cornerRadius: 16
     ) {
         [weak self] in
-        print("bas bas urey")
+        self?.viewModel.goToRegister()
+        print("basdun3")
     }
     
     init(viewModel: LoginViewModel) {

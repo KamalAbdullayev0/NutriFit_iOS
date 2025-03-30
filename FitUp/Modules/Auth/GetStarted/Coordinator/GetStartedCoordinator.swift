@@ -21,12 +21,14 @@ class GetStartedCoordinator: Coordinator {
         let loginCoordinator = LoginCoordinator(navigationController: navigationController)
         addChildCoordinator(loginCoordinator)
         loginCoordinator.start()
+        logChildCoordinators("showLoginPagegetstarted")
     }
     
     func showRegisterPage() {
         let registerCoordinator = RegisterCoordinator(navigationController: navigationController)
         addChildCoordinator(registerCoordinator)
         registerCoordinator.start()
+        logChildCoordinators("showRegisterPagegetstarted")
     }
 }
 

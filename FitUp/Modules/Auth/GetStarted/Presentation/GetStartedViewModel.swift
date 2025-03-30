@@ -8,8 +8,6 @@ import Foundation
 
 class GetStartedViewModel {
     weak var coordinator: GetStartedCoordinator?
-
-   
     
     init(coordinator: GetStartedCoordinator) {
         self.coordinator = coordinator

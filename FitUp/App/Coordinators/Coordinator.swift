@@ -8,6 +8,7 @@ import UIKit
 
 class Coordinator: NSObject {
     var navigationController: UINavigationController
+//    weak var parentCoordinator: Coordinator?
     
     private var childCoordinators: [Coordinator] = []
     
@@ -17,6 +18,7 @@ class Coordinator: NSObject {
     }
     
     func addChildCoordinator(_ coordinator: Coordinator) {
+//        coordinator.parentCoordinator = self
         childCoordinators.append(coordinator)
     }
     
@@ -25,5 +27,8 @@ class Coordinator: NSObject {
     }
     func removeAllChildCoordinators() {
         childCoordinators.removeAll()
+    }
+    func logChildCoordinators(_ message: String) {
+        print("\(message). Текущее количество координаторов: \(childCoordinators.count)")
     }
 }

@@ -38,16 +38,34 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				Modules/OnBoarding/Screens/1Goal/GoalController.swift,
+				Modules/OnBoarding/Screens/1Goal/GoalViewModel.swift,
+				Modules/OnBoarding/Screens/3Age/AgeController.swift,
+				Modules/OnBoarding/Screens/3Age/AgeModel.swift,
 			);
 			target = 471B21AB2D8892310015696E /* FitUp */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		47FBF9A42D99F98B00D70C38 /* Exceptions for "FitUp" folder in "Copy Bundle Resources" phase from "FitUp" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 471B21AA2D8892310015696E /* Resources */;
+			membershipExceptions = (
+				Modules/OnBoarding/Screens/1Goal/GoalController.swift,
+				Modules/OnBoarding/Screens/1Goal/GoalViewModel.swift,
+				Modules/OnBoarding/Screens/3Age/AgeController.swift,
+				Modules/OnBoarding/Screens/3Age/AgeModel.swift,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		471B21AE2D8892310015696E /* FitUp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				471B21D42D8892320015696E /* Exceptions for "FitUp" folder in "FitUp" target */,
+				47FBF9A42D99F98B00D70C38 /* Exceptions for "FitUp" folder in "Copy Bundle Resources" phase from "FitUp" target */,
 			);
 			path = FitUp;
 			sourceTree = "<group>";
