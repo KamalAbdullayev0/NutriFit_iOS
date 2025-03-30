@@ -6,15 +6,14 @@
 //
 import UIKit
 
-final class LoginCoordinator: Coordinator {
+class LoginCoordinator: Coordinator {
     
     override init(navigationController: UINavigationController) {
         super.init(navigationController: navigationController)
     }
     
     func start() {
-        let viewModel = LoginViewModel()
-        let loginVC = LoginController(viewModel: viewModel)
+        let loginVC = LoginController(viewModel: .init(coordinator: self))
         navigationController.pushViewController(loginVC, animated: true)
     }
     
@@ -22,6 +21,7 @@ final class LoginCoordinator: Coordinator {
         let registerCoordinator = RegisterCoordinator(navigationController: navigationController)
         addChildCoordinator(registerCoordinator)
         registerCoordinator.start()
+        logChildCoordinators("salam")
     }
     
     func loginSuccessful() {

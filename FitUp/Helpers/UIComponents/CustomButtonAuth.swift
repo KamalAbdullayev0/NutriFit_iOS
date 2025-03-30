@@ -71,8 +71,10 @@ class CustomButtonAuth: UIButton {
     private var action: (() -> Void)?
     
     @objc private func handleTap() {
-        action?()
         animateTap()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.action?()
+        }
     }
     
     private func animateTap() {

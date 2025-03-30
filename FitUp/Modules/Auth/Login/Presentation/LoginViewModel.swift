@@ -7,20 +7,20 @@
 import Foundation
 
 final class LoginViewModel {
-    private weak var coordinator: GetStartedCoordinator?
+    private weak var coordinator: LoginCoordinator?
     
+    init(coordinator: LoginCoordinator) {
+        self.coordinator = coordinator
+    }
     var username: String = ""
     var password: String = ""
-    
-
     
     func login() {
 
     }
-    
     func goToRegister() {
         print("salam")
-        coordinator?.showRegisterPage()
+        coordinator?.goToRegister( )
     }
 }
 
