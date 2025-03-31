@@ -7,6 +7,11 @@
 import Foundation
 
 final class RegisterViewModel {
+    private weak var coordinator: AuthCoordinator?
+    
+    init(coordinator: AuthCoordinator) {
+        self.coordinator = coordinator
+    }
     
     var username: String = ""
     var password: String = ""
@@ -15,7 +20,7 @@ final class RegisterViewModel {
 
     
     func register() {
-
+        coordinator?.showOnboarding()
     }
 }
 

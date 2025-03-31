@@ -1,15 +1,16 @@
 //
-//  RegisterController.swift
+//  LoginController.swift
 //  FitUp
 //
 //  Created by Kamal Abdullayev on 18.03.25.
 //
 import UIKit
 
-final class RegisterController: UIViewController {
-    private var viewModel: RegisterViewModel
+final class LoginController: UIViewController {
+    
+    private let viewModel: LoginViewModel
     private let scrollView = UIScrollView()
-
+    
     private func configureNavigationBar() {
         navigationController?.navigationBar.tintColor = Resources.Colors.greyDark
         let backImage = UIImage(systemName: "chevron.left")!
@@ -23,10 +24,9 @@ final class RegisterController: UIViewController {
         
         navigationItem.leftBarButtonItem = backButton
     }
-    
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Start your journey"
+        label.text = "Welcome Back"
         label.numberOfLines = 2
         label.font = Resources.AppFont.bold.withSize(32)
         label.textAlignment = .center
@@ -35,20 +35,13 @@ final class RegisterController: UIViewController {
     
     private let subtitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Join NutriFit today and unlock your personalized path to fitness, nutrition, and  well-being."
+        label.text = "Welcome back! Let's continue your journey to a healthier, fitter you with NutriFit."
         label.font = Resources.AppFont.medium.withSize(16)
         label.textAlignment = .left
         label.textColor = Resources.Colors.greyTextColor
         label.numberOfLines = 3
         return label
     }()
-    
-    private let fullNameTextField = CustomTextField(
-        placeholder: "Full Name",
-        height: 64,
-        width: 320,
-        icon: UIImage(systemName: "person.fill")
-    )
     
     private let emailTextField = CustomTextField(
         placeholder: "Enter Email",
@@ -63,9 +56,8 @@ final class RegisterController: UIViewController {
         width: 320,
         icon: UIImage(systemName: "lock.fill")
     )
-    
-    lazy var registerButton = CustomButtonAuth(
-        title: "Register",
+    lazy var loginButton = CustomButtonAuth(
+        title: "Sign In",
         height: 64,
         textColor: .white,
         backgroundColor: Resources.Colors.green,
@@ -73,11 +65,11 @@ final class RegisterController: UIViewController {
         cornerRadius: 16
     ) {
         [weak self] in
-        print("basdun")
+        self?.viewModel.login()
     }
-    private let orRegisterLabel: UILabel = {
+    private let orLoginLabel: UILabel = {
         let label = UILabel()
-        label.text = "Or register with"
+        label.text = "Login with"
         label.font = Resources.AppFont.regular.withSize(14)
         label.textColor = .black
         return label
@@ -107,8 +99,8 @@ final class RegisterController: UIViewController {
         stack.alignment = .center
         return stack
     }()
-    private lazy var registerWithStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [orRegisterLabel, iconStackView])
+    private lazy var loginWithStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [orLoginLabel, iconStackView])
         stack.axis = .horizontal
         stack.spacing = 160
         stack.alignment = .center
@@ -116,8 +108,28 @@ final class RegisterController: UIViewController {
         return stack
     }()
     
+    private let notAcountLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Don\'t have an account?"
+        label.font = Resources.AppFont.regular.withSize(14)
+        label.textColor = Resources.Colors.greyTextColor
+        label.textAlignment = .center
+        return label
+    }()
+    lazy var createAccountButton = CustomButtonAuth(
+        title: "Register Now",
+        height: 64,
+        textColor: .white,
+        backgroundColor: Resources.Colors.notacountbackground,
+        font: Resources.AppFont.medium.withSize(22),
+        cornerRadius: 16
+    ) {
+        [weak self] in
+        self?.viewModel.goToRegister()
+        print("basdun3")
+    }
     
-    init(viewModel: RegisterViewModel) {
+    init(viewModel: LoginViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -132,28 +144,31 @@ final class RegisterController: UIViewController {
         return stack
     }()
     private lazy var textFieldWithStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [fullNameTextField, emailTextField, passwordTextField])
+        let stack = UIStackView(arrangedSubviews: [emailTextField, passwordTextField])
         stack.axis = .vertical
         stack.spacing = 12
         return stack
     }()
-    private lazy var registerStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [ registerButton,registerWithStack])
+    private lazy var loginstack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [loginWithStack,loginButton])
+        stack.axis = .vertical
+        stack.spacing = 20
+        return stack
+    }()
+    private lazy var notAccountStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [notAcountLabel, createAccountButton])
         stack.axis = .vertical
         stack.spacing = 20
         stack.distribution = .equalSpacing
         return stack
     }()
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        configureNavigationBar()
         setupGestureRecognizers()
-        addKeyboardObservers()
-    }
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        removeKeyboardObservers()
     }
     private func setupUI() {
         view.backgroundColor = .white
@@ -161,6 +176,7 @@ final class RegisterController: UIViewController {
         setupScrollView()
         setupConstraints()
     }
+    
     private func setupScrollView() {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.alwaysBounceVertical = true
@@ -169,10 +185,12 @@ final class RegisterController: UIViewController {
     }
     
     private func setupConstraints() {
-        [labelWithStack, textFieldWithStack, registerStack].forEach {
+        [labelWithStack, textFieldWithStack, loginstack,notAccountStack].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             scrollView.addSubview($0)
         }
+        notAccountStack.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(notAccountStack)
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -184,22 +202,23 @@ final class RegisterController: UIViewController {
             labelWithStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             labelWithStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             
-            textFieldWithStack.topAnchor.constraint(equalTo: labelWithStack.bottomAnchor, constant: 40),
+            textFieldWithStack.topAnchor.constraint(equalTo: labelWithStack.bottomAnchor, constant: 24),
             textFieldWithStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             textFieldWithStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             
-            registerStack.topAnchor.constraint(equalTo: textFieldWithStack.bottomAnchor, constant: 40),
-            registerStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            registerStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
-            registerStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -40),
+            loginstack.topAnchor.constraint(equalTo: textFieldWithStack.bottomAnchor, constant: 30),
+            loginstack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            loginstack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            
+            notAccountStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            notAccountStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            notAccountStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
             
             scrollView.contentLayoutGuide.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
             
         ])
         
-    
     }
-    
     private func addKeyboardObservers() {
         NotificationCenter.default.addObserver(
             self, selector: #selector(keyboardWillShow),
@@ -237,12 +256,10 @@ final class RegisterController: UIViewController {
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
     }
-    
     private func addTapGesture(to view: UIView, action: Selector) {
         let tapGesture = UITapGestureRecognizer(target: self, action: action)
         view.addGestureRecognizer(tapGesture)
     }
-    
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
@@ -258,7 +275,5 @@ final class RegisterController: UIViewController {
     @objc private func handleGoogleSignIn() {
         print("Google Sign In tapped")
     }
+    
 }
-//#Preview{
-//    RegisterController(viewModel:  RegisterViewModel() )
-//}

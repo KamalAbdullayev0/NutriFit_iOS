@@ -6,40 +6,17 @@
 //
 import UIKit
 
-protocol NavigationProtocol: AnyObject {
-    //    func goHome()
-    //    func goToProfile()
-    //    func goToSettings()
-}
 
-final class AppCoordinator: Coordinator, NavigationProtocol {
+final class AppCoordinator: Coordinator{
     override init(navigationController: UINavigationController) {
         super.init(navigationController: navigationController)
     }
     
     
     func start() {
-        let getStartedCoordinator = GetStartedCoordinator(navigationController: navigationController)
-        addChildCoordinator(getStartedCoordinator)
-        getStartedCoordinator.start()
+        let authCoordinator = AuthCoordinator(navigationController: navigationController)
+        addChildCoordinator(authCoordinator)
+        authCoordinator.start()
     }
 }
-//
-//    func goHome() {
-//        let homeVM = HomeViewModel(navigation: self)
-//        let homeVC = HomeViewController(viewModel: homeVM)
-//        navigationController.setViewControllers([homeVC], animated: true)
-//    }
-//
-//    func goToProfile() {
-//        let profileVM = ProfileViewModel(navigation: self)
-//        let profileVC = ProfileViewController(viewModel: profileVM)
-//        navigationController.pushViewController(profileVC, animated: true)
-//    }
-//
-//    func goToSettings() {
-//        let settingsVM = SettingsViewModel(navigation: self)
-//        let settingsVC = SettingsViewController(viewModel: settingsVM)
-//        navigationController.pushViewController(settingsVC, animated: true)
-//    }
 
