@@ -7,9 +7,9 @@
 import Foundation
 
 class GetStartedViewModel {
-    weak var coordinator: GetStartedCoordinator?
+    weak var coordinator: AuthCoordinator?
     
-    init(coordinator: GetStartedCoordinator) {
+    init(coordinator: AuthCoordinator) {
         self.coordinator = coordinator
     }
     

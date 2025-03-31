@@ -1,15 +1,15 @@
 //
-//  GoalViewModel.swift
+//  Untitled.swift
 //  FitUp
 //
 //  Created by Kamal Abdullayev on 31.03.25.
 //
 import Foundation
 
-class GoalViewModel {
+class GenderViewModel {
     weak var delegate: OnboardingStepDelegate?
 
-    func selectGoal() {
-        delegate?.moveToNextStep(currentStep: .goal, data: "salam")
+    func selectGender() {
+        delegate?.moveToNextStep(currentStep: .gender, data: "male")
     }
 }
