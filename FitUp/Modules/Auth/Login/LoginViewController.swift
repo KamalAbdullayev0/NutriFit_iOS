@@ -56,10 +56,10 @@ final class LoginController: UIViewController {
         width: 320,
         icon: UIImage(systemName: "lock.fill")
     )
-    lazy var loginButton = CustomButtonAuth(
+    private lazy var loginButton = CustomButtonAuth(
         title: "Sign In",
         height: 64,
-        textColor: .white,
+        textColor: Resources.Colors.white,
         backgroundColor: Resources.Colors.green,
         font: Resources.AppFont.medium.withSize(22),
         cornerRadius: 16
@@ -116,10 +116,10 @@ final class LoginController: UIViewController {
         label.textAlignment = .center
         return label
     }()
-    lazy var createAccountButton = CustomButtonAuth(
+    private lazy var createAccountButton = CustomButtonAuth(
         title: "Register Now",
         height: 64,
-        textColor: .white,
+        textColor: Resources.Colors.white,
         backgroundColor: Resources.Colors.notacountbackground,
         font: Resources.AppFont.medium.withSize(22),
         cornerRadius: 16
@@ -171,7 +171,7 @@ final class LoginController: UIViewController {
         setupGestureRecognizers()
     }
     private func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = Resources.Colors.white
         configureNavigationBar()
         setupScrollView()
         setupConstraints()

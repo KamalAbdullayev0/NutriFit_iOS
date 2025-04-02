@@ -64,10 +64,10 @@ final class RegisterController: UIViewController {
         icon: UIImage(systemName: "lock.fill")
     )
     
-    lazy var registerButton = CustomButtonAuth(
+    private lazy var registerButton = CustomButtonAuth(
         title: "Register",
         height: 64,
-        textColor: .white,
+        textColor: Resources.Colors.white,
         backgroundColor: Resources.Colors.green,
         font: Resources.AppFont.medium.withSize(22),
         cornerRadius: 16
@@ -156,7 +156,7 @@ final class RegisterController: UIViewController {
         removeKeyboardObservers()
     }
     private func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = Resources.Colors.white
         configureNavigationBar()
         setupScrollView()
         setupConstraints()

@@ -92,7 +92,7 @@ class CustomTextField: UIView, UITextFieldDelegate {
         
     func textFieldDidBeginEditing(_ textField: UITextField) {
         hasError = false
-        containerView.backgroundColor = .white
+        containerView.backgroundColor = Resources.Colors.white
         updateBorderColor()
     }
     

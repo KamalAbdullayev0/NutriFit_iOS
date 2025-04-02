@@ -21,7 +21,7 @@ class GetStartedController: UIViewController, UIPageViewControllerDataSource, UI
         pageControl.numberOfPages = 3
         pageControl.transform = CGAffineTransform(scaleX: 1.7, y: 1.7)
         pageControl.currentPage = 0
-        pageControl.currentPageIndicatorTintColor = .white
+        pageControl.currentPageIndicatorTintColor = Resources.Colors.white
         pageControl.pageIndicatorTintColor = UIColor(white: 1.0, alpha: 0.5)
         pageControl.translatesAutoresizingMaskIntoConstraints = false
         return pageControl
@@ -43,7 +43,7 @@ class GetStartedController: UIViewController, UIPageViewControllerDataSource, UI
     lazy var signUpButton = CustomButtonAuth(
         title: "Login",
         height: 60,
-        textColor: .white,
+        textColor: Resources.Colors.white,
         backgroundColor: Resources.Colors.orange,
         font: Resources.AppFont.medium.withSize(20),
         cornerRadius: 16
@@ -55,7 +55,7 @@ class GetStartedController: UIViewController, UIPageViewControllerDataSource, UI
     lazy var registerButton = CustomButtonAuth(
         title: "Register",
         height: 60,
-        textColor: .white,
+        textColor: Resources.Colors.white,
         backgroundColor: Resources.Colors.green,
         font: Resources.AppFont.medium.withSize(20),
         cornerRadius: 16
