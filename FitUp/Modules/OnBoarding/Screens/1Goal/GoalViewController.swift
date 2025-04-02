@@ -13,10 +13,10 @@ class GoalViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textAlignment = .center
         label.text = "I want to.."
         label.font = Resources.AppFont.bold.withSize(30)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -41,7 +41,6 @@ class GoalViewController: UIViewController {
     private lazy var continueButton = CustomButtonContinue { [weak self] in
                self?.viewModel.continueButtonTapped()
     }
-    
     
     init(viewModel: GoalViewModel) {
         self.viewModel = viewModel
