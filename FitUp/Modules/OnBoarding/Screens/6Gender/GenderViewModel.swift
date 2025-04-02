@@ -8,8 +8,30 @@ import Foundation
 
 class GenderViewModel {
     weak var delegate: OnboardingStepDelegate?
-
-    func selectGender() {
-        delegate?.moveToNextStep(currentStep: .gender, data: "male")
+    
+    let Activity: [String] = [
+        "👦🏻 Male",
+        "👩🏻 Female",
+    ]
+    
+    private(set) var selectedGender: String? {
+        didSet { onSelectionChange?(selectedGender)}
+    }
+    
+    var onSelectionChange: ((String?) -> Void)?
+    
+    func toggleGoalSelection(goal: String) {
+        selectedGender = (selectedGender == goal) ? nil : goal
+    }
+    
+    func clearSelection() {
+        selectedGender = nil
+    }
+    
+    func continueButtonTapped() {
+        guard let gender = selectedGender else {
+            return
+        }
+        delegate?.moveToNextStep(currentStep: .gender, data: gender)
     }
 }

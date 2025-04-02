@@ -44,6 +44,9 @@ class AgeViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         selectInitialAge()
+        agePickerView.subviews.forEach {
+            $0.backgroundColor = .clear
+        }
     }
     
     
@@ -61,7 +64,7 @@ class AgeViewController: UIViewController {
             agePickerView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             agePickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
             agePickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
-            agePickerView.heightAnchor.constraint(equalToConstant: 600),
+            agePickerView.heightAnchor.constraint(equalToConstant: 800),
             
             continueButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
             continueButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
@@ -128,11 +131,13 @@ class PickerRowView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = .clear
         setupView()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        backgroundColor = .clear
         setupView()
     }
     
