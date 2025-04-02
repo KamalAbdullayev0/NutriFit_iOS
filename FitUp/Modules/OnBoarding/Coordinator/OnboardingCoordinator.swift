@@ -11,7 +11,6 @@ protocol OnboardingStepDelegate: AnyObject {
 }
 
 class OnboardingCoordinator: Coordinator {
-//    var navigationController: UINavigationController?
     var userData = OnboardingUserData()
 
     func start() {
@@ -67,45 +66,34 @@ class OnboardingCoordinator: Coordinator {
 
 extension OnboardingCoordinator: OnboardingStepDelegate {
     func moveToNextStep(currentStep: OnboardingStep, data: Any?) {
+        if let data = data {
+            userData.setData(step: currentStep, value: data)
+        }
+        
         switch currentStep {
         case .goal:
-            if let goal = data as? GoalType {
-                userData.goal = goal
-            }
             navigate(to: .activity)
-
         case .activity:
-            if let activity = data as? ActivityLevel {
-                userData.activityLevel = activity
-            }
             navigate(to: .age)
-
         case .age:
-            if let age = data as? Int {
-                userData.age = age
-            }
             navigate(to: .height)
-
         case .height:
-            if let height = data as? Int {
-                userData.height = height
-            }
             navigate(to: .weight)
-
         case .weight:
-            if let weight = data as? Int {
-                userData.weight = weight
-            }
             navigate(to: .gender)
-
         case .gender:
-            if let gender = data as? Gender {
-                userData.gender = gender
-            }
             navigate(to: .completed)
-
         case .completed:
-            finishOnboarding()
+            sendDataToBackend()
+        }
+    }
+    
+    private func sendDataToBackend() {
+        if let userDataDict = userData.build() {
+            print("🚀 Отправка данных в Backend:", userDataDict)
+            // Здесь код отправки в сервер (например, через Alamofire)
+        } else {
+            print("❌ Ошибка: данные не заполнены полностью")
         }
     }
 }

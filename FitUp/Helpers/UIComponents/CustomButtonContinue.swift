@@ -1,27 +1,27 @@
 //
-//  ButtonAuth.swift
+//  CustomButtonContinue.swift
 //  FitUp
 //
-//  Created by Kamal Abdullayev on 18.03.25.
+//  Created by Kamal Abdullayev on 01.04.25.
 //
 import UIKit
 
-class CustomButtonAuth: UIButton {
+class CustomButtonContinue: UIButton {
     init(
-        title: String,
-        height: CGFloat = 60,
-        width: CGFloat = 60,
+        title: String = "Continue",
+        height: CGFloat = 40,
+        weight: CGFloat = 120,
         textColor: UIColor = Resources.Colors.white,
-        backgroundColor: UIColor = Resources.Colors.green,
-        font: UIFont = Resources.AppFont.bold.withSize(18),
-        cornerRadius: CGFloat? = 0,
+        backgroundColor: UIColor = Resources.Colors.redColor,
+        font: UIFont = Resources.AppFont.medium.withSize(18),
+        cornerRadius: CGFloat? = 25,
         action: @escaping () -> Void
     ) {
         super.init(frame: .zero)
         configure(
             title: title,
             height: height,
-            width: width,
+            weight: weight,
             textColor: textColor,
             backgroundColor: backgroundColor,
             font: font,
@@ -31,13 +31,13 @@ class CustomButtonAuth: UIButton {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) not supported")
+        fatalError("init(coder:) не поддерживается")
     }
     
     private func configure(
         title: String,
         height: CGFloat,
-        width: CGFloat?,
+        weight: CGFloat,
         textColor: UIColor,
         backgroundColor: UIColor,
         font: UIFont,
@@ -48,22 +48,13 @@ class CustomButtonAuth: UIButton {
         setTitleColor(textColor, for: .normal)
         self.backgroundColor = backgroundColor
         titleLabel?.font = font
-        
-        
         layer.cornerRadius = cornerRadius ?? height / 2
         
-        // Shadow
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOpacity = 0.2
         layer.shadowOffset = CGSize(width: 0, height: 4)
         layer.shadowRadius = 8
-        
         translatesAutoresizingMaskIntoConstraints = false
-        heightAnchor.constraint(equalToConstant: height).isActive = true
-        if let width = width {
-            widthAnchor.constraint(equalToConstant: width).isActive = true
-        }
-        
         addTarget(self, action: #selector(handleTap), for: .touchUpInside)
         self.action = action
     }
@@ -72,19 +63,18 @@ class CustomButtonAuth: UIButton {
     
     @objc private func handleTap() {
         animateTap()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
             self.action?()
         }
     }
     
     private func animateTap() {
-        UIView.animate(withDuration: 0.1, animations: {
-            self.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+        UIView.animate(withDuration: 0.05, animations: {
+            self.transform = CGAffineTransform(scaleX: 0.98, y: 0.98)
         }) { _ in
-            UIView.animate(withDuration: 0.1) {
+            UIView.animate(withDuration: 0.05) {
                 self.transform = .identity
             }
         }
     }
-    
 }
