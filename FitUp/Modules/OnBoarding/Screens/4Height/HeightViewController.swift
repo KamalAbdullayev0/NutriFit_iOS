@@ -75,6 +75,7 @@ class HeightViewController: UIViewController, UICollectionViewDelegate {
         setupViewModelCallbacks()
         updateSelectedHeightLabel(viewModel.currentHeight)
         lastHapticFeedbackHeight = viewModel.currentHeight
+        customButtonBack()
     }
 
     override func viewDidLayoutSubviews() {
@@ -86,7 +87,6 @@ class HeightViewController: UIViewController, UICollectionViewDelegate {
         }
     }
 
-    // --- Настройка UI ---
     private func setupUI() {
         view.addSubview(titleLabel)
         view.addSubview(selectedHeightLabel)

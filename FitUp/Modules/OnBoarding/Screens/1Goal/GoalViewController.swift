@@ -57,6 +57,7 @@ class GoalViewController: UIViewController {
         createGoalButtons()
         setupViewModelCallbacks()
         setupGestureRecognizer()
+        customButtonBack()
     }
     
     

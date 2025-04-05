@@ -46,6 +46,7 @@ class AgeViewController: UIViewController {
         agePickerView.subviews.forEach {
             $0.backgroundColor = .clear
         }
+        customButtonBack()
     }
     
     
