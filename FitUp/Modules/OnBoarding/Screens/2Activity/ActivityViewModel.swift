@@ -11,7 +11,6 @@ class ActivityViewModel {
     
     let Activity: [String] = [
         "Not very active",
-        "Somewhat active",
         "Moderately active",
         "Highly active",
         "Extremely active",
@@ -32,9 +31,10 @@ class ActivityViewModel {
     }
     
     func continueButtonTapped() {
-        guard let activity = selectedActivity else {
-            return
-        }
-        delegate?.moveToNextStep(currentStep: .activity, data: activity)
+        guard let activityTitle = selectedActivity,
+                 let activity = activityLevelFromTitle(activityTitle) else {
+               return
+           }
+        delegate?.moveToNextStep(currentStep: .activity, data: activity.rawValue)
     }
 }

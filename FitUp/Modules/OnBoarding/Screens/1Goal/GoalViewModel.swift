@@ -12,8 +12,7 @@ class GoalViewModel {
     let availableGoals: [String] = [
         "Lose weight",
         "Manage a health condition",
-        "Increase energy",
-        "Live a healthier lifestyle",
+        "Increase weight",
     ]
     
     private(set) var selectedGoal: String? {
@@ -31,9 +30,11 @@ class GoalViewModel {
     }
     
     func continueButtonTapped() {
-        guard let goal = selectedGoal else {
-            return
-        }
-        delegate?.moveToNextStep(currentStep: .goal, data: goal)
+        guard let goalTitle = selectedGoal,
+                 let goal = goalFromTitle(goalTitle) else {
+               return
+           }
+        delegate?.moveToNextStep(currentStep: .goal, data: goal.rawValue)
+        
     }
 }
