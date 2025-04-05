@@ -29,9 +29,10 @@ class GenderViewModel {
     }
     
     func continueButtonTapped() {
-        guard let gender = selectedGender else {
-            return
-        }
-        delegate?.moveToNextStep(currentStep: .gender, data: gender)
+        guard let genderTitle = selectedGender,
+                 let gender = genderFromTitle(genderTitle) else {
+               return
+           }
+        delegate?.moveToNextStep(currentStep: .gender, data: gender.rawValue)
     }
 }
