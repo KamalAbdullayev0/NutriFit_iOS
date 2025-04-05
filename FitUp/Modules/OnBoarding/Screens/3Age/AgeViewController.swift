@@ -28,7 +28,6 @@ class AgeViewController: UIViewController {
     
     private lazy var continueButton = CustomButtonContinue { [weak self] in
                 self?.viewModel.continueButtonTapped()
-        print("salam")
     }
     
     init(viewModel: AgeViewModel) {

@@ -6,10 +6,6 @@
 //
 import Foundation
 
-
-
-import Foundation
-
 class AgeViewModel {
     weak var delegate: OnboardingStepDelegate?
 
@@ -17,10 +13,6 @@ class AgeViewModel {
     private let maxAge = 100
 
     private(set) var selectedAge: Int = 30
-//    func selectAge() {
-//    selected age
-//        delegate?.moveToNextStep(currentStep: .age, data: selectedAge)
-//    }
 
     var ageRange: [Int] {
         Array(minAge...maxAge)
