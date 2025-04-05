@@ -22,7 +22,6 @@ class OnboardingUserData {
                gender != nil
     }
     
-    // 🚀 Функция для обновления данных с логами
     @discardableResult
     func setData(step: OnboardingStep, value: Any) -> OnboardingUserData {
         switch step {

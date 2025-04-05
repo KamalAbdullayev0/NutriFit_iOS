@@ -54,6 +54,7 @@ class GenderViewController: UIViewController {
         createGoalButtons()
         setupViewModelCallbacks()
         setupGestureRecognizer()
+        customButtonBack()
     }
 
     private func setupUI() {

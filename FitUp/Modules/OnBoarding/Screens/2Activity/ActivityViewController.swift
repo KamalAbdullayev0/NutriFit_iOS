@@ -55,6 +55,7 @@ class ActivityViewController: UIViewController {
         createGoalButtons()
         setupViewModelCallbacks()
         setupGestureRecognizer()
+        customButtonBack()
     }
 
     private func setupUI() {
