@@ -9,7 +9,8 @@ import UIKit
 
 class HeightViewController: UIViewController, UICollectionViewDelegate {
     private var viewModel: HeightViewModel
-    
+    private let selectionFeedbackGenerator = UISelectionFeedbackGenerator()
+    private var lastHapticFeedbackHeight: Int?
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "What's your height?"
@@ -73,6 +74,7 @@ class HeightViewController: UIViewController, UICollectionViewDelegate {
         setupUI()
         setupViewModelCallbacks()
         updateSelectedHeightLabel(viewModel.currentHeight)
+        lastHapticFeedbackHeight = viewModel.currentHeight
     }
 
     override func viewDidLayoutSubviews() {
@@ -122,6 +124,7 @@ class HeightViewController: UIViewController, UICollectionViewDelegate {
             DispatchQueue.main.async {
                 self?.updateSelectedHeightLabel(height)
                 self?.scrollToHeight(height, animated: true)
+                self?.lastHapticFeedbackHeight = height
             }
         }
     }
@@ -150,6 +153,7 @@ class HeightViewController: UIViewController, UICollectionViewDelegate {
     private func setupInitialScrollPosition() {
         view.layoutIfNeeded()
         scrollToHeight(viewModel.currentHeight, animated: false)
+        lastHapticFeedbackHeight = viewModel.currentHeight
     }
 
     private func scrollToHeight(_ height: Int, animated: Bool) {
@@ -166,6 +170,7 @@ class HeightViewController: UIViewController, UICollectionViewDelegate {
 
         if !animated {
             updateSelectedHeightLabel(height)
+            lastHapticFeedbackHeight = height
         }
     }
 
@@ -187,6 +192,9 @@ class HeightViewController: UIViewController, UICollectionViewDelegate {
               let heightValue = viewModel.heightValue(at: centerIndex) else {
             return
         }
+        if heightValue != lastHapticFeedbackHeight {
+            lastHapticFeedbackHeight = heightValue
+       }
         viewModel.heightSelected(index: centerIndex)
         updateSelectedHeightLabel(heightValue)
         scrollToHeight(heightValue, animated: true)
@@ -214,12 +222,19 @@ extension HeightViewController: UICollectionViewDataSource {
 }
 
 extension HeightViewController: UIScrollViewDelegate {
-
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+            selectionFeedbackGenerator.prepare()
+        }
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if let centerIndex = findCenterIndex(), let currentHeight = viewModel.heightValue(at: centerIndex) {
            if selectedHeightLabel.text != "\(currentHeight) cm" {
                 updateSelectedHeightLabel(currentHeight)
            }
+            if currentHeight != lastHapticFeedbackHeight {
+                selectionFeedbackGenerator.selectionChanged()
+                lastHapticFeedbackHeight = currentHeight
+                selectionFeedbackGenerator.prepare()
+            }
        }
     }
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
