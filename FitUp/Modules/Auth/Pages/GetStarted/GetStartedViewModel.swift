@@ -7,17 +7,17 @@
 import Foundation
 
 class GetStartedViewModel {
-    weak var coordinator: AuthCoordinator?
-    
-    init(coordinator: AuthCoordinator) {
-        self.coordinator = coordinator
+    private weak var navigation: AuthFlowNavigation?
+
+    init(navigation: AuthCoordinator) {
+        self.navigation = navigation
     }
     
     func didTapLogin() {
-        coordinator?.showLoginPage()
+        navigation?.showLoginPage()
     }
     
     func didTapRegister() {
-        coordinator?.showRegisterPage()
+        navigation?.showRegisterPage()
     }
 }

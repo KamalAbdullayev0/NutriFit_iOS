@@ -43,7 +43,7 @@ final class LoginController: UIViewController {
         return label
     }()
     
-    private let emailTextField = CustomTextField(
+    private let usernameTextField = CustomTextField(
         placeholder: "Enter Email",
         height: 64,
         width: 320,
@@ -65,7 +65,7 @@ final class LoginController: UIViewController {
         cornerRadius: 16
     ) {
         [weak self] in
-        self?.viewModel.login()
+        self?.handleLogin()
     }
     private let orLoginLabel: UILabel = {
         let label = UILabel()
@@ -144,7 +144,7 @@ final class LoginController: UIViewController {
         return stack
     }()
     private lazy var textFieldWithStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [emailTextField, passwordTextField])
+        let stack = UIStackView(arrangedSubviews: [usernameTextField, passwordTextField])
         stack.axis = .vertical
         stack.spacing = 12
         return stack
@@ -276,4 +276,11 @@ final class LoginController: UIViewController {
         print("Google Sign In tapped")
     }
     
+    @objc private func handleLogin() {
+        let username = usernameTextField.text
+        let password = passwordTextField.text
+        print("📩 Нажата кнопка входа с email: \(username), password: \(password)")
+        Task {
+            await viewModel.login(username: username, password: password)}
+    }
 }
