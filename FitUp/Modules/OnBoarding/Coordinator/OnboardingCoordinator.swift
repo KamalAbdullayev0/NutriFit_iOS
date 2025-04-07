@@ -60,7 +60,7 @@ class OnboardingCoordinator: Coordinator {
     }
 
     private func finishOnboarding() {
-        print("Отправляем данные на сервер и завершаем онбординг")
+        print("Bitdi")
     }
 }
 
@@ -90,10 +90,9 @@ extension OnboardingCoordinator: OnboardingStepDelegate {
     
     private func sendDataToBackend() {
         if let userDataDict = userData.build() {
-            print("🚀 Отправка данных в Backend:", userDataDict)
-            // Здесь код отправки в сервер (например, через Alamofire)
+            print("Backend:", userDataDict)
         } else {
-            print("❌ Ошибка: данные не заполнены полностью")
+            print("Error")
         }
     }
 }

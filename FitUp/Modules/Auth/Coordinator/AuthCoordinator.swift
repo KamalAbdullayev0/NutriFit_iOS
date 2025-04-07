@@ -6,24 +6,40 @@
 //
 import UIKit
 
-class AuthCoordinator: Coordinator {
+protocol AuthFlowNavigation: AnyObject {
+    func start()
+    func showLoginPage()
+    func showRegisterPage()
+    func showOnboarding()
+}
+
+class AuthCoordinator: Coordinator, AuthFlowNavigation{
     
     override init(navigationController: UINavigationController) {
         super.init(navigationController: navigationController)
     }
     
     func start() {
-        let getStartedVC = GetStartedController(viewModel: .init(coordinator: self))
+        let getStartedVC = GetStartedController(viewModel: .init(navigation: self))
         navigationController.setViewControllers([getStartedVC], animated: false)
     }
+     
     func showLoginPage() {
-        let loginVC = LoginController(viewModel: .init(coordinator: self))
+        let loginUseCase = LoginUseCase()
+
+        let loginVC = LoginController(viewModel: LoginViewModel(navigation: self, loginUseCase: loginUseCase))
+//        let loginVC = LoginController(viewModel: .init(navigation: self))
         navigationController.pushViewController(loginVC, animated: true)
     }
+    
     func showRegisterPage() {
-        let registerVC = RegisterController(viewModel: .init(coordinator: self))
+        let registerUseCase = RegisterUseCase()
+        
+        let registerVC = RegisterController(viewModel: RegisterViewModel(navigation: self, registerUseCase: registerUseCase))
+//        let registerVC = RegisterController(viewModel: .init(navigation: self))
         navigationController.pushViewController(registerVC, animated: true)
     }
+    
     func showOnboarding() {
         let onboardingCoordinator = OnboardingCoordinator(navigationController: navigationController)
         addChildCoordinator(onboardingCoordinator)

@@ -9,7 +9,7 @@ import UIKit
 final class RegisterController: UIViewController {
     private var viewModel: RegisterViewModel
     private let scrollView = UIScrollView()
-
+    
     private func configureNavigationBar() {
         navigationController?.navigationBar.tintColor = Resources.Colors.greyDark
         let backImage = UIImage(systemName: "chevron.left")!
@@ -50,7 +50,7 @@ final class RegisterController: UIViewController {
         icon: UIImage(systemName: "person.fill")
     )
     
-    private let emailTextField = CustomTextField(
+    private let usernameTextField = CustomTextField(
         placeholder: "Enter Email",
         height: 64,
         width: 320,
@@ -73,7 +73,7 @@ final class RegisterController: UIViewController {
         cornerRadius: 16
     ) {
         [weak self] in
-        self?.viewModel.register()
+        self?.handleLogin()
     }
     private let orRegisterLabel: UILabel = {
         let label = UILabel()
@@ -132,7 +132,7 @@ final class RegisterController: UIViewController {
         return stack
     }()
     private lazy var textFieldWithStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [fullNameTextField, emailTextField, passwordTextField])
+        let stack = UIStackView(arrangedSubviews: [fullNameTextField, usernameTextField, passwordTextField])
         stack.axis = .vertical
         stack.spacing = 12
         return stack
@@ -197,7 +197,7 @@ final class RegisterController: UIViewController {
             
         ])
         
-    
+        
     }
     
     private func addKeyboardObservers() {
@@ -257,6 +257,15 @@ final class RegisterController: UIViewController {
     
     @objc private func handleGoogleSignIn() {
         print("Google Sign In tapped")
+    }
+    @objc private func handleLogin() {
+        let fullName = fullNameTextField.text
+        let password = passwordTextField.text
+        let username = usernameTextField.text
+        
+        print("📩 Нажата кнопка входа с email: \(username), password: \(password)")
+        Task {
+            await viewModel.register(fullName: fullName, username: username, password: password)}
     }
 }
 //#Preview{
