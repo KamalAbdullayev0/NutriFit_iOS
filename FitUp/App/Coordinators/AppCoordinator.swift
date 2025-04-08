@@ -8,15 +8,44 @@ import UIKit
 
 
 final class AppCoordinator: Coordinator{
-    override init(navigationController: UINavigationController) {
-        super.init(navigationController: navigationController)
+    private let window: UIWindow
+    
+    init(window: UIWindow) {
+        self.window = window
+        let rootNavigationController = UINavigationController()
+        //        rootNavigationController.isNavigationBarHidden = true
+        
+        super.init(navigationController: rootNavigationController)
     }
     
+    override func start() {
+        showSplashScreen()
+        window.makeKeyAndVisible()
+    }
+    private func showSplashScreen() {
+        let splashVC = SplashScreenViewController()
+        splashVC.onComplete = { [weak self] in
+            self?.runMainFlowSelector()
+        }
+        window.rootViewController = splashVC
+    }
+    private func runMainFlowSelector() {
+                    showMainFlow()
+//        showAuthFlow()
+    }
     
-    func start() {
-        let authCoordinator = AuthCoordinator(navigationController: navigationController)
+    private func showAuthFlow() {
+        let authCoordinator = AuthCoordinator(navigationController: self.navigationController)
         addChildCoordinator(authCoordinator)
         authCoordinator.start()
+        window.rootViewController = self.navigationController
+    }
+    
+    private func showMainFlow() {
+        let mainCoordinator = MainCoordinator()
+        addChildCoordinator(mainCoordinator)
+        mainCoordinator.start()
+        window.rootViewController = mainCoordinator.rootViewController
     }
 }
 
