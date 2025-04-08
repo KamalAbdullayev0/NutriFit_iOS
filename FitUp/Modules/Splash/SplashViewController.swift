@@ -7,6 +7,8 @@
 import UIKit
 
 class SplashScreenViewController: UIViewController {
+    var onComplete: (() -> Void)?
+    
     private let logoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "logo")
@@ -26,7 +28,7 @@ class SplashScreenViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0) { [weak self] in
-            self?.transitionToMainApp()
+            self?.onComplete?()
         }
     }
     
@@ -46,19 +48,5 @@ class SplashScreenViewController: UIViewController {
             logotextView.widthAnchor.constraint(equalToConstant: 360),
             logotextView.heightAnchor.constraint(equalToConstant: 72)
         ])
-    }
-    
-    private func transitionToMainApp() {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first else { return }
-        
-        let navigationController = UINavigationController()
-        
-        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-        sceneDelegate?.appCoordinator = AppCoordinator(navigationController: navigationController)
-        sceneDelegate?.appCoordinator?.start()
-        
-        window.rootViewController = navigationController
-        window.makeKeyAndVisible()
     }
 }

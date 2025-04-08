@@ -13,7 +13,7 @@ protocol OnboardingStepDelegate: AnyObject {
 class OnboardingCoordinator: Coordinator {
     var userData = OnboardingUserData()
 
-    func start() {
+    override func start() {
         navigate(to: .goal)
     }
 

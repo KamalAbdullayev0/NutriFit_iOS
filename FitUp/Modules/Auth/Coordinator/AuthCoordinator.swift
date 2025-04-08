@@ -19,7 +19,7 @@ class AuthCoordinator: Coordinator, AuthFlowNavigation{
         super.init(navigationController: navigationController)
     }
     
-    func start() {
+    override func start() {
         let getStartedVC = GetStartedController(viewModel: .init(navigation: self))
         navigationController.setViewControllers([getStartedVC], animated: false)
     }

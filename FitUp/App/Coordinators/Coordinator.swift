@@ -15,6 +15,9 @@ class Coordinator: NSObject {
         self.navigationController = navigationController
         super.init()
     }
+    func start() {
+        
+    }
     
     func addChildCoordinator(_ coordinator: Coordinator) {
         childCoordinators.append(coordinator)
