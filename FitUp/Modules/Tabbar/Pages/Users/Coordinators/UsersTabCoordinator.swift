@@ -10,6 +10,6 @@ final class UsersTabCoordinator: Coordinator {
     override func start() {
         let vc = UsersViewController()
         navigationController.setViewControllers([vc], animated: false)
-        navigationController.tabBarItem = UITabBarItem(title: "Users", image: UIImage(systemName: "person.2"), tag: 3)
+        navigationController.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(named: "person"), tag: 3)
     }
 }

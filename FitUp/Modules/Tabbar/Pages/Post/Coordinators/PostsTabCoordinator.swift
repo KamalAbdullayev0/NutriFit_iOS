@@ -11,6 +11,6 @@ final class PostsTabCoordinator: Coordinator {
     override func start() {
         let vc = PostsViewController()
         navigationController.setViewControllers([vc], animated: false)
-        navigationController.tabBarItem = UITabBarItem(title: "Posts", image: UIImage(systemName: "text.bubble"), tag: 2)
+        navigationController.tabBarItem = UITabBarItem(title: "Map", image: UIImage(named: "map"), tag: 0)
     }
 }

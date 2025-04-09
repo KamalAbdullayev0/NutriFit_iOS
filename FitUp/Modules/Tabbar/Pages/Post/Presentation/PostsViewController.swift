@@ -1,28 +1,28 @@
 //
-//  UsersViewController.swift
+//  PostsViewController.swift
 //  Netwrok
 //
 //  Created by Kamal Abdullayev on 08.03.25.
 //
 import UIKit
 
-class UsersViewController: UITableViewController {
-    private let users = ["John Doe", "Jane Smith", "Alex Brown", "Emily Davis"]
+class PostsViewController: UITableViewController {
+    private let posts = (1...15).map { "Post #\($0)" }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        title = "Users"
+        title = "Map"
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        users.count
+        posts.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = users[indexPath.row]
-        cell.imageView?.image = UIImage(systemName: "person.circle")
+        cell.textLabel?.text = posts[indexPath.row]
+        cell.imageView?.image = UIImage(systemName: "text.bubble")
         return cell
     }
 }
