@@ -1,28 +1,28 @@
 //
-//  PostsViewController.swift
-//  Netwrok
+//  DietViewController.swift
+//  FitUp
 //
 //  Created by Kamal Abdullayev on 08.03.25.
 //
 import UIKit
 
-class PostsViewController: UITableViewController {
-    private let posts = (1...15).map { "Post #\($0)" }
+class DietViewController: UITableViewController {
+    private let albums = ["Vacation 2023", "Family Photos", "Work Projects", "Nature Shots"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        title = "Posts"
+        title = "Nutrition"
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        posts.count
+        albums.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = posts[indexPath.row]
-        cell.imageView?.image = UIImage(systemName: "text.bubble")
+        cell.textLabel?.text = albums[indexPath.row]
+        cell.imageView?.image = UIImage(systemName: "photo")
         return cell
     }
 }

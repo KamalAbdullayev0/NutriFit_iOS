@@ -21,7 +21,7 @@ class PhotosViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellID)
-        title = "Photos"
+        title = "Activiteis"
         setupLayout()
     }
     

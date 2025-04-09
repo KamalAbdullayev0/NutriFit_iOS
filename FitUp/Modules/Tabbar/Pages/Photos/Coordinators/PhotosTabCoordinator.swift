@@ -11,6 +11,8 @@ final class PhotosTabCoordinator: Coordinator {
     override func start() {
         let vc = PhotosViewController()
         navigationController.setViewControllers([vc], animated: false)
-        navigationController.tabBarItem = UITabBarItem(title: "Photos", image: UIImage(systemName: "photo"), tag: 1)
+        
+
+        navigationController.tabBarItem = UITabBarItem(title: "Activities", image: UIImage(named: "activities"), tag: 2)
     }
 }
