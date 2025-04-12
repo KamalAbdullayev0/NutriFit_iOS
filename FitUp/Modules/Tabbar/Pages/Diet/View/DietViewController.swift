@@ -12,12 +12,12 @@ class DietViewController: UIViewController {
     
     
     private var categories: [CategoryEntity] = [
-        CategoryEntity(categoryId: "1", categoryName: "Завтрак", categoryEmoji: "🍳"),
-        CategoryEntity(categoryId: "2", categoryName: "Обед", categoryEmoji: "🍲"),
-        CategoryEntity(categoryId: "3", categoryName: "Ужин", categoryEmoji: "🥗"),
-        CategoryEntity(categoryId: "4", categoryName: "Перекус", categoryEmoji: "🍎"),
-        CategoryEntity(categoryId: "5", categoryName: "Десерт", categoryEmoji: "🍰"),
-        CategoryEntity(categoryId: "6", categoryName: "Напитки", categoryEmoji: "🍹")
+        CategoryEntity(categoryId: "1", categoryName: "Breakfast", categoryEmoji: "🍳"),
+        CategoryEntity(categoryId: "2", categoryName: "Lunch", categoryEmoji: "🍲"),
+        CategoryEntity(categoryId: "3", categoryName: "Dinner", categoryEmoji: "🥗"),
+        CategoryEntity(categoryId: "4", categoryName: "Snack", categoryEmoji: "🍎"),
+        CategoryEntity(categoryId: "5", categoryName: "Desert", categoryEmoji: "🍰"),
+        CategoryEntity(categoryId: "6", categoryName: "Drink", categoryEmoji: "🍹")
     ]
     private var days: [DayData] = []
     private var selectedDayIndexPath: IndexPath?
@@ -40,8 +40,6 @@ class DietViewController: UIViewController {
         return cv
     }()
     
-    
-    
     private lazy var collectionViewCategories: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -57,22 +55,34 @@ class DietViewController: UIViewController {
         cv.delegate = self
         return cv
     }()
+    
     private lazy var macroSummaryView = MacroSummaryView()
     private lazy var macroIndicatorView = MacroIndicatorView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Питание"
         view.backgroundColor = .systemGray6
         setupViews()
         setupConstraints()
         generateWeekDays()
         selectTodayInitially()
+        setupGradientBackground()
+        
+    }
+    func setupGradientBackground() {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = view.bounds
+        gradientLayer.colors = [
+            UIColor(red: 0.9, green: 0.9, blue: 0.85, alpha: 1.0).cgColor,            UIColor.white.cgColor
+        ]
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        view.layer.insertSublayer(gradientLayer, at: 0)
     }
     
     private func setupViews() {
         view.addSubview(collectionViewDays)
-
+        
         macroSummaryView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(macroSummaryView)
         macroIndicatorView.translatesAutoresizingMaskIntoConstraints = false
@@ -83,37 +93,25 @@ class DietViewController: UIViewController {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            
-            // Коллекция дней
             collectionViewDays.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
             collectionViewDays.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionViewDays.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionViewDays.heightAnchor.constraint(equalToConstant: 70),
             
-            // Калории
             macroIndicatorView.topAnchor.constraint(equalTo: collectionViewDays.bottomAnchor, constant: 30),
             macroIndicatorView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-
-                        macroSummaryView.topAnchor.constraint(equalTo: macroIndicatorView.bottomAnchor, constant: 25), // Пример привязки
-                        macroSummaryView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-                        macroSummaryView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-                        macroSummaryView.heightAnchor.constraint(equalToConstant: 70),
+            macroSummaryView.topAnchor.constraint(equalTo: macroIndicatorView.bottomAnchor, constant: 25),
+            macroSummaryView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            macroSummaryView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            macroSummaryView.heightAnchor.constraint(equalToConstant: 70),
             
-            
-            
-            // Коллекция категорий
             collectionViewCategories.topAnchor.constraint(equalTo: macroSummaryView.bottomAnchor, constant: 30),
             collectionViewCategories.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionViewCategories.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionViewCategories.heightAnchor.constraint(equalToConstant: 100)
-            
-            
         ])
     }
-    
-    
-    
     
     private func generateWeekDays() {
         days.removeAll()
@@ -140,7 +138,6 @@ class DietViewController: UIViewController {
     }
     
     private func selectTodayInitially() {
-        // ... (код выбора дня остается без изменений) ...
         if let todayIndex = days.firstIndex(where: { $0.isToday }) {
             let indexPath = IndexPath(item: todayIndex, section: 0)
             selectedDayIndexPath = indexPath
@@ -150,7 +147,6 @@ class DietViewController: UIViewController {
             selectedDayIndexPath = indexPath
             collectionViewDays.selectItem(at: indexPath, animated: false, scrollPosition: [])
         }
-        // Загружаем данные для первоначально выбранного дня
         if let selectedPath = selectedDayIndexPath {
             let selectedDay = days[selectedPath.item]
             handleDaySelection(date: selectedDay.date)
@@ -158,7 +154,6 @@ class DietViewController: UIViewController {
     }
     
     private func loadAndDisplayNutritionData() {
-        // ЗАГЛУШКА: Замените реальной логикой загрузки
         print("Загрузка данных о питании...")
         let currentKcal = Int.random(in: 1500...2500)
         let totalKcal = 2922
@@ -166,11 +161,7 @@ class DietViewController: UIViewController {
         let protein = Int.random(in: 50...120)
         let fat = Int.random(in: 40...90)
         
-        // Обновляем UI напрямую
         macroIndicatorView.update(currentKcal: currentKcal, totalKcal: totalKcal)
-               macroSummaryView.update(carbs: carbs, protein: protein, fat: fat)
-        // Обновляем лейблы макронутриентов через сохраненные ссылки
-        
         macroSummaryView.update(carbs: carbs, protein: protein, fat: fat)
     }
     
@@ -180,7 +171,7 @@ class DietViewController: UIViewController {
         formatter.dateFormat = "EEEE, d MMMM yyyy"
         formatter.locale = Locale(identifier: "ru_RU")
         print("Выбран день: \(formatter.string(from: date))")
-        loadAndDisplayNutritionData() // Загружаем данные для выбранного дня
+        loadAndDisplayNutritionData()
     }
     
     private func fetchKetoMeals(categoryName: String) {
@@ -188,7 +179,6 @@ class DietViewController: UIViewController {
     }
     
     private func animateTap(on view: UIView) {
-        // ... (код анимации остается без изменений) ...
         UIView.animate(withDuration: 0.1, animations: {
             view.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
             view.alpha = 0.8
@@ -203,7 +193,6 @@ class DietViewController: UIViewController {
 
 // MARK: - UICollectionViewDataSource
 extension DietViewController: UICollectionViewDataSource {
-    // ... (код DataSource остается без изменений) ...
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == collectionViewDays {
             return days.count
@@ -240,12 +229,9 @@ extension DietViewController: UICollectionViewDataSource {
     }
 }
 
-// MARK: - UICollectionViewDelegate
 extension DietViewController: UICollectionViewDelegate {
-    // ... (код Delegate остается без изменений) ...
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == collectionViewDays {
-            // --- Логика выбора дня ---
             if indexPath == selectedDayIndexPath { return }
             
             let previouslySelectedIndexPath = selectedDayIndexPath

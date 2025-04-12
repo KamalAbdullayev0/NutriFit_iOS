@@ -27,7 +27,9 @@ enum Resources {
         
         
 //        static let greenDark = UIColor(hexString: "#1D9229")
-
+        static let brown = UIColor(hexString: "#DB8318")
+        static let red = UIColor(hexString: "#FF2C2C")
+        static let blue = UIColor(hexString: "#00F0FF")
 
     }
     enum AppFont: String {
