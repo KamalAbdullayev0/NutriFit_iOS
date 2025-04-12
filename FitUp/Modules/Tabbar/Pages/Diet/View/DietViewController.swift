@@ -9,8 +9,7 @@
 import UIKit
 
 class DietViewController: UIViewController {
-    private lazy var macroSummaryView = MacroSummaryView()
-    private lazy var macroIndicatorView = MacroIndicatorView()
+    
     
     private var categories: [CategoryEntity] = [
         CategoryEntity(categoryId: "1", categoryName: "Завтрак", categoryEmoji: "🍳"),
@@ -41,6 +40,8 @@ class DietViewController: UIViewController {
         return cv
     }()
     
+    
+    
     private lazy var collectionViewCategories: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -56,6 +57,8 @@ class DietViewController: UIViewController {
         cv.delegate = self
         return cv
     }()
+    private lazy var macroSummaryView = MacroSummaryView()
+    private lazy var macroIndicatorView = MacroIndicatorView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,12 +71,12 @@ class DietViewController: UIViewController {
     }
     
     private func setupViews() {
+        view.addSubview(collectionViewDays)
+
         macroSummaryView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(macroSummaryView)
         macroIndicatorView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(macroIndicatorView)
-        
-        view.addSubview(collectionViewDays)
         view.addSubview(collectionViewCategories)
         
     }
@@ -81,27 +84,36 @@ class DietViewController: UIViewController {
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             
+            // Коллекция дней
             collectionViewDays.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
             collectionViewDays.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionViewDays.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionViewDays.heightAnchor.constraint(equalToConstant: 70),
             
+            // Калории
             macroIndicatorView.topAnchor.constraint(equalTo: collectionViewDays.bottomAnchor, constant: 30),
             macroIndicatorView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
+
+                        macroSummaryView.topAnchor.constraint(equalTo: macroIndicatorView.bottomAnchor, constant: 25), // Пример привязки
+                        macroSummaryView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+                        macroSummaryView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+                        macroSummaryView.heightAnchor.constraint(equalToConstant: 70),
             
-            macroSummaryView.topAnchor.constraint(equalTo: macroIndicatorView.bottomAnchor, constant: 25),
-            macroSummaryView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            macroSummaryView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            macroSummaryView.heightAnchor.constraint(equalToConstant: 70),
             
+            
+            // Коллекция категорий
             collectionViewCategories.topAnchor.constraint(equalTo: macroSummaryView.bottomAnchor, constant: 30),
             collectionViewCategories.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionViewCategories.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionViewCategories.heightAnchor.constraint(equalToConstant: 100)
             
+            
         ])
     }
+    
+    
+    
     
     private func generateWeekDays() {
         days.removeAll()
@@ -146,6 +158,7 @@ class DietViewController: UIViewController {
     }
     
     private func loadAndDisplayNutritionData() {
+        // ЗАГЛУШКА: Замените реальной логикой загрузки
         print("Загрузка данных о питании...")
         let currentKcal = Int.random(in: 1500...2500)
         let totalKcal = 2922
@@ -153,7 +166,11 @@ class DietViewController: UIViewController {
         let protein = Int.random(in: 50...120)
         let fat = Int.random(in: 40...90)
         
+        // Обновляем UI напрямую
         macroIndicatorView.update(currentKcal: currentKcal, totalKcal: totalKcal)
+               macroSummaryView.update(carbs: carbs, protein: protein, fat: fat)
+        // Обновляем лейблы макронутриентов через сохраненные ссылки
+        
         macroSummaryView.update(carbs: carbs, protein: protein, fat: fat)
     }
     
@@ -163,7 +180,7 @@ class DietViewController: UIViewController {
         formatter.dateFormat = "EEEE, d MMMM yyyy"
         formatter.locale = Locale(identifier: "ru_RU")
         print("Выбран день: \(formatter.string(from: date))")
-        loadAndDisplayNutritionData()
+        loadAndDisplayNutritionData() // Загружаем данные для выбранного дня
     }
     
     private func fetchKetoMeals(categoryName: String) {
@@ -171,6 +188,7 @@ class DietViewController: UIViewController {
     }
     
     private func animateTap(on view: UIView) {
+        // ... (код анимации остается без изменений) ...
         UIView.animate(withDuration: 0.1, animations: {
             view.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
             view.alpha = 0.8
