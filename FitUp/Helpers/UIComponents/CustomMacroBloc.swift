@@ -12,17 +12,17 @@ struct MacroBlock {
 }
 
 func CustomMacroBlock(iconName: String,
-                     iconTint: UIColor,
-                     title: String,
-                     value: String,
-                     backgroundColor: UIColor) -> MacroBlock {
+                      iconTint: UIColor,
+                      title: String,
+                      value: String,
+                      backgroundColor: UIColor) -> MacroBlock {
     let containerView = UIView()
     containerView.backgroundColor = backgroundColor
-    containerView.layer.cornerRadius = 15
+    containerView.layer.cornerRadius = 12
     containerView.translatesAutoresizingMaskIntoConstraints = false
     
     let iconImageView = UIImageView()
-    let config = UIImage.SymbolConfiguration(pointSize: 16, weight: .medium)
+    let config = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium)
     iconImageView.image = UIImage(systemName: iconName, withConfiguration: config)
     iconImageView.tintColor = iconTint
     iconImageView.contentMode = .scaleAspectFit
@@ -30,13 +30,13 @@ func CustomMacroBlock(iconName: String,
     
     let titleLabel = UILabel()
     titleLabel.text = title
-    titleLabel.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-    titleLabel.textColor = .secondaryLabel
+    titleLabel.font = UIFont.systemFont(ofSize: 15, weight: .bold)
+    titleLabel.textColor = iconTint
     titleLabel.translatesAutoresizingMaskIntoConstraints = false
     
     let valueLabel = UILabel()
     valueLabel.text = value
-    valueLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+    valueLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
     valueLabel.textColor = .label
     valueLabel.translatesAutoresizingMaskIntoConstraints = false
     
@@ -46,20 +46,19 @@ func CustomMacroBlock(iconName: String,
     textStackView.alignment = .leading
     textStackView.translatesAutoresizingMaskIntoConstraints = false
     
-    let horizontalStackView = UIStackView(arrangedSubviews: [iconImageView, textStackView])
-    horizontalStackView.axis = .horizontal
-    horizontalStackView.spacing = 8
-    horizontalStackView.alignment = .center
-    horizontalStackView.translatesAutoresizingMaskIntoConstraints = false
-    
-    containerView.addSubview(horizontalStackView)
-    
+    containerView.addSubview(iconImageView)
+    containerView.addSubview(textStackView)
     NSLayoutConstraint.activate([
-        horizontalStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 10),
-        horizontalStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10),
-        horizontalStackView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10),
-        horizontalStackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10),
-        iconImageView.widthAnchor.constraint(equalToConstant: 20)
+        
+        iconImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 15),
+        iconImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+        iconImageView.widthAnchor.constraint(equalToConstant: 24),
+        iconImageView.heightAnchor.constraint(equalToConstant: 24),
+        
+
+        textStackView.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 12),
+        textStackView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+        textStackView.trailingAnchor.constraint(lessThanOrEqualTo: containerView.trailingAnchor, constant: -12)
     ])
     
     return MacroBlock(view: containerView, valueLabel: valueLabel)

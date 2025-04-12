@@ -23,7 +23,7 @@ class MacroSummaryView: UIView {
         ])
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
-        stackView.spacing = 10 // Настрой по дизайну
+        stackView.spacing = 10
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
