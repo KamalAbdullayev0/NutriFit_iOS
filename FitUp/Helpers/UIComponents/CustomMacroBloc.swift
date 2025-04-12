@@ -18,12 +18,17 @@ func CustomMacroBlock(iconName: String,
                       backgroundColor: UIColor) -> MacroBlock {
     let containerView = UIView()
     containerView.backgroundColor = backgroundColor
-    containerView.layer.cornerRadius = 12
+    containerView.layer.cornerRadius = 15
     containerView.translatesAutoresizingMaskIntoConstraints = false
+    containerView.layer.borderWidth = 1
+    containerView.layer.borderColor = Resources.Colors.greyBorderColor.cgColor
+    
     
     let iconImageView = UIImageView()
-    let config = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium)
-    iconImageView.image = UIImage(systemName: iconName, withConfiguration: config)
+//    let config = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium)
+//    iconImageView.image = UIImage(systemName: iconName, withConfiguration: config)
+    iconImageView.image = UIImage(named: iconName)
+
     iconImageView.tintColor = iconTint
     iconImageView.contentMode = .scaleAspectFit
     iconImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -55,10 +60,9 @@ func CustomMacroBlock(iconName: String,
         iconImageView.widthAnchor.constraint(equalToConstant: 24),
         iconImageView.heightAnchor.constraint(equalToConstant: 24),
         
-
-        textStackView.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 12),
+        textStackView.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 10),
         textStackView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-        textStackView.trailingAnchor.constraint(lessThanOrEqualTo: containerView.trailingAnchor, constant: -12)
+
     ])
     
     return MacroBlock(view: containerView, valueLabel: valueLabel)

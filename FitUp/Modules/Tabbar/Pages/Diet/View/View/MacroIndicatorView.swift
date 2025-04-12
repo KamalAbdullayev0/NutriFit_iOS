@@ -10,7 +10,7 @@ class MacroIndicatorView: UIView {
 
     private lazy var caloriesLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 48, weight: .bold)
+        label.font = Resources.AppFont.bold.withSize(56)
         label.textColor = .label
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -20,7 +20,7 @@ class MacroIndicatorView: UIView {
 
     private lazy var kcalTakenLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 18, weight: .regular)
+        label.font = Resources.AppFont.medium.withSize(18)
         label.textColor = .secondaryLabel
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -30,7 +30,7 @@ class MacroIndicatorView: UIView {
     
     private lazy var percentageLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.font = Resources.AppFont.medium.withSize(16)
         label.textColor = .secondaryLabel
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "0%"
@@ -42,17 +42,17 @@ class MacroIndicatorView: UIView {
     private lazy var progressView: UIProgressView = {
         let pv = UIProgressView(progressViewStyle: .default)
         pv.translatesAutoresizingMaskIntoConstraints = false
-        pv.progressTintColor = .systemOrange
+        pv.progressTintColor = Resources.Colors.orange
         pv.trackTintColor = UIColor.systemGray4
         pv.progress = 0.0
-        pv.layer.cornerRadius = 3
+        pv.layer.cornerRadius = 6
         pv.clipsToBounds = true
         return pv
     }()
    
     private lazy var totalCaloriesLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.font = Resources.AppFont.medium.withSize(16)
         label.textColor = .secondaryLabel
         label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -74,7 +74,7 @@ class MacroIndicatorView: UIView {
     private lazy var contentStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [caloriesLabel, kcalTakenLabel, progressStackView])
         stackView.axis = .vertical
-        stackView.spacing = 8
+        stackView.spacing = 4
         stackView.alignment = .center
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -98,7 +98,7 @@ class MacroIndicatorView: UIView {
             contentStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
             progressView.heightAnchor.constraint(equalToConstant: 10),
-            progressView.widthAnchor.constraint(equalTo: contentStackView.widthAnchor, multiplier: 0.7)
+            progressView.widthAnchor.constraint(equalTo: contentStackView.widthAnchor, multiplier: 0.72)
         ])
     }
 

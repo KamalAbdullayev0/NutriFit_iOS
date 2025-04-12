@@ -15,15 +15,22 @@ struct DayData {
 }
 class DetailedDayCell: UICollectionViewCell {
     static let identifier = "DetailedDayCell"
-
+    
     private struct Style {
-        static let selectedBackgroundColor = UIColor.systemGreen.withAlphaComponent(0.6)
-        static let defaultBackgroundColor = UIColor.systemGray5.withAlphaComponent(0.7)
-        static let selectedIconColor = UIColor.systemYellow
-        static let defaultIconColor = UIColor.systemGray
-        static let iconName = "bolt.fill"
+        static let selectedBackgroundColor = UIColor(red: 0.7, green: 0.9, blue: 0.7, alpha: 0.6) // light green
+        static let defaultBackgroundColor = UIColor(white: 0.97, alpha: 0.9) // soft off-white
+        static let selectedIconColor = UIColor(red: 1.0, green: 0.8, blue: 0.3, alpha: 1.0) // soft yellow-orange
+        static let defaultIconColor = UIColor.systemGray3
         static let cornerRadius: CGFloat = 15
     }
+//    private struct Style {
+//        static let selectedBackgroundColor = UIColor.systemGreen.withAlphaComponent(0.6)
+//        static let defaultBackgroundColor = UIColor.systemGray5.withAlphaComponent(0.7)
+//        static let selectedIconColor = UIColor.systemYellow
+//        static let defaultIconColor = UIColor.systemGray
+////        static let iconName = "bolt.fill"
+//        static let cornerRadius: CGFloat = 15
+//    }
 
     private let containerView: UIView = {
         let view = UIView()
@@ -38,7 +45,7 @@ class DetailedDayCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .regular)
-        imageView.image = UIImage(systemName: Style.iconName, withConfiguration: config)
+//        imageView.image = UIImage(systemName: Style.iconName, withConfiguration: config)
         imageView.tintColor = Style.defaultIconColor
         return imageView
     }()
@@ -79,17 +86,16 @@ class DetailedDayCell: UICollectionViewCell {
             containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
 
-        // Layout иконки и текста внутри контейнера
         NSLayoutConstraint.activate([
             iconImageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 8),
             iconImageView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            iconImageView.heightAnchor.constraint(equalToConstant: 20), // Задаем высоту иконки
-            iconImageView.widthAnchor.constraint(equalToConstant: 20), // Задаем ширину иконки
+            iconImageView.heightAnchor.constraint(equalToConstant: 20),
+            iconImageView.widthAnchor.constraint(equalToConstant: 20),
 
-            dayLabel.topAnchor.constraint(equalTo: iconImageView.bottomAnchor, constant: 4), // Отступ между иконкой и текстом
+            dayLabel.topAnchor.constraint(equalTo: iconImageView.bottomAnchor, constant: 4),
             dayLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 4),
             dayLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -4),
-            dayLabel.bottomAnchor.constraint(lessThanOrEqualTo: containerView.bottomAnchor, constant: -6) // Отступ снизу
+            dayLabel.bottomAnchor.constraint(lessThanOrEqualTo: containerView.bottomAnchor, constant: -6)
         ])
     }
 
