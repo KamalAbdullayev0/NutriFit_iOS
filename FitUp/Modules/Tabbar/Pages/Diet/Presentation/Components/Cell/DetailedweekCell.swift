@@ -58,27 +58,22 @@ class DetailedDayCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-
-    // MARK: - Initialization
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
-        updateAppearance() // Устанавливаем начальный вид
+        updateAppearance()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: - Setup
-
     private func setupViews() {
         contentView.addSubview(containerView)
         containerView.addSubview(iconImageView)
         containerView.addSubview(dayLabel)
 
-        // Layout контейнера
         NSLayoutConstraint.activate([
             containerView.topAnchor.constraint(equalTo: contentView.topAnchor),
             containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -98,8 +93,6 @@ class DetailedDayCell: UICollectionViewCell {
             dayLabel.bottomAnchor.constraint(lessThanOrEqualTo: containerView.bottomAnchor, constant: -6)
         ])
     }
-
-    // MARK: - Configuration
 
     func configure(with day: DayData) {
         dayLabel.text = day.name
@@ -123,24 +116,18 @@ class DetailedDayCell: UICollectionViewCell {
         } else {
             containerView.backgroundColor = Style.defaultBackgroundColor
             iconImageView.tintColor = Style.defaultIconColor
-            // (configure позаботится о выделении сегодняшнего дня, если он не выбран)
             let labelIsBold = dayLabel.font.fontDescriptor.symbolicTraits.contains(.traitBold)
-            if labelIsBold && containerView.backgroundColor != Style.defaultBackgroundColor { // Проверяем, что не сегодня выделено
+            if labelIsBold && containerView.backgroundColor != Style.defaultBackgroundColor {
                  dayLabel.font = UIFont.systemFont(ofSize: 13, weight: .medium)
             } else if !labelIsBold {
-                 // Если не был жирным, точно ставим средний
                  dayLabel.font = UIFont.systemFont(ofSize: 13, weight: .medium)
             }
-            // dayLabel.textColor = .label // Возвращаем стандартный цвет текста
         }
     }
 
-    // Сброс при переиспользовании
     override func prepareForReuse() {
         super.prepareForReuse()
-        // Сбрасываем стиль к невыбранному состоянию
-        isSelected = false // Это вызовет updateAppearance()
-        // Дополнительно сбросим шрифт, если configure не вызывается до отображения
+        isSelected = false 
         dayLabel.font = UIFont.systemFont(ofSize: 13, weight: .medium)
     }
 }
