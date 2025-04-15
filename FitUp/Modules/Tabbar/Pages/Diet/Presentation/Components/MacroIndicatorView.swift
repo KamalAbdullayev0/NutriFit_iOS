@@ -3,7 +3,7 @@
 //  FitUp
 //
 //  Created by Kamal Abdullayev on 12.04.25.
-//// MacroIndicatorView.swift
+
 import UIKit
 
 class MacroIndicatorView: UIView {
@@ -43,7 +43,7 @@ class MacroIndicatorView: UIView {
         let pv = UIProgressView(progressViewStyle: .default)
         pv.translatesAutoresizingMaskIntoConstraints = false
         pv.progressTintColor = Resources.Colors.orange
-        pv.trackTintColor = UIColor.systemGray4
+        pv.trackTintColor = Resources.Colors.orange.withAlphaComponent(0.2)
         pv.progress = 0.0
         pv.layer.cornerRadius = 6
         pv.clipsToBounds = true

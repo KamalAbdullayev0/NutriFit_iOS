@@ -13,8 +13,6 @@ struct CategoryEntity {
     let categoryEmoji: String
 }
 
-
-
 class CategoryCell: UICollectionViewCell {
     static let identifier = "CategoryCell"
     
