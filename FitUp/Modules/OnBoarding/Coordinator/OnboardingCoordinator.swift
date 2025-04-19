@@ -12,55 +12,59 @@ protocol OnboardingStepDelegate: AnyObject {
 
 class OnboardingCoordinator: Coordinator {
     var userData = OnboardingUserData()
-
+    
     override func start() {
         navigate(to: .goal)
     }
-
+    
     func navigate(to step: OnboardingStep) {
         let viewController: UIViewController
-
+        
         switch step {
         case .goal:
             let viewModel = GoalViewModel()
             viewModel.delegate = self
             viewController = GoalViewController(viewModel: viewModel)
-
+            
         case .activity:
             let viewModel = ActivityViewModel()
             viewModel.delegate = self
             viewController = ActivityViewController(viewModel: viewModel)
-
+            
         case .age:
             let viewModel = AgeViewModel()
             viewModel.delegate = self
             viewController = AgeViewController(viewModel: viewModel)
-
+            
         case .height:
             let viewModel = HeightViewModel()
             viewModel.delegate = self
             viewController = HeightViewController(viewModel: viewModel)
-
+            
         case .weight:
             let viewModel = WeightViewModel()
             viewModel.delegate = self
             viewController = WeightViewController(viewModel: viewModel)
-
+            
         case .gender:
             let viewModel = GenderViewModel()
             viewModel.delegate = self
             viewController = GenderViewController(viewModel: viewModel)
-
+            
         case .completed:
             finishOnboarding()
             return
         }
-
+        
         navigationController.pushViewController(viewController, animated: true)
     }
-
+    
     private func finishOnboarding() {
         print("Bitdi")
+        
+        Task {
+            await sendDataToBackend()
+        }
     }
 }
 
@@ -84,15 +88,29 @@ extension OnboardingCoordinator: OnboardingStepDelegate {
         case .gender:
             navigate(to: .completed)
         case .completed:
-            sendDataToBackend()
+            print("salam")
         }
     }
-    
-    private func sendDataToBackend() {
-        if let userDataDict = userData.build() {
-            print("Backend:", userDataDict)
-        } else {
-            print("Error")
+    @MainActor
+    private func sendDataToBackend() async {
+        guard userData.isComplete else {
+            print("❌ Ошибка: Не все данные онбординга собраны. Отправка отменена.")
+            return
         }
+        print("✅ Данные онбординга собраны: \(userData.toDictionary())")
+        let dto = UserUpdateRequestDTO(
+            gender: userData.gender,
+            age: userData.age,
+            height: userData.height,
+            weight: userData.weight,
+            goal: userData.goal,
+            activityLevel: userData.activityLevel
+        )
+        let updateUserProfileUseCase = UpdateUserProfileUseCase()
+        
+        do {
+            try await updateUserProfileUseCase.execute(dto: dto, imageData: nil, imageMimeType: nil)
+        }catch {
+            print("❌❌ Ошибка при обновлении профиля через UseCase: \(error)")}
     }
 }

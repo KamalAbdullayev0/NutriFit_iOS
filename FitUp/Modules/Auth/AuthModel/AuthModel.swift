@@ -56,8 +56,42 @@ struct RegisterRequest: Codable {
         self.activityLevel = activityLevel
     }
 }
-
-
+struct UserProfileResponseDTO: Decodable {
+    let id: Int
+    let fullName: String
+    let username: String
+    let profileImageUrl: String?
+    let gender: String
+    let age: Int
+    let height: Double
+    let weight: Double
+    let goal: String
+    let activityLevel: String
+}
+struct UserUpdateRequestDTO: Codable {
+    let gender: String?
+    let age: Int?
+    let height: Int?
+    let weight: Int?
+    let goal: String?
+    let activityLevel: String?
+    
+    init(
+        gender: String? = "MALE",
+        age: Int? = 1,
+        height: Int? = 1,
+        weight: Int? = 1,
+        goal: String? = "WEIGHT_LOSS",
+        activityLevel: String? = "PASSIVE"
+    ) {
+        self.gender = gender
+        self.age = age
+        self.height = height
+        self.weight = weight
+        self.goal = goal
+        self.activityLevel = activityLevel
+    }
+}
 // MARK: - AuthRefreshToken
 struct RefreshTokenResponse: Codable {
     let accessToken: String

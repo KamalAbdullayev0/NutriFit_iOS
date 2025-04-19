@@ -12,34 +12,28 @@ protocol CategoriesHorizontalViewDelegate: AnyObject {
 
 class CategoriesHorizontalView: UIView {
 
-    // MARK: - Properties
 
-    weak var delegate: CategoriesHorizontalViewDelegate? // Делегат для обратной связи
+    weak var delegate: CategoriesHorizontalViewDelegate?
 
     private var categories: [CategoryEntity] = []
-
-    // MARK: - UI Elements
 
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 100, height: 100) // Убедись, что высота соответствует высоте компонента
+        layout.itemSize = CGSize(width: 100, height: 100)
         layout.minimumLineSpacing = 12
-        // Отступы секции
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15) // Отступы по краям компонента
+
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.translatesAutoresizingMaskIntoConstraints = false
         cv.backgroundColor = .clear
         cv.showsHorizontalScrollIndicator = false
-        cv.register(CategoryCell.self, forCellWithReuseIdentifier: CategoryCell.identifier) // Убедись, что CategoryCell существует
+        cv.register(CategoryCell.self, forCellWithReuseIdentifier: CategoryCell.identifier)
         cv.dataSource = self
         cv.delegate = self
-        // Для категорий обычно не нужно постоянное выделение
         cv.allowsSelection = true
         return cv
     }()
-
-    // MARK: - Initialization
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -51,8 +45,6 @@ class CategoriesHorizontalView: UIView {
         setupView()
     }
 
-    // MARK: - Setup
-
     private func setupView() {
         addSubview(collectionView)
         NSLayoutConstraint.activate([
@@ -63,14 +55,10 @@ class CategoriesHorizontalView: UIView {
         ])
     }
 
-    // MARK: - Public Methods
-
     func configure(with categories: [CategoryEntity]) {
         self.categories = categories
         self.collectionView.reloadData()
     }
-
-    // MARK: - Private Helpers
 
     private func animateTap(on view: UIView) {
         UIView.animate(withDuration: 0.1, animations: {
@@ -85,7 +73,6 @@ class CategoriesHorizontalView: UIView {
     }
 }
 
-// MARK: - UICollectionViewDataSource
 extension CategoriesHorizontalView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return categories.count
@@ -97,7 +84,7 @@ extension CategoriesHorizontalView: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         let category = categories[indexPath.item]
-        cell.configure(with: category) // Убедись, что метод configure существует в CategoryCell
+        cell.configure(with: category)
         return cell
     }
 }
@@ -107,33 +94,13 @@ extension CategoriesHorizontalView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedCategory = categories[indexPath.item]
 
-        // Анимация нажатия
         if let cell = collectionView.cellForItem(at: indexPath) {
             animateTap(on: cell)
         }
 
-        // Уведомляем делегата
         delegate?.categoriesHorizontalView(self, didSelectCategory: selectedCategory)
 
-        // Снимаем выделение с ячейки (обычно для категорий не нужно постоянное выделение)
         collectionView.deselectItem(at: indexPath, animated: true)
     }
 }
 
-// Структура CategoryEntity (убедись, что она доступна)
-/*
- struct CategoryEntity {
-     let categoryId: String
-     let categoryName: String
-     let categoryEmoji: String
- }
- */
-
-// Ячейка CategoryCell (убедись, что она существует и доступна)
-/*
- class CategoryCell: UICollectionViewCell {
-     static let identifier = "CategoryCell"
-     // ... твоя реализация ячейки ...
-     func configure(with category: CategoryEntity) { ... }
- }
- */

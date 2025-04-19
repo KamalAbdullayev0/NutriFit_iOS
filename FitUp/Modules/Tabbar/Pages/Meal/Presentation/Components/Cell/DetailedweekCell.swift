@@ -17,9 +17,9 @@ class DetailedDayCell: UICollectionViewCell {
     static let identifier = "DetailedDayCell"
     
     private struct Style {
-        static let selectedBackgroundColor = UIColor(red: 0.7, green: 0.9, blue: 0.7, alpha: 0.6) // light green
-        static let defaultBackgroundColor = UIColor(white: 0.97, alpha: 0.9) // soft off-white
-        static let selectedIconColor = UIColor(red: 1.0, green: 0.8, blue: 0.3, alpha: 1.0) // soft yellow-orange
+        static let selectedBackgroundColor = UIColor(red: 0.7, green: 0.9, blue: 0.7, alpha: 0.6)
+        static let defaultBackgroundColor = UIColor(white: 0.97, alpha: 0.9)
+        static let selectedIconColor = UIColor(red: 1.0, green: 0.8, blue: 0.3, alpha: 1.0)
         static let defaultIconColor = UIColor.systemGray3
         static let cornerRadius: CGFloat = 15
     }
@@ -28,7 +28,7 @@ class DetailedDayCell: UICollectionViewCell {
 //        static let defaultBackgroundColor = UIColor.systemGray5.withAlphaComponent(0.7)
 //        static let selectedIconColor = UIColor.systemYellow
 //        static let defaultIconColor = UIColor.systemGray
-////        static let iconName = "bolt.fill"
+//        static let iconName = "bolt.fill"
 //        static let cornerRadius: CGFloat = 15
 //    }
 

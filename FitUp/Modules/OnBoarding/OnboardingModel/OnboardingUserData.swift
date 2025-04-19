@@ -47,7 +47,6 @@ class OnboardingUserData {
         return self
     }
     
-    // 🔥 Метод для получения готовых данных
     func build() -> [String: Any]? {
         guard isComplete else {
             print("⚠️ Данные не заполнены полностью!")

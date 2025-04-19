@@ -6,7 +6,8 @@
 //
 import UIKit
 
-class DietViewController: UIViewController {
+class MealViewController: UIViewController {
+    private let viewModel: MealViewModel
 
     private var categories: [CategoryEntity] = [
         CategoryEntity(categoryId: "1", categoryName: "Завтрак", categoryEmoji: "🍳"),
@@ -25,17 +26,23 @@ class DietViewController: UIViewController {
         view.delegate = self
         return view
     }()
-
     private lazy var categoriesView: CategoriesHorizontalView = {
         let view = CategoriesHorizontalView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.delegate = self
         return view
     }()
-
     private lazy var macroSummaryView = MacroSummaryView()
     private lazy var macroIndicatorView = MacroIndicatorView()
-
+    
+    init(viewModel: MealViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGray6
@@ -44,6 +51,8 @@ class DietViewController: UIViewController {
         setupGradientBackground()
         generateWeekDays()
         configureComponents()
+        Task {
+            await viewModel.fetchMeals()}
     }
 
      func setupGradientBackground() {
@@ -97,6 +106,19 @@ class DietViewController: UIViewController {
         ])
     }
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     private func generateWeekDays() {
         days.removeAll()
         let calendar = Calendar.current
@@ -169,14 +191,14 @@ class DietViewController: UIViewController {
     }
 }
 
-extension DietViewController: DaysHorizontalViewDelegate {
+extension MealViewController: DaysHorizontalViewDelegate {
     func daysHorizontalView(_ view: DaysHorizontalView, didSelectDay date: Date, at indexPath: IndexPath) {
         self.selectedDayIndexPath = indexPath
         handleDaySelection(date: date)
     }
 }
 
-extension DietViewController: CategoriesHorizontalViewDelegate {
+extension MealViewController: CategoriesHorizontalViewDelegate {
     func categoriesHorizontalView(_ view: CategoriesHorizontalView, didSelectCategory category: CategoryEntity) {
         print("Выбрана категория (из VC): \(category.categoryName) (ID: \(category.categoryId))")
         fetchKetoMeals(categoryName: category.categoryName)

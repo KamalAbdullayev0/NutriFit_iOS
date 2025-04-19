@@ -5,29 +5,8 @@
 //  Created by Kamal Abdullayev on 19.02.25.
 //
 import Alamofire
+import Foundation
 
-//class NetworkManager {
-//    func request<T: Codable>(path: String,
-//                             model: T.Type,
-//                             method: HTTPMethod = .get,
-//                             params: Parameters? = nil,
-//                             encodingType: EncodingType = .url,
-////                             header: HTTPHeaders? = nil,
-//                             completion: @escaping((T?, String?) -> Void)) {
-//        AF.request(path,
-//                   method: method,
-//                   parameters: params,
-//                   encoding: encodingType == .url ? URLEncoding.default : JSONEncoding.default,
-//                   headers: NetworkHelper.shared.header).responseDecodable(of: model.self) { response in
-//            switch response.result {
-//            case .success(let data):
-//                completion(data, nil)
-//            case .failure(let error):
-//                completion(nil, error.localizedDescription)
-//            }
-//        }
-//    }
-//}
 final class NetworkManager {
     static let shared = NetworkManager()
     
@@ -132,9 +111,9 @@ final class NetworkManager {
                 parameters: parameters,
                 encoding: JSONEncoding.default
             )
-            .validate()
-            .serializingDecodable(RefreshTokenResponse.self)
-            .value
+                .validate()
+                .serializingDecodable(RefreshTokenResponse.self)
+                .value
             
             print("[NetworkManager] Received new access token: \(response.accessToken.prefix(4))...")
             AuthManager.shared.accessToken = response.accessToken
@@ -144,107 +123,34 @@ final class NetworkManager {
             return false
         }
     }
+    func uploadProfile(endpoint: Endpoint,
+                       dto: UserUpdateRequestDTO,
+                       imageData: Data?,
+                       imageFileName: String? = "profile.jpg",
+                       imageMimeType: String? = "image/jpg") async throws -> UserProfileResponseDTO {
+        
+        let fullURL = "\(NetworkHelper.shared.baseURL)\(endpoint.rawValue)"
+        
+        let request = AF.upload(multipartFormData: { multipartFormData in
+            do {
+                let dtoData = try JSONEncoder().encode(dto)
+                multipartFormData.append(dtoData, withName: "dto",mimeType: "application/json")
+                print("[NetworkManager] [Upload] Appended DTO data (key: dto)")
+            } catch {
+                print("[NetworkManager] [Upload] Failed to encode DTO: \(error)")
+            }
+            if let data = imageData {
+                multipartFormData.append(
+                    data,
+                    withName: "image",
+                    fileName: imageFileName,
+                    mimeType: imageMimeType
+                )
+            } else {
+                print("[NetworkManager] [Upload] No image data provided, skipping image part.")
+            }
+        }, to: fullURL, method: .patch, headers: NetworkHelper.shared.headers)
+        let userProfile = try await request.validate().serializingDecodable(UserProfileResponseDTO.self).value
+        return userProfile
+    }
 }
-
-
-//final class NetworkManager {
-//    static let shared = NetworkManager()
-//    
-//    private init() {
-//        print("[NetworkManager] Initialized network manager")
-//    }
-//
-//    func request<T: Decodable>(
-//        endpoint: Endpoint,
-//        method: HTTPMethod = .get,
-//        parameters: Parameters? = nil,
-//        encodingType: EncodingType = .url
-//    ) async throws -> T {
-//        let fullURL = "\(NetworkHelper.shared.baseURL)/\(endpoint.rawValue)"
-//        print("[NetworkManager] Starting request to \(fullURL)")
-//        
-//        return try await withCheckedThrowingContinuation { continuation in
-//            let request = AF.request(
-//                fullURL,
-//                method: method,
-//                parameters: parameters,
-//                encoding: encodingType == .url ? URLEncoding.default : JSONEncoding.default,
-//                headers: NetworkHelper.shared.headers
-//            )
-//
-//            request.validate().responseDecodable(of: T.self) { response in
-//                switch response.result {
-//                case .success(let data):
-//                    print("[NetworkManager] Request succeeded")
-//                    print("[NetworkManager] Response: \(data)")
-//                    continuation.resume(returning: data)
-//                    
-//                case .failure(let error):
-//                    print("[NetworkManager] Request failed: \(error.localizedDescription)")
-//
-//                    if let afError = error.asAFError,
-//                       afError.responseCode == 401 {
-//                        Task {
-//                            let refreshSuccess = try await self.refreshToken()
-//                            if refreshSuccess {
-//                                do {
-//                                    let retryData: T = try await self.request(
-//                                        endpoint: endpoint,
-//                                        method: method,
-//                                        parameters: parameters,
-//                                        encodingType: encodingType
-//                                    )
-//                                    continuation.resume(returning: retryData)
-//                                } catch {
-//                                    continuation.resume(throwing: NetworkError.unauthorized)
-//                                }
-//                            } else {
-//                                continuation.resume(throwing: NetworkError.unauthorized)
-//                            }
-//                        }
-//                    } else if let decodingError = error.asAFError?.underlyingError as? DecodingError {
-//                        print("[NetworkManager] Decoding error: \(decodingError)")
-//                        continuation.resume(throwing: NetworkError.decodingError)
-//                    } else {
-//                        continuation.resume(throwing: NetworkError.requestFailed(
-//                            statusCode: error.asAFError?.responseCode,
-//                            message: error.localizedDescription
-//                        ))
-//                    }
-//                }
-//            }
-//        }
-//    }
-//    
-//    private func refreshToken() async throws -> Bool {
-//        print("[NetworkManager] Starting token refresh process")
-//        
-//        guard let refreshToken = AuthManager.shared.refreshToken else {
-//            print("[NetworkManager] No refresh token available")
-//            return false
-//        }
-//
-//        let parameters: Parameters = ["refresh_token": refreshToken]
-//
-//        return try await withCheckedThrowingContinuation { continuation in
-//            AF.request(
-//                "\(NetworkHelper.shared.baseURL)/auth/refresh-token",
-//                method: .post,
-//                parameters: parameters,
-//                encoding: JSONEncoding.default
-//            )
-//            .validate()
-//            .responseDecodable(of: RefreshTokenResponse.self) { response in
-//                switch response.result {
-//                case .success(let tokenResponse):
-//                    AuthManager.shared.accessToken = tokenResponse.accessToken
-//                    print("[NetworkManager] Token refreshed")
-//                    continuation.resume(returning: true)
-//                case .failure(let error):
-//                    print("[NetworkManager] Refresh token failed: \(error.localizedDescription)")
-//                    continuation.resume(returning: false)
-//                }
-//            }
-//        }
-//    }
-//}
