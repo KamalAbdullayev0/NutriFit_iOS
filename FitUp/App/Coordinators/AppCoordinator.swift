@@ -29,9 +29,11 @@ final class AppCoordinator: Coordinator{
         }
         window.rootViewController = splashVC
     }
+    let token = AuthManager.shared.accessToken
     private func runMainFlowSelector() {
-                    showMainFlow()
-//        showAuthFlow()
+//                    showMainFlow()
+        showAuthFlow()
+        print(token ?? "khsdvljancv")
     }
     
     private func showAuthFlow() {

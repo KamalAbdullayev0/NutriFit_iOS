@@ -25,7 +25,7 @@ class AuthCoordinator: Coordinator, AuthFlowNavigation{
     }
      
     func showLoginPage() {
-        let loginUseCase = LoginUseCase()
+        let loginUseCase = LoginUseCaseImpl()
 
         let loginVC = LoginController(viewModel: LoginViewModel(navigation: self, loginUseCase: loginUseCase))
 //        let loginVC = LoginController(viewModel: .init(navigation: self))
@@ -33,7 +33,7 @@ class AuthCoordinator: Coordinator, AuthFlowNavigation{
     }
     
     func showRegisterPage() {
-        let registerUseCase = RegisterUseCase()
+        let registerUseCase = RegisterUseCaseImpl()
         
         let registerVC = RegisterController(viewModel: RegisterViewModel(navigation: self, registerUseCase: registerUseCase))
 //        let registerVC = RegisterController(viewModel: .init(navigation: self))

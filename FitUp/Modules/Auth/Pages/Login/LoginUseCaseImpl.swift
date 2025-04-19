@@ -8,7 +8,7 @@ protocol LoginUseCaseProtocol {
     func execute(username: String, password: String) async throws -> AuthResponse
 }
 
-final class LoginUseCase: LoginUseCaseProtocol {
+final class LoginUseCaseImpl: LoginUseCaseProtocol {
     private let networkManager = NetworkManager.shared
     
     func execute(username: String, password: String) async throws -> AuthResponse {

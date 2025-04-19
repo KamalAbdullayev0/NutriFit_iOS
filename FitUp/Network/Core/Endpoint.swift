@@ -16,6 +16,14 @@ enum Endpoint: String {
     case login = "api/v1/auth/sign-in"
     case refreshToken = "api/v1/auth/refresh-token"
     case getAuthInfo = "api/v1/auth"
+    
+    case user_info_update = "api/v1/users"
+    
+    
+    case user_meal = "api/v1/user-meals/by-user"
+    
+    case user_meal_date_add_remove = "api/v1/user-meals"
+    
 }
 
 

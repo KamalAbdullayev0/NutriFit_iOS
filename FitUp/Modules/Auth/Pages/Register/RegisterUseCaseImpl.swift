@@ -8,7 +8,7 @@ protocol RegisterUseCaseProtocol {
     func execute(fullName: String, username: String, password: String) async throws -> AuthResponse
 }
 
-final class RegisterUseCase: RegisterUseCaseProtocol {
+final class RegisterUseCaseImpl: RegisterUseCaseProtocol {
     private let networkManager = NetworkManager.shared
 
     func execute(fullName: String, username: String, password: String) async throws -> AuthResponse {
@@ -16,7 +16,7 @@ final class RegisterUseCase: RegisterUseCaseProtocol {
         let params = try requestBody.toDictionary()
 
         return try await networkManager.request(
-            endpoint: .register, // убедись, что .register есть в твоем Endpoint
+            endpoint: .register,
             method: .post,
             parameters: params,
             encodingType: .json

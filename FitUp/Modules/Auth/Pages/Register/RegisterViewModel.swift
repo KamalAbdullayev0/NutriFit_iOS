@@ -20,6 +20,7 @@ final class RegisterViewModel {
         do {
             let response = try await registerUseCase.execute(fullName: fullName, username: username, password: password)
             print("✅ Login successful. AccessToken: \(response.accessToken)")
+            UserDefaults.standard.set(response.accessToken, forKey: "accessToken")
             navigation?.showOnboarding()
         } catch {
             print("❌ Login failed: \(error.localizedDescription)")
