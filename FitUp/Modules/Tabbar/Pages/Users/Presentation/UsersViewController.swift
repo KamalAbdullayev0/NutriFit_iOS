@@ -7,8 +7,8 @@
 import UIKit
 
 class UsersViewController: UITableViewController {
-    private let users = ["John Doe", "Jane Smith", "Alex Brown", "Emily Davis"]
-
+    private let users = ["John Doe", "Jane Smith", "Alex Brown", "Emily Davis","Logout"]
+    var onLogoutTapped: (() -> Void)?
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -25,4 +25,12 @@ class UsersViewController: UITableViewController {
         cell.imageView?.image = UIImage(systemName: "person.circle")
         return cell
     }
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+            let selectedUser = users[indexPath.row]
+            if selectedUser == "Logout" {
+                onLogoutTapped?()
+                print("UsersViewController: Logout tapped") // ✅
+            }
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
 }

@@ -7,8 +7,8 @@
 import UIKit
 
 final class MainCoordinator: Coordinator {
+    var onLogout: (() -> Void)?
     private var tabBarController: UITabBarController
-    
     
     override init(navigationController: UINavigationController = UINavigationController()) {
         self.tabBarController = UITabBarController()
@@ -19,12 +19,17 @@ final class MainCoordinator: Coordinator {
     
     
     override func start() {
+        
         var childCoordinators: [Coordinator] = []
         let albumsCoordinator = DietCoordinator(navigationController: UINavigationController())
         let photosCoordinator = PhotosTabCoordinator(navigationController: UINavigationController())
         let postsCoordinator = PostsTabCoordinator(navigationController: UINavigationController())
         let usersCoordinator = UsersTabCoordinator(navigationController: UINavigationController())
-        
+        addChildCoordinator(usersCoordinator)
+        usersCoordinator.onLogoutTriggered = { [weak self] in
+            print("MainCoordinator: Received logout from UsersTabCoordinator") // ✅
+            self?.onLogout?()
+            }
         childCoordinators = [albumsCoordinator, photosCoordinator, postsCoordinator, usersCoordinator]
         
         childCoordinators.forEach { $0.start() }

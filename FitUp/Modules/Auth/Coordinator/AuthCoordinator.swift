@@ -14,7 +14,7 @@ protocol AuthFlowNavigation: AnyObject {
 }
 
 class AuthCoordinator: Coordinator, AuthFlowNavigation{
-    
+    var onAuthSuccess: (() -> Void)?
     override init(navigationController: UINavigationController) {
         super.init(navigationController: navigationController)
     }
@@ -42,6 +42,9 @@ class AuthCoordinator: Coordinator, AuthFlowNavigation{
     
     func showOnboarding() {
         let onboardingCoordinator = OnboardingCoordinator(navigationController: navigationController)
+        onboardingCoordinator.onFinish = { [weak self] in
+                    self?.onAuthSuccess?()
+                }
         addChildCoordinator(onboardingCoordinator)
         onboardingCoordinator.start()
         logChildCoordinators("onboardingCoordinator aa")

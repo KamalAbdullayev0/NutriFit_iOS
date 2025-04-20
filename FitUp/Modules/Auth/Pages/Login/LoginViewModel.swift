@@ -20,7 +20,8 @@ final class LoginViewModel {
         do {
             let response = try await loginUseCase.execute(username: username, password: password)
             print("✅ Login successful. AccessToken: \(response.accessToken)")
-            UserDefaults.standard.set(response.accessToken, forKey: "accessToken")
+            AuthManager.shared.accessToken = response.accessToken
+            AuthManager.shared.refreshToken = response.refreshToken
             navigation?.showOnboarding()
         } catch {
             print("❌ Login failed: \(error.localizedDescription)")

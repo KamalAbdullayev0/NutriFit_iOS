@@ -11,6 +11,7 @@ protocol OnboardingStepDelegate: AnyObject {
 }
 
 class OnboardingCoordinator: Coordinator {
+    var onFinish: (() -> Void)?
     var userData = OnboardingUserData()
     
     override func start() {
@@ -61,10 +62,24 @@ class OnboardingCoordinator: Coordinator {
     
     private func finishOnboarding() {
         print("Bitdi")
-        
         Task {
             await sendDataToBackend()
+            await MainActor.run {
+                self.onFinish?()
+            }
         }
+//        Task {
+//                // Explicitly ensure the call to sendDataToBackend happens on the main actor
+//                await MainActor.run {
+//                    // Now call the async function which is also marked @MainActor
+//                    // This might seem redundant, but ensures the Task starts its work on MainActor
+//                    await self.sendDataToBackend()
+//                }
+//                // The onFinish closure should also be called on the main thread
+//                // if it triggers UI changes (like dismissing onboarding or showing the main app)
+//                await MainActor.run {
+//                    self.onFinish?()
+//                }
     }
 }
 

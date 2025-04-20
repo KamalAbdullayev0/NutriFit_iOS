@@ -29,22 +29,33 @@ final class AppCoordinator: Coordinator{
         }
         window.rootViewController = splashVC
     }
-    let token = AuthManager.shared.accessToken
     private func runMainFlowSelector() {
-//                    showMainFlow()
-        showAuthFlow()
-        print(token ?? "khsdvljancv")
+        let token = AuthManager.shared.accessToken
+        if let token, !token.isEmpty {
+            showMainFlow()
+        } else {
+            showAuthFlow()
+        }
     }
-    
     private func showAuthFlow() {
         let authCoordinator = AuthCoordinator(navigationController: self.navigationController)
+        authCoordinator.onAuthSuccess = { [weak self] in
+            self?.removeChildCoordinator(authCoordinator)
+            self?.runMainFlowSelector()
+        }
         addChildCoordinator(authCoordinator)
-        authCoordinator.start()
+        authCoordinator.start()x
         window.rootViewController = self.navigationController
     }
     
     private func showMainFlow() {
         let mainCoordinator = MainCoordinator()
+        mainCoordinator.onLogout = { [weak self] in
+            print("AppCoordinator: Handling logout") // ✅
+            AuthManager.shared.clearTokens()
+            self?.removeChildCoordinator(mainCoordinator)
+            self?.runMainFlowSelector()
+        }
         addChildCoordinator(mainCoordinator)
         mainCoordinator.start()
         window.rootViewController = mainCoordinator.rootViewController
