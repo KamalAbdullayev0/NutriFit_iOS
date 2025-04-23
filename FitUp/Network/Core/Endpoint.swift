@@ -20,6 +20,9 @@ enum Endpoint: String {
     case user_info_update = "api/v1/users"
     
     
+    
+    case user_nutrition = "api/v1/users/nutrition-requirement"
+    
     case user_meal = "api/v1/user-meals/by-user"
     
     case user_meal_date_add_remove = "api/v1/user-meals"

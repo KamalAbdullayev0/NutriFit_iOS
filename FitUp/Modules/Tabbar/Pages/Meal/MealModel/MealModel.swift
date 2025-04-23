@@ -69,3 +69,12 @@ struct SortInfo: Codable {
     let sorted: Bool
     let unsorted: Bool
 }
+
+
+struct NutritionRequirementsDTO: Codable {
+    let calories: Int
+    let protein: Int
+    let carbs: Int
+    let fat: Int
+    let sugar: Int
+}

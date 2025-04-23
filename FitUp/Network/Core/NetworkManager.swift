@@ -43,7 +43,7 @@ final class NetworkManager {
                 .value
             
             print("[NetworkManager] Request succeeded")
-            print("[NetworkManager] Response: \(response)")
+//            print("[NetworkManager] Response: \(response)")
             return response
         } catch {
             print("[NetworkManager] Request failed: \(error.localizedDescription)")

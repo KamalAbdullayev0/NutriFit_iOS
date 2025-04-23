@@ -98,7 +98,7 @@ class MacroIndicatorView: UIView {
             contentStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
             progressView.heightAnchor.constraint(equalToConstant: 10),
-            progressView.widthAnchor.constraint(equalTo: contentStackView.widthAnchor, multiplier: 0.72)
+            progressView.widthAnchor.constraint(greaterThanOrEqualToConstant: 270)
         ])
     }
 

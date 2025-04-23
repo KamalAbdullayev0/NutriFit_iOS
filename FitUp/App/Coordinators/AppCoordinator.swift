@@ -44,14 +44,13 @@ final class AppCoordinator: Coordinator{
             self?.runMainFlowSelector()
         }
         addChildCoordinator(authCoordinator)
-        authCoordinator.start()x
+        authCoordinator.start()
         window.rootViewController = self.navigationController
     }
     
     private func showMainFlow() {
         let mainCoordinator = MainCoordinator()
         mainCoordinator.onLogout = { [weak self] in
-            print("AppCoordinator: Handling logout") // ✅
             AuthManager.shared.clearTokens()
             self?.removeChildCoordinator(mainCoordinator)
             self?.runMainFlowSelector()

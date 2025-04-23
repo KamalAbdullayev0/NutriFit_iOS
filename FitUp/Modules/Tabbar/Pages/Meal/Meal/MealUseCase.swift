@@ -5,29 +5,51 @@
 //  Created by Kamal Abdullayev on 08.04.25.
 //
 
+import Foundation
+
 protocol UserGetMealsUseCaseProtocol {
-    func execute(/*page: Int, size: Int*/) async throws -> UserMealDataResponse
+    func usersTotalMeal(for date: Date) async throws -> TotalMealValuesDTO
+    func userNutritionRequirements() async throws -> NutritionRequirementsDTO
+    
 }
 final class GetMealsUseCaseImpl: UserGetMealsUseCaseProtocol {
-    private let networkManager = NetworkManager.shared // Используем синглтон
+    private let networkManager = NetworkManager.shared
+    
+    private let apiDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
+    }()
+    
+    func usersTotalMeal(for date: Date) async throws -> TotalMealValuesDTO {
+        let dateString = apiDateFormatter.string(from: date)
 
-    func execute(/*page: Int, size: Int*/) async throws -> UserMealDataResponse {
-//        print("[GetMealsUseCase] Executing fetch for page: \(page), size: \(size)")
-
-
-        // Вызываем NetworkManager
-        // Тип ответа <MealResponse> (т.е. PaginatedResponse<Meal>)
-        // Метод .get
-        // Эндпоинт .meals
-        // Параметры для пагинации
-        // Кодирование .url (обычно для GET запросов с параметрами)
+        let parameters = ["date": dateString]
         let response: UserMealDataResponse = try await networkManager.request(
-            endpoint: .user_meal,
+            endpoint: .user_meal_date_add_remove,
             method: .get,
-            encodingType: .url      // GET-параметры обычно кодируются в URL
+            parameters: parameters,
+            encodingType: .url
         )
-
-        print("[GetMealsUseCase] Successfully fetched \(response) meals on page \(response)")
+        print("🟣 UseCase.usersTotalMeal: Дата = \(date), Форматировано = \(dateString)")
+        print("🟣 UseCase.usersTotalMeal: Параметры запроса = \(parameters)")
+        // Перед return
+        print("🟣 UseCase.usersTotalMeal: Результат DTO = \(response.totalMealValuesDTO)")
+        return response.totalMealValuesDTO
+    }
+    
+    func userNutritionRequirements() async throws -> NutritionRequirementsDTO {
+        let response: NutritionRequirementsDTO = try await networkManager.request(
+            endpoint: .user_nutrition,
+            method: .get,
+            encodingType: .url
+        )
+        print("🟣 UseCase.userNutritionRequirements: Запрос БЕЗ ДАТЫ")
+        // Перед return
+        print("🟣 UseCase.userNutritionRequirements: Результат DTO = \(response)")
         return response
     }
+    
 }

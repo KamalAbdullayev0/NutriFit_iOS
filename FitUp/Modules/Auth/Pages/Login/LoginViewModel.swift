@@ -22,7 +22,7 @@ final class LoginViewModel {
             print("✅ Login successful. AccessToken: \(response.accessToken)")
             AuthManager.shared.accessToken = response.accessToken
             AuthManager.shared.refreshToken = response.refreshToken
-            navigation?.showOnboarding()
+            navigation?.showMainPage()
         } catch {
             print("❌ Login failed: \(error.localizedDescription)")
         }

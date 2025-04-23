@@ -66,20 +66,9 @@ class OnboardingCoordinator: Coordinator {
             await sendDataToBackend()
             await MainActor.run {
                 self.onFinish?()
+                // removeAllChildCoordinators() ola bilermi ?
             }
         }
-//        Task {
-//                // Explicitly ensure the call to sendDataToBackend happens on the main actor
-//                await MainActor.run {
-//                    // Now call the async function which is also marked @MainActor
-//                    // This might seem redundant, but ensures the Task starts its work on MainActor
-//                    await self.sendDataToBackend()
-//                }
-//                // The onFinish closure should also be called on the main thread
-//                // if it triggers UI changes (like dismissing onboarding or showing the main app)
-//                await MainActor.run {
-//                    self.onFinish?()
-//                }
     }
 }
 
@@ -126,6 +115,6 @@ extension OnboardingCoordinator: OnboardingStepDelegate {
         do {
             try await updateUserProfileUseCase.execute(dto: dto, imageData: nil, imageMimeType: nil)
         }catch {
-            print("❌❌ Ошибка при обновлении профиля через UseCase: \(error)")}
+            print("❌ \(error)")}
     }
 }

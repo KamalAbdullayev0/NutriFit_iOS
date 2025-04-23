@@ -4,7 +4,7 @@
 //
 //  Created by Kamal Abdullayev on 11.04.25.
 //
-// DetailedDayCell.swift
+
 import UIKit
 import Foundation
 
@@ -12,53 +12,46 @@ struct DayData {
     let name: String
     let date: Date
     let isToday: Bool
+    let dayNumberString: String
 }
-class DetailedDayCell: UICollectionViewCell {
-    static let identifier = "DetailedDayCell"
-    
-    private struct Style {
-        static let selectedBackgroundColor = UIColor(red: 0.7, green: 0.9, blue: 0.7, alpha: 0.6)
-        static let defaultBackgroundColor = UIColor(white: 0.97, alpha: 0.9)
-        static let selectedIconColor = UIColor(red: 1.0, green: 0.8, blue: 0.3, alpha: 1.0)
-        static let defaultIconColor = UIColor.systemGray3
-        static let cornerRadius: CGFloat = 15
-    }
-//    private struct Style {
-//        static let selectedBackgroundColor = UIColor.systemGreen.withAlphaComponent(0.6)
-//        static let defaultBackgroundColor = UIColor.systemGray5.withAlphaComponent(0.7)
-//        static let selectedIconColor = UIColor.systemYellow
-//        static let defaultIconColor = UIColor.systemGray
-//        static let iconName = "bolt.fill"
-//        static let cornerRadius: CGFloat = 15
-//    }
 
-    private let containerView: UIView = {
+class DayCell: UICollectionViewCell {
+    
+    static let identifier = "DayCell"
+    
+    // --- UI Элементы ---
+    private let dayNameLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = Resources.AppFont.medium.withSize(18)
+        label.textAlignment = .center
+        label.textColor = .black
+        return label
+    }()
+
+    private let dateCircleView: UIView = {
         let view = UIView()
-        view.layer.cornerRadius = Style.cornerRadius
-        view.layer.masksToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 16
+        view.backgroundColor = .black
+         view.layer.shadowColor = UIColor.black.cgColor
+         view.layer.shadowOffset = CGSize(width: 0, height: 1)
+         view.layer.shadowRadius = 2
+         view.layer.shadowOpacity = 0.1
+         view.layer.masksToBounds = false
         return view
     }()
 
-    private let iconImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .regular)
-//        imageView.image = UIImage(systemName: Style.iconName, withConfiguration: config)
-        imageView.tintColor = Style.defaultIconColor
-        return imageView
-    }()
-
-    private let dayLabel: UILabel = {
+    private let dateLabel: UILabel = {
         let label = UILabel()
-        label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 13, weight: .medium)
-        label.textColor = .label // Адаптивный цвет текста
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = Resources.AppFont.bold.withSize(20)
+        label.textAlignment = .center
+        label.textColor = .black
         return label
     }()
-    
+
+    // --- Инициализация ---
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -70,64 +63,54 @@ class DetailedDayCell: UICollectionViewCell {
     }
 
     private func setupViews() {
-        contentView.addSubview(containerView)
-        containerView.addSubview(iconImageView)
-        containerView.addSubview(dayLabel)
-
+        contentView.addSubview(dayNameLabel)
+        contentView.addSubview(dateCircleView)
+        dateCircleView.addSubview(dateLabel)
+        
         NSLayoutConstraint.activate([
-            containerView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        ])
+            dayNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
+            dayNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            dayNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            dayNameLabel.centerXAnchor.constraint(equalTo: dateCircleView.centerXAnchor),
 
-        NSLayoutConstraint.activate([
-            iconImageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 8),
-            iconImageView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            iconImageView.heightAnchor.constraint(equalToConstant: 20),
-            iconImageView.widthAnchor.constraint(equalToConstant: 20),
 
-            dayLabel.topAnchor.constraint(equalTo: iconImageView.bottomAnchor, constant: 4),
-            dayLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 4),
-            dayLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -4),
-            dayLabel.bottomAnchor.constraint(lessThanOrEqualTo: containerView.bottomAnchor, constant: -6)
+            dateCircleView.topAnchor.constraint(equalTo: dayNameLabel.bottomAnchor, constant: 10),
+            dateCircleView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            dateCircleView.widthAnchor.constraint(equalToConstant: 48),
+            dateCircleView.heightAnchor.constraint(equalToConstant: 48),
+
+            dateLabel.centerXAnchor.constraint(equalTo: dateCircleView.centerXAnchor),
+            dateLabel.centerYAnchor.constraint(equalTo: dateCircleView.centerYAnchor),
+
         ])
     }
 
     func configure(with day: DayData) {
-        dayLabel.text = day.name
-         if day.isToday && !isSelected {
-             dayLabel.font = UIFont.systemFont(ofSize: 13, weight: .bold)
-         } else if !isSelected {
-              dayLabel.font = UIFont.systemFont(ofSize: 13, weight: .medium)
-         }
+        dayNameLabel.text = day.name
+        dateLabel.text = day.dayNumberString
+        updateAppearance()
     }
+
     override var isSelected: Bool {
         didSet {
-            updateAppearance()
+            if oldValue != isSelected {
+                 updateAppearance()
+            }
         }
     }
 
     private func updateAppearance() {
-        if isSelected {
-            containerView.backgroundColor = Style.selectedBackgroundColor
-            iconImageView.tintColor = Style.selectedIconColor
-            dayLabel.font = UIFont.systemFont(ofSize: 13, weight: .bold)
-        } else {
-            containerView.backgroundColor = Style.defaultBackgroundColor
-            iconImageView.tintColor = Style.defaultIconColor
-            let labelIsBold = dayLabel.font.fontDescriptor.symbolicTraits.contains(.traitBold)
-            if labelIsBold && containerView.backgroundColor != Style.defaultBackgroundColor {
-                 dayLabel.font = UIFont.systemFont(ofSize: 13, weight: .medium)
-            } else if !labelIsBold {
-                 dayLabel.font = UIFont.systemFont(ofSize: 13, weight: .medium)
-            }
+        let selected = self.isSelected
+        dateCircleView.backgroundColor = selected ? .black : Resources.Colors.greyBorderColor
+        dateLabel.textColor = selected ? .white : Resources.Colors.greyDark
+
+        UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseInOut, .allowUserInteraction]) {
+             self.dateCircleView.transform = selected ? CGAffineTransform(scaleX: 1.15, y: 1.15) : .identity
         }
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        isSelected = false 
-        dayLabel.font = UIFont.systemFont(ofSize: 13, weight: .medium)
+        updateAppearance()
     }
 }

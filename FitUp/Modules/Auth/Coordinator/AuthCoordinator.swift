@@ -11,6 +11,7 @@ protocol AuthFlowNavigation: AnyObject {
     func showLoginPage()
     func showRegisterPage()
     func showOnboarding()
+    func showMainPage()
 }
 
 class AuthCoordinator: Coordinator, AuthFlowNavigation{
@@ -28,7 +29,6 @@ class AuthCoordinator: Coordinator, AuthFlowNavigation{
         let loginUseCase = LoginUseCaseImpl()
 
         let loginVC = LoginController(viewModel: LoginViewModel(navigation: self, loginUseCase: loginUseCase))
-//        let loginVC = LoginController(viewModel: .init(navigation: self))
         navigationController.pushViewController(loginVC, animated: true)
     }
     
@@ -36,7 +36,6 @@ class AuthCoordinator: Coordinator, AuthFlowNavigation{
         let registerUseCase = RegisterUseCaseImpl()
         
         let registerVC = RegisterController(viewModel: RegisterViewModel(navigation: self, registerUseCase: registerUseCase))
-//        let registerVC = RegisterController(viewModel: .init(navigation: self))
         navigationController.pushViewController(registerVC, animated: true)
     }
     
@@ -48,6 +47,9 @@ class AuthCoordinator: Coordinator, AuthFlowNavigation{
         addChildCoordinator(onboardingCoordinator)
         onboardingCoordinator.start()
         logChildCoordinators("onboardingCoordinator aa")
+    }
+    func showMainPage(){
+        onAuthSuccess?()
     }
 }
 

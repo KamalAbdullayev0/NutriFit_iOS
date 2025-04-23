@@ -7,7 +7,7 @@ class CustomTextField: UIView, UITextFieldDelegate {
     private let clearButton = UIButton(type: .system)
     
     var text: String {
-            return textField.text ?? ""
+        return textField.text ?? ""
     }
     
     var hasError: Bool = false {
@@ -83,13 +83,13 @@ class CustomTextField: UIView, UITextFieldDelegate {
             containerView.layer.borderWidth = 0.3
             containerView.layer.borderColor = Resources.Colors.redColor.cgColor
         } else {
-            containerView.layer.borderWidth = textField.isFirstResponder ? 2 : 0.3
+            containerView.layer.borderWidth = textField.isFirstResponder ? 2 : 1
             containerView.layer.borderColor = textField.isFirstResponder ?
-                Resources.Colors.green.cgColor :
-                Resources.Colors.greyDark.cgColor
+            Resources.Colors.green.cgColor :
+            Resources.Colors.greyBorderColor.cgColor
         }
     }
-        
+    
     func textFieldDidBeginEditing(_ textField: UITextField) {
         hasError = false
         containerView.backgroundColor = Resources.Colors.white

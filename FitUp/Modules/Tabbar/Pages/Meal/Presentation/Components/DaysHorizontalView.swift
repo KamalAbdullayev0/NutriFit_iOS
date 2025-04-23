@@ -1,8 +1,7 @@
+// DaysView.swift
+// FitUp
 //
-//  DaysView.swift
-//  FitUp
-//
-//  Created by Kamal Abdullayev on 15.04.25.
+// Created by Kamal Abdullayev on 15.04.25.
 //
 import UIKit
 
@@ -11,27 +10,30 @@ protocol DaysHorizontalViewDelegate: AnyObject {
 }
 
 class DaysHorizontalView: UIView {
-
     weak var delegate: DaysHorizontalViewDelegate?
 
     private var days: [DayData] = []
     private var selectedDayIndexPath: IndexPath?
-
-    private lazy var collectionView: UICollectionView = {
+    
+    
+    public private(set) lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 60, height: 70)
+        layout.itemSize = CGSize(width: 60, height: 80)
         layout.minimumLineSpacing = 8
         layout.sectionInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
+
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.translatesAutoresizingMaskIntoConstraints = false
         cv.backgroundColor = .clear
         cv.showsHorizontalScrollIndicator = false
-        cv.register(DetailedDayCell.self, forCellWithReuseIdentifier: DetailedDayCell.identifier)
+        
+        cv.register(DayCell.self, forCellWithReuseIdentifier: DayCell.identifier)
         cv.dataSource = self
         cv.delegate = self
         cv.allowsSelection = true
         cv.allowsMultipleSelection = false
+
         return cv
     }()
 
@@ -39,13 +41,11 @@ class DaysHorizontalView: UIView {
         super.init(frame: frame)
         setupView()
     }
-
+    
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupView()
+        fatalError("init(coder:) has not been implemented")
     }
-
-
+    
     private func setupView() {
         addSubview(collectionView)
         NSLayoutConstraint.activate([
@@ -59,31 +59,39 @@ class DaysHorizontalView: UIView {
     func configure(with days: [DayData], selectedIndexPath: IndexPath?) {
         self.days = days
         self.selectedDayIndexPath = selectedIndexPath
-        self.collectionView.reloadData()
 
-        
-        if let selectedPath = selectedIndexPath {
-            DispatchQueue.main.async {
-                self.collectionView.selectItem(at: selectedPath, animated: false, scrollPosition: .centeredHorizontally)
-                 if let cell = self.collectionView.cellForItem(at: selectedPath) {
-                     cell.isSelected = true
+        self.collectionView.reloadData()
+        self.collectionView.layoutIfNeeded()
+
+        if let selectedPath = selectedIndexPath, selectedPath.item < self.days.count {
+            DispatchQueue.main.async { [weak self] in
+                 guard let self = self else { return }
+                 guard selectedPath.item < self.collectionView.numberOfItems(inSection: 0) else {
+                     print("⚠️ DaysHorizontalView: Попытка выбрать индекс вне границ \(selectedPath.item) после layout...")
+                     return
                  }
+                 self.collectionView.selectItem(at: selectedPath, animated: false, scrollPosition: .centeredHorizontally)
+                 print("✅ DaysHorizontalView: Программно выбран элемент \(selectedPath)")
             }
+        } else if selectedIndexPath != nil {
+             print("⚠️ DaysHorizontalView: configure вызван с неверным selectedIndexPath \(selectedIndexPath!)...")
         }
     }
-
-
 }
 
-// MARK: - UICollectionViewDataSource
 extension DaysHorizontalView: UICollectionViewDataSource {
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return days.count
     }
-
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DetailedDayCell.identifier, for: indexPath) as? DetailedDayCell else {
-            fatalError("Unable to dequeue DetailedDayCell in DaysHorizontalView")
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DayCell.identifier, for: indexPath) as? DayCell else {
+             print("❌ ОШИБКА: Не удалось получить DetailedDayCell...")
+             return UICollectionViewCell()
+        }
+        guard indexPath.item < days.count else {
+             print("❌ ОШИБКА: Запрошен индекс \(indexPath.item) для cellForItemAt...")
+             return cell
         }
         let day = days[indexPath.item]
         cell.configure(with: day)
@@ -91,36 +99,21 @@ extension DaysHorizontalView: UICollectionViewDataSource {
     }
 }
 
-// MARK: - UICollectionViewDelegate
 extension DaysHorizontalView: UICollectionViewDelegate {
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath == selectedDayIndexPath { return }
-
-        let previouslySelectedIndexPath = selectedDayIndexPath
-        selectedDayIndexPath = indexPath
-
-        var indexPathsToReload: [IndexPath] = []
-        if let previous = previouslySelectedIndexPath {
-            indexPathsToReload.append(previous)
-        }
-        indexPathsToReload.append(indexPath)
-        collectionView.performBatchUpdates({
-            collectionView.reloadItems(at: indexPathsToReload)
-        }) { [weak self] _ in
-            collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
-             if let cell = self?.collectionView.cellForItem(at: indexPath) {
-                 cell.isSelected = true
-             }
-        }
-
+        self.selectedDayIndexPath = indexPath
         collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
 
+        guard indexPath.item < days.count else {
+             print("❌ ОШИБКА: Выбран индекс \(indexPath.item) в didSelectItemAt...")
+             return
+        }
         let selectedDay = days[indexPath.item]
         delegate?.daysHorizontalView(self, didSelectDay: selectedDay.date, at: indexPath)
     }
 
-   
-     func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
-         return indexPath != selectedDayIndexPath
-     }
+    func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+        return true
+    }
 }
