@@ -18,10 +18,10 @@ class CategoryCell: UICollectionViewCell {
     
     private let contentContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
-        view.layer.cornerRadius = 20
-        view.layer.borderColor = UIColor.black.withAlphaComponent(0.15).cgColor
-        view.layer.borderWidth = 1.0
+        view.backgroundColor = Resources.Colors.whiteCellColore
+        view.layer.cornerRadius = 16
+        view.layer.borderColor = Resources.Colors.whiteCellColore.cgColor // Resources.Colors.greyBorderColor.cgColor
+        view.layer.borderWidth = 1.6
         view.layer.masksToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -32,14 +32,14 @@ class CategoryCell: UICollectionViewCell {
         stack.axis = .vertical
         stack.alignment = .center
         stack.distribution = .equalSpacing
-        stack.spacing = 5
+        stack.spacing = 4
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
 
     private let emojiLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 36, weight: .medium)
+        label.font = Resources.AppFont.medium.withSize(24)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -47,7 +47,7 @@ class CategoryCell: UICollectionViewCell {
 
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.font = Resources.AppFont.medium.withSize(16)
         label.textAlignment = .center
         label.textColor = .black
         label.numberOfLines = 1

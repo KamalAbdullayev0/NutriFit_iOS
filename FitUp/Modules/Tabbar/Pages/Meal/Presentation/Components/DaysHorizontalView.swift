@@ -67,14 +67,11 @@ class DaysHorizontalView: UIView {
             DispatchQueue.main.async { [weak self] in
                  guard let self = self else { return }
                  guard selectedPath.item < self.collectionView.numberOfItems(inSection: 0) else {
-                     print("⚠️ DaysHorizontalView: Попытка выбрать индекс вне границ \(selectedPath.item) после layout...")
                      return
                  }
                  self.collectionView.selectItem(at: selectedPath, animated: false, scrollPosition: .centeredHorizontally)
-                 print("✅ DaysHorizontalView: Программно выбран элемент \(selectedPath)")
             }
         } else if selectedIndexPath != nil {
-             print("⚠️ DaysHorizontalView: configure вызван с неверным selectedIndexPath \(selectedIndexPath!)...")
         }
     }
 }
@@ -86,11 +83,9 @@ extension DaysHorizontalView: UICollectionViewDataSource {
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DayCell.identifier, for: indexPath) as? DayCell else {
-             print("❌ ОШИБКА: Не удалось получить DetailedDayCell...")
              return UICollectionViewCell()
         }
         guard indexPath.item < days.count else {
-             print("❌ ОШИБКА: Запрошен индекс \(indexPath.item) для cellForItemAt...")
              return cell
         }
         let day = days[indexPath.item]
@@ -106,7 +101,6 @@ extension DaysHorizontalView: UICollectionViewDelegate {
         collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
 
         guard indexPath.item < days.count else {
-             print("❌ ОШИБКА: Выбран индекс \(indexPath.item) в didSelectItemAt...")
              return
         }
         let selectedDay = days[indexPath.item]

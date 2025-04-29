@@ -33,20 +33,16 @@ final class MealViewModel {
     //        }
     //    }
     @MainActor
-    func fetchMealData(for date: Date) async throws -> (totalMeals: TotalMealValuesDTO, requirements: NutritionRequirementsDTO) {
+    func fetchMealData(for date: Date) async throws -> (totalMeals: TotalMealValuesDTO, requirements: NutritionRequirementsDTO, usermeal: [UserMealDTO]) {
         async let totalMealsTask = userMealsUseCase.usersTotalMeal(for: date)
         async let requirementsTask = userMealsUseCase.userNutritionRequirements()
+        async let usermealTask = userMealsUseCase.userMealData(for: date)
         
         let totalMeals = try await totalMealsTask
         let requirements = try await requirementsTask
+        let usermeal = try await usermealTask
         
-        print("🔵 ViewModel.fetchMealData: Запрос для даты: \(date)")
-        // Перед return
-        print("🔵 ViewModel.fetchMealData: Получены totalMeals = \(totalMeals), requirements = \(requirements)") // Важно! requirements без даты!
-        return (totalMeals, requirements)
+        return (totalMeals, requirements, usermeal)
         
     }
 }
-
-
-

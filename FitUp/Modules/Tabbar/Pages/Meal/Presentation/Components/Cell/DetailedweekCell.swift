@@ -101,7 +101,7 @@ class DayCell: UICollectionViewCell {
 
     private func updateAppearance() {
         let selected = self.isSelected
-        dateCircleView.backgroundColor = selected ? .black : Resources.Colors.greyBorderColor
+        dateCircleView.backgroundColor = selected ? Resources.Colors.greenCalendar : Resources.Colors.whiteCellColore
         dateLabel.textColor = selected ? .white : Resources.Colors.greyDark
 
         UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseInOut, .allowUserInteraction]) {

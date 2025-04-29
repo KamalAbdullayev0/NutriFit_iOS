@@ -8,11 +8,11 @@ import UIKit
 
 class MacroSummaryView: UIView {
     
-    private lazy var carbBlock = CustomMacroBlock(iconName: "bread", iconTint: Resources.Colors.brown, title: "Carb", value: "0g", backgroundColor:  Resources.Colors.brown.withAlphaComponent(0.2))
+    private lazy var carbBlock = CustomMacroBlock(iconName: "bread", iconTint: Resources.Colors.brown, title: "Carb", value: "0g", backgroundColor:  Resources.Colors.brown.withAlphaComponent(0.3))
     
-    private lazy var proteinBlock = CustomMacroBlock(iconName: "steak", iconTint: Resources.Colors.redColor, title: "Protein", value: "0g", backgroundColor: Resources.Colors.redColor.withAlphaComponent(0.2))
+    private lazy var proteinBlock = CustomMacroBlock(iconName: "steak", iconTint: Resources.Colors.redColor, title: "Protein", value: "0g", backgroundColor: Resources.Colors.redColor.withAlphaComponent(0.3))
     
-    private lazy var fatBlock = CustomMacroBlock(iconName: "olive", iconTint: Resources.Colors.orange, title: "Fat", value: "0g", backgroundColor: Resources.Colors.orange.withAlphaComponent(0.2))
+    private lazy var fatBlock = CustomMacroBlock(iconName: "olive", iconTint: Resources.Colors.orange, title: "Fat", value: "0g", backgroundColor: Resources.Colors.orange.withAlphaComponent(0.3))
     
     private lazy var macrosStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [

@@ -45,8 +45,8 @@ struct Meal: Codable, Identifiable, Hashable { // Добавляем Hashable, �
     let carbs: Double
     let description: String
     let type: String // Или используй Enum MealType, как раньше, с кастомным декодером
-    let unitType: String // Или используй Enum UnitType, как раньше
-    let image: String
+    let unitType: MealUnitType // Или используй Enum UnitType, как раньше
+    let image: String?
 }
 struct TotalMealValuesDTO: Codable {
     let totalProtein: Double
@@ -77,4 +77,12 @@ struct NutritionRequirementsDTO: Codable {
     let carbs: Int
     let fat: Int
     let sugar: Int
+}
+
+
+enum MealUnitType: String, Codable {
+    case PIECE
+    case GRAM
+    case MILLILITER
+    case PORTION
 }

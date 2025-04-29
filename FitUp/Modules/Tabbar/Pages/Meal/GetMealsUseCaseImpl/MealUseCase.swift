@@ -10,8 +10,9 @@ import Foundation
 protocol UserGetMealsUseCaseProtocol {
     func usersTotalMeal(for date: Date) async throws -> TotalMealValuesDTO
     func userNutritionRequirements() async throws -> NutritionRequirementsDTO
-    
+    func userMealData(for date: Date) async throws -> [UserMealDTO]
 }
+
 final class GetMealsUseCaseImpl: UserGetMealsUseCaseProtocol {
     private let networkManager = NetworkManager.shared
     
@@ -33,10 +34,7 @@ final class GetMealsUseCaseImpl: UserGetMealsUseCaseProtocol {
             parameters: parameters,
             encodingType: .url
         )
-        print("🟣 UseCase.usersTotalMeal: Дата = \(date), Форматировано = \(dateString)")
-        print("🟣 UseCase.usersTotalMeal: Параметры запроса = \(parameters)")
-        // Перед return
-        print("🟣 UseCase.usersTotalMeal: Результат DTO = \(response.totalMealValuesDTO)")
+
         return response.totalMealValuesDTO
     }
     
@@ -46,10 +44,20 @@ final class GetMealsUseCaseImpl: UserGetMealsUseCaseProtocol {
             method: .get,
             encodingType: .url
         )
-        print("🟣 UseCase.userNutritionRequirements: Запрос БЕЗ ДАТЫ")
-        // Перед return
-        print("🟣 UseCase.userNutritionRequirements: Результат DTO = \(response)")
+
         return response
     }
     
+    func userMealData(for date: Date) async throws -> [UserMealDTO] {
+        let dateString = apiDateFormatter.string(from: date)
+
+        let parameters = ["date": dateString]
+        let response: UserMealDataResponse = try await networkManager.request(
+            endpoint: .user_meal_date_add_remove,
+            method: .get,
+            parameters: parameters,
+            encodingType: .url
+        )
+        return response.userMealDTOS.content
+    }
 }

@@ -10,9 +10,9 @@ import Foundation
 final class NetworkManager {
     static let shared = NetworkManager()
     
-    private init() {
-        print("[NetworkManager] Initialized network manager")
-    }
+//    private init() {
+//        print("[NetworkManager] Initialized network manager")
+//    }
     
     func request<T: Codable>(
         endpoint: Endpoint,
