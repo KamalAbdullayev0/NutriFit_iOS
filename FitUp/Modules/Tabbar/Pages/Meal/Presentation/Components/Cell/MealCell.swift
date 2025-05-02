@@ -5,7 +5,6 @@
 //  Created by Kamal Abdullayev on 25.04.25.
 //
 import UIKit
-import Kingfisher
 
 class MealCell: UICollectionViewCell {
     
@@ -15,7 +14,7 @@ class MealCell: UICollectionViewCell {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
-        iv.layer.cornerRadius = 12
+        iv.layer.cornerRadius = 16
         iv.backgroundColor = .systemGray5
         iv.translatesAutoresizingMaskIntoConstraints = false
         return iv
@@ -26,6 +25,7 @@ class MealCell: UICollectionViewCell {
         label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
         label.textColor = .label
         label.numberOfLines = 1
+        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -71,13 +71,14 @@ class MealCell: UICollectionViewCell {
         contentView.layer.cornerRadius = 16
         contentView.layer.masksToBounds = true
         
-        let padding: CGFloat = 0 // Let the collection view layout handle spacing if possible
+        contentView.layer.borderWidth = 2
+        contentView.layer.borderColor = Resources.Colors.greyBorderColor.cgColor
         
         NSLayoutConstraint.activate([
-            contentStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: padding),
-            contentStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: padding),
-            contentView.trailingAnchor.constraint(equalTo: contentStackView.trailingAnchor, constant: padding),
-            contentView.bottomAnchor.constraint(equalTo: contentStackView.bottomAnchor, constant: padding),
+            contentStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            contentStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: contentStackView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: contentStackView.bottomAnchor, constant: 4),
             
             imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.75)
         ])
@@ -98,8 +99,26 @@ class MealCell: UICollectionViewCell {
         case .PORTION:
             unitText = "\(Int(quantity)) portion"
         }
+        let title = meal.name.capitalized
+        let fullText = "\(title) \(unitText)"
         
-        nameLabel.text = "\(meal.name.capitalized) \(unitText)"
+        let attributedText = NSMutableAttributedString(
+            string: fullText,
+            attributes: [
+                .font: UIFont.systemFont(ofSize: 16, weight: .semibold),
+                .foregroundColor: UIColor.label
+            ]
+        )
+        
+        if let range = fullText.range(of: unitText) {
+            let nsRange = NSRange(range, in: fullText)
+            attributedText.addAttributes([
+                .font: UIFont.systemFont(ofSize: 14, weight: .regular),
+                .foregroundColor: UIColor.secondaryLabel
+            ], range: nsRange)
+        }
+        
+        nameLabel.attributedText = attributedText
         
         fatStack.setValue(String(format: "%.0f g", meal.fat * quantity))
         proteinStack.setValue(String(format: "%.0f g", meal.protein * quantity))

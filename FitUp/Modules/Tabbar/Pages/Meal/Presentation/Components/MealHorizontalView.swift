@@ -14,7 +14,7 @@ class MealHorizontalView: UIView {
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 200, height: 200)
+        layout.itemSize = CGSize(width: 200, height: 220)
         layout.minimumLineSpacing = 16
         layout.minimumInteritemSpacing = 0
         layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
@@ -46,11 +46,11 @@ class MealHorizontalView: UIView {
 
     private func setupViews() {
         addSubview(collectionView)
-         self.heightAnchor.constraint(equalToConstant: 220).isActive = true // Match example itemSize height
     }
 
     private func setupConstraints() {
         NSLayoutConstraint.activate([
+            heightAnchor.constraint(equalToConstant: 230),
             collectionView.topAnchor.constraint(equalTo: topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -88,32 +88,13 @@ extension MealHorizontalView: UICollectionViewDataSource {
     }
 }
 
-// MARK: - UICollectionViewDelegateFlowLayout (Optional but Recommended)
+// MARK: - UICollectionViewDelegateFlowLayout
+// MARK: - UICollectionViewDelegate
 
-extension MealHorizontalView: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        guard let flowLayout = collectionViewLayout as? UICollectionViewFlowLayout else {
-            print("Warning: collectionViewLayout parameter is not a UICollectionViewFlowLayout. Trying to get from collectionView.")
-            if let actualFlowLayout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-                return actualFlowLayout.itemSize
-            } else {
-                print("Error: Could not get UICollectionViewFlowLayout from collectionView either.")
-                return CGSize(width: 200, height: 200)
-            }
-        }
+extension MealHorizontalView: UICollectionViewDelegate {
 
-        let topInset = flowLayout.sectionInset.top
-        let bottomInset = flowLayout.sectionInset.bottom
-
-        let availableHeight = max(0, collectionView.bounds.height - topInset - bottomInset)
-
-        let preferredWidth: CGFloat = 200
-
-        return CGSize(width: preferredWidth, height: availableHeight)
-    }
-
-    // Handle cell selection if needed
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("Selected meal: \(meals[indexPath.item].meal.name)")
     }
 }
+

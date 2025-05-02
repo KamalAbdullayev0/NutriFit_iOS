@@ -8,6 +8,11 @@ import UIKit
 
 class MealViewController: UIViewController {
     private let viewModel: MealViewModel
+    
+    private var currentDataTask: Task<Void, Never>?
+    private var days: [DayData] = []
+    private var selectedDayIndexPath: IndexPath?
+    
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -29,13 +34,21 @@ class MealViewController: UIViewController {
         CategoryEntity(categoryId: "5", categoryName: "Dessert", categoryEmoji: "🍰"),
         CategoryEntity(categoryId: "6", categoryName: "Drinks", categoryEmoji: "🍹")
     ]
-    private var days: [DayData] = []
-    private var selectedDayIndexPath: IndexPath?
     
     private lazy var daysView: DaysHorizontalView = {
         let view = DaysHorizontalView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.delegate = self
+        return view
+    }()
+    private lazy var macroIndicatorView: MacroIndicatorView = {
+        let view = MacroIndicatorView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    private lazy var macroSummaryView: MacroSummaryView = {
+        let view = MacroSummaryView()
+        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     private lazy var categoriesView: CategoriesHorizontalView = {
@@ -44,24 +57,22 @@ class MealViewController: UIViewController {
         view.delegate = self
         return view
     }()
-    private lazy var mealHorizontalView: MealHorizontalView = {
+    private lazy var mealTitleLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Today's meals"
+        label.font = Resources.AppFont.bold.withSize(24)
+        label.textColor = Resources.Colors.todayslabelcolor
+        return label
+    }()
+    private lazy var mealView: MealHorizontalView = {
         let view = MealHorizontalView()
         view.translatesAutoresizingMaskIntoConstraints = false
         // view.delegate = self // If you add a delegate protocol to MealHorizontalView for callbacks
         return view
     }()
-    private lazy var macroSummaryView: MacroSummaryView = {
-        let view = MacroSummaryView()
-        view.translatesAutoresizingMaskIntoConstraints = false // Make sure this is set
-        return view
-    }()
-    private lazy var macroIndicatorView: MacroIndicatorView = {
-        let view = MacroIndicatorView()
-        view.translatesAutoresizingMaskIntoConstraints = false // Make sure this is set
-        return view
-    }()
     
-    private var currentDataTask: Task<Void, Never>?
+    
     
     // MARK: - Initialization
     init(viewModel: MealViewModel) {
@@ -97,7 +108,7 @@ class MealViewController: UIViewController {
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = view.bounds
         gradientLayer.colors = [
-            UIColor(red: 0.8, green: 1.0, blue: 0.8, alpha: 1.0).cgColor, // light green
+            UIColor(red: 0.8, green: 1.0, blue: 0.8, alpha: 1.0).cgColor,
             UIColor.white.cgColor
         ]
         gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
@@ -114,7 +125,8 @@ class MealViewController: UIViewController {
         contentView.addSubview(macroIndicatorView)
         contentView.addSubview(macroSummaryView)
         contentView.addSubview(categoriesView)
-        contentView.addSubview(mealHorizontalView)
+        contentView.addSubview(mealTitleLabel)
+        contentView.addSubview(mealView)
     }
     
     private func setupConstraints() {
@@ -122,7 +134,7 @@ class MealViewController: UIViewController {
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor) // Use safe area bottom
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
         
         NSLayoutConstraint.activate([
@@ -130,7 +142,7 @@ class MealViewController: UIViewController {
             contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-            contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor) // Crucial for vertical scrolling
+            contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
         ])
         
         NSLayoutConstraint.activate([
@@ -147,15 +159,19 @@ class MealViewController: UIViewController {
             macroSummaryView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             macroSummaryView.heightAnchor.constraint(equalToConstant: 70),
             
-            categoriesView.topAnchor.constraint(equalTo: macroSummaryView.bottomAnchor, constant: 15),
+            categoriesView.topAnchor.constraint(equalTo: macroSummaryView.bottomAnchor, constant: 12),
             categoriesView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             categoriesView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             categoriesView.heightAnchor.constraint(equalToConstant: 100),
             
-            mealHorizontalView.topAnchor.constraint(equalTo: categoriesView.bottomAnchor, constant: 20),
-            mealHorizontalView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            mealHorizontalView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            mealHorizontalView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20)
+            mealTitleLabel.topAnchor.constraint(equalTo: categoriesView.bottomAnchor, constant: 12),
+            mealTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            mealTitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            
+            mealView.topAnchor.constraint(equalTo: mealTitleLabel.bottomAnchor, constant: 4),
+            mealView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            mealView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            mealView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20)
         ])
     }
     
@@ -234,14 +250,14 @@ class MealViewController: UIViewController {
                 let (totalMeals, requirements,usermeal) = try await viewModel.fetchMealData(for: date)
                 try Task.checkCancellation()
                 updateMacroViews(with: totalMeals, requirements: requirements)
-                mealHorizontalView.configure(with: usermeal)
+                mealView.configure(with: usermeal)
                 
             } catch is CancellationError {
                 print("\(dateString)")
             } catch {
                 showErrorAlert(message: "PB \(error.localizedDescription)")
                 updateMacroViews(currentKcal: 0, totalKcal: 0, carbs: 0, protein: 0, fat: 0)
-                mealHorizontalView.configure(with: [])
+                mealView.configure(with: [])
             }
         }
     }

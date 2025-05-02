@@ -24,11 +24,10 @@ enum Resources {
         static let greyTextColor = UIColor(hexString: "#8391A1")
         //E5E5E5
         static let greyChooseColor = UIColor(hexString: "#E5E5E5")
+        static let todayslabelcolor = UIColor(hexString: "#a2d3b")
         static let notacountbackground = UIColor(hexString: "#DAD7D7")
         
-        
-//        static let greenDark = UIColor(hexString: "#1D9229")
-        static let greenCalendar = UIColor(hexString: "#A8E6A1")//F5F7FA//E8ECF4//D6F5E3
+        static let greenCalendar = UIColor(hexString: "#66c893")//F5F7FA//E8ECF4//D6F5E3//66c893//A8E6A1
         static let brown = UIColor(hexString: "#DB8318")
         static let red = UIColor(hexString: "#FF2C2C")
         static let blue = UIColor(hexString: "#00F0FF")
