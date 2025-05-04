@@ -27,6 +27,8 @@ enum Endpoint: String {
     
     case user_meal_date_add_remove = "api/v1/user-meals"
     
+    case user = "api/v1/auth/me"
+    
 }
 
 

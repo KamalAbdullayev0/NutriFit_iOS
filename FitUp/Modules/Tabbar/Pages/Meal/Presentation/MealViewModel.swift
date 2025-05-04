@@ -8,30 +8,18 @@
 import Foundation
 
 final class MealViewModel {
-    private let userMealsUseCase: UserGetMealsUseCaseProtocol
     
-    init(userMealsUseCase: UserGetMealsUseCaseProtocol) {
+    private let userMealsUseCase: UserGetMealsUseCaseProtocol
+    private let userProfileUseCase: UserProfileUseCaseProtocol
+    
+    init(
+        userMealsUseCase: UserGetMealsUseCaseProtocol,
+        userProfileUseCase: UserProfileUseCaseProtocol
+    ) {
         self.userMealsUseCase = userMealsUseCase
+        self.userProfileUseCase = userProfileUseCase
     }
     
-    //    @MainActor
-    //    func fetchMeals(
-    //        onSuccess: @escaping (TotalMealValuesDTO, NutritionRequirementsDTO) -> Void,
-    //        onFailure: @escaping (Error) -> Void
-    //    ) async {
-    //        do {
-    //            let totalMeals = try await userMealsUseCase.userTotalMeal()
-    //            let requirements = try await userMealsUseCase.userNutritionRequirements()
-    //
-    //            print("✅ Meals fetched successfully: \(totalMeals)")
-    //            print("✅ Requirements fetched successfully: \(requirements)")
-    //            onSuccess(totalMeals, requirements)
-    //
-    //        } catch {
-    //            print("❌ Fetching meals/requirements failed: \(error.localizedDescription)")
-    //            onFailure(error)
-    //        }
-    //    }
     @MainActor
     func fetchMealData(for date: Date) async throws -> (totalMeals: TotalMealValuesDTO, requirements: NutritionRequirementsDTO, usermeal: [UserMealDTO]) {
         async let totalMealsTask = userMealsUseCase.usersTotalMeal(for: date)
@@ -44,5 +32,15 @@ final class MealViewModel {
         
         return (totalMeals, requirements, usermeal)
         
+    }
+//    @MainActor
+//    func fetchUserData() async throws -> UserProfileDTO {
+//        async let userDatas =  userProfileUseCase.userData()
+//        let userData = try await userDatas
+//        return userData
+//    }
+    @MainActor
+    func fetchUserProfile() async throws -> UserProfileDTO {
+        return try await userProfileUseCase.userData()
     }
 }

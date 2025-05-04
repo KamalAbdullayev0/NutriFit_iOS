@@ -17,7 +17,7 @@ final class DietCoordinator: Coordinator {
 //    }
     override func start() {
         let userMealsUseCase = GetMealsUseCaseImpl()
-        let mealVC = MealViewController(viewModel: .init(userMealsUseCase: userMealsUseCase))
+        let mealVC = MealViewController(viewModel: .init(userMealsUseCase: userMealsUseCase, userProfileUseCase: userMealsUseCase))
         navigationController.setViewControllers([mealVC], animated: false)
         navigationController.tabBarItem = UITabBarItem(title: "Nutrition", image: UIImage(named: "nutrition"), tag: 1)
     }

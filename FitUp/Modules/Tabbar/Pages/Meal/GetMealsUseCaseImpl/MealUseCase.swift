@@ -12,8 +12,12 @@ protocol UserGetMealsUseCaseProtocol {
     func userNutritionRequirements() async throws -> NutritionRequirementsDTO
     func userMealData(for date: Date) async throws -> [UserMealDTO]
 }
+protocol UserProfileUseCaseProtocol {
+    func userData() async throws -> UserProfileDTO
+}
 
-final class GetMealsUseCaseImpl: UserGetMealsUseCaseProtocol {
+
+final class GetMealsUseCaseImpl: UserGetMealsUseCaseProtocol, UserProfileUseCaseProtocol {
     private let networkManager = NetworkManager.shared
     
     private let apiDateFormatter: DateFormatter = {
@@ -59,5 +63,14 @@ final class GetMealsUseCaseImpl: UserGetMealsUseCaseProtocol {
             encodingType: .url
         )
         return response.userMealDTOS.content
+    }
+    
+    func userData() async throws -> UserProfileDTO {
+        let response: UserProfileDTO = try await networkManager.request(
+            endpoint: .user,
+            method: .get,
+            encodingType: .url
+        )
+        return response
     }
 }

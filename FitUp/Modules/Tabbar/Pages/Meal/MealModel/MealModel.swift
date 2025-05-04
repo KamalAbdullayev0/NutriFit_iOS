@@ -79,6 +79,18 @@ struct NutritionRequirementsDTO: Codable {
     let sugar: Int
 }
 
+struct UserProfileDTO: Codable {
+    let id: Int
+    let fullName: String
+    let username: String
+    let profileImageUrl: String?
+    let gender: String
+    let age: Int
+    let height: Double
+    let weight: Double
+    let goal: String
+    let activityLevel: String
+}
 
 enum MealUnitType: String, Codable {
     case PIECE
