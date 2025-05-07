@@ -101,21 +101,27 @@ final class NetworkManager {
         }
         
         print("[NetworkManager] Found refresh token: \(refreshToken.prefix(4))...")
-        let parameters: Parameters = ["refresh_token": refreshToken]
+        let parameters: Parameters = ["refreshToken": refreshToken]
         
         do {
             print("[NetworkManager] Sending refresh token request")
             let response = try await AF.request(
-                "\(NetworkHelper.shared.baseURL)/auth/refresh-token",
+                "\(NetworkHelper.shared.baseURL)api/v1/auth/refresh-token",
                 method: .post,
                 parameters: parameters,
                 encoding: JSONEncoding.default
             )
-                .validate()
-                .serializingDecodable(RefreshTokenResponse.self)
-                .value
-            
-            print("[NetworkManager] Received new access token: \(response.accessToken.prefix(4))...")
+            .validate()
+            .serializingDecodable(AuthResponse.self)
+            .value
+
+            // Print full response for debugging
+            print("[NetworkManager] Full AuthResponse:")
+            print("Access Token: \(response.accessToken)")
+            print("Refresh Token: \(response.refreshToken)")
+            print("Profile Image URL: \(response.profileImageUrl)")
+            print("Type: \(response.type)")
+
             AuthManager.shared.accessToken = response.accessToken
             return true
         } catch {

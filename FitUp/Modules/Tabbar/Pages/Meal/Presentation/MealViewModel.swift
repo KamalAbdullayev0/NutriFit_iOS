@@ -33,12 +33,7 @@ final class MealViewModel {
         return (totalMeals, requirements, usermeal)
         
     }
-//    @MainActor
-//    func fetchUserData() async throws -> UserProfileDTO {
-//        async let userDatas =  userProfileUseCase.userData()
-//        let userData = try await userDatas
-//        return userData
-//    }
+    
     @MainActor
     func fetchUserProfile() async throws -> UserProfileDTO {
         return try await userProfileUseCase.userData()

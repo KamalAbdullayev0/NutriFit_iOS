@@ -92,7 +92,7 @@ struct UserUpdateRequestDTO: Codable {
         self.activityLevel = activityLevel
     }
 }
-// MARK: - AuthRefreshToken
-struct RefreshTokenResponse: Codable {
-    let accessToken: String
-}
+//// MARK: - AuthRefreshToken
+//struct RefreshTokenResponse: Codable {
+//    let accessToken: String
+//}

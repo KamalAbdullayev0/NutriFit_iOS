@@ -177,6 +177,8 @@ class MealViewController: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
+            profileButton.heightAnchor.constraint(equalToConstant: 40),
+            profileButton.widthAnchor.constraint(equalToConstant: 40),
             daysView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
             daysView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             daysView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),

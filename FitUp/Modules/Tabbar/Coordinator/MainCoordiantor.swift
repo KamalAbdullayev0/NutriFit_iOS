@@ -20,8 +20,8 @@ final class MainCoordinator: Coordinator {
     
     override func start() {
         var childCoordinators: [Coordinator] = []
-        let albumsCoordinator = DietCoordinator(navigationController: UINavigationController())
-        let photosCoordinator = PhotosTabCoordinator(navigationController: UINavigationController())
+        let albumsCoordinator = NutritionCoordinator(navigationController: UINavigationController())
+        let photosCoordinator = SearchCoordinator(navigationController: UINavigationController())
         let postsCoordinator = PostsTabCoordinator(navigationController: UINavigationController())
         let usersCoordinator = UsersTabCoordinator(navigationController: UINavigationController())
         addChildCoordinator(usersCoordinator) // bunnan isledi coordinator yaddasdan cixmadi

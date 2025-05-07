@@ -6,15 +6,15 @@
 //
 import UIKit
 
-final class DietCoordinator: Coordinator {
+final class NutritionCoordinator: Coordinator {
     
-//    func showRegisterPage() {
-//        let registerUseCase = RegisterUseCase()
-//        
-//        let registerVC = RegisterController(viewModel: RegisterViewModel(navigation: self, registerUseCase: registerUseCase))
-////        let registerVC = RegisterController(viewModel: .init(navigation: self))
-//        navigationController.pushViewController(registerVC, animated: true)
-//    }
+    //    func showRegisterPage() {
+    //        let registerUseCase = RegisterUseCase()
+    //
+    //        let registerVC = RegisterController(viewModel: RegisterViewModel(navigation: self, registerUseCase: registerUseCase))
+    ////        let registerVC = RegisterController(viewModel: .init(navigation: self))
+    //        navigationController.pushViewController(registerVC, animated: true)
+    //    }
     override func start() {
         let userMealsUseCase = GetMealsUseCaseImpl()
         let mealVC = MealViewController(viewModel: .init(userMealsUseCase: userMealsUseCase, userProfileUseCase: userMealsUseCase))
