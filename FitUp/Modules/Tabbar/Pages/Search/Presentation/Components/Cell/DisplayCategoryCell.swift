@@ -17,6 +17,10 @@ class DisplayCategoryCell: UICollectionViewCell {
         label.font = UIFont.systemFont(ofSize: 15, weight: .medium)
         label.textColor = .secondaryLabel
         label.textAlignment = .center
+        label.lineBreakMode = .byClipping
+        label.numberOfLines = 1
+        label.setContentHuggingPriority(.required, for: .horizontal)
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
     }()
 
@@ -36,10 +40,10 @@ class DisplayCategoryCell: UICollectionViewCell {
         contentView.backgroundColor = .clear
 
         NSLayoutConstraint.activate([
-            nameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
-            nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
-            nameLabel.bottomAnchor.constraint(equalTo: selectionIndicator.topAnchor, constant: -8),
+            nameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5),
+            nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
+            nameLabel.bottomAnchor.constraint(equalTo: selectionIndicator.topAnchor, constant: -10),
 
             selectionIndicator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5), // Отступы для индикатора
             selectionIndicator.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
@@ -47,9 +51,12 @@ class DisplayCategoryCell: UICollectionViewCell {
             selectionIndicator.heightAnchor.constraint(equalToConstant: 3)
         ])
     }
-
-    required init?(coder: NSCoder) { fatalError() }
-
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
     func configure(with category: DisplayCategory) {
         nameLabel.text = category.name
     }

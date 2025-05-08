@@ -28,9 +28,9 @@ class CategoryContainerCell: UICollectionViewCell,
         layout.scrollDirection = .horizontal
         // Возвращаем estimatedItemSize для внутреннего CollectionView,
         // чтобы ячейки категорий сами определяли свою ширину по контенту.
-        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-        layout.minimumInteritemSpacing = 12 // Промежуток между категориями
-        layout.sectionInset = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize//bunu duzelt
+        layout.minimumInteritemSpacing = 40 // Промежуток между категориями
+        layout.sectionInset = UIEdgeInsets(top: 8, left: 10, bottom: 8, right: 10)
         
         horizontalCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         horizontalCollectionView.translatesAutoresizingMaskIntoConstraints = false
