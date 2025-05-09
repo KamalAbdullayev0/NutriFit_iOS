@@ -6,32 +6,11 @@
 //
 import UIKit
 
-
-// MARK: - Модели данных
-struct DisplayCategory {
-    let id = UUID()
-    let name: String
-}
-
-// Модель для блюда
-struct MenuItem {
-    let id = UUID()
-    let name: String
-    let description: String
-    let price: String
-    let imageName: String
-}
-
-// Модель для секции меню
-struct MenuSection { // Убрали Hashable
-    let id = UUID()
-    let title: String
-    var items: [MenuItem]
-}
 // MARK: - Главный ViewController
 class SearchViewController:  UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
     private let viewModel: SearchViewModel
+    private let topSearchView = TopSearchView()
     
     init(viewModel: SearchViewModel) {
         self.viewModel = viewModel
@@ -48,30 +27,40 @@ class SearchViewController:  UICollectionViewController, UICollectionViewDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
         setupBinding()
-        setupCustomNavigationBar()
+        setupTopSearchView()
         configureCollectionView()
         registerCellsAndHeaders()
-        collectionView.reloadData()
         
     }
-    private func setupCustomNavigationBar() {
-        SearchNavigationBarConfigurator.configure(
-            for: self,
-            title: "McDonald's Inshaatchilar",
-            backAction: #selector(backButtonTapped),
-            moreAction: #selector(moreButtonTapped)
-        )
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: false)
     }
-    private func setupBinding() {
-        // Подписываемся на обновления от ViewModel
-        viewModel.onDataChanged = { [weak self] in
-            // Когда ViewModel говорит, что данные изменились, перезагружаем коллекцию
-            print("[ViewController] Data changed, reloading collection view.")
-            self?.collectionView.reloadData()
+    
+    private func setupTopSearchView() {
+        view.addSubview(topSearchView)
+        topSearchView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            topSearchView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12),
+            topSearchView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            topSearchView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            topSearchView.heightAnchor.constraint(equalToConstant: 64)
+        ])
+        
+        topSearchView.onSearchAreaTap = {
+            print("Search tapped")
         }
+        
+        topSearchView.onFilterButtonTap = {
+            print("Filter tapped")
+        }
+        
     }
+    
     private func configureCollectionView() {
-        collectionView.backgroundColor = .systemBackground
+        collectionView.alwaysBounceVertical = true
+        collectionView.contentInset = UIEdgeInsets(top: 72, left: 16, bottom: 0, right: 16)
     }
     
     private func registerCellsAndHeaders() {
@@ -82,7 +71,6 @@ class SearchViewController:  UICollectionViewController, UICollectionViewDelegat
                                 withReuseIdentifier: MenuSectionHeaderView.reuseIdentifier)
     }
     
-    // --- Загрузка данных (Mock) ---
     
     
     // --- Обработка выбора категории ---
@@ -92,10 +80,15 @@ class SearchViewController:  UICollectionViewController, UICollectionViewDelegat
         viewModel.selectCategory(at: index)
         // Обновление UI произойдет через замыкание onDataChanged
     }
+    private func setupBinding() {
+        viewModel.onDataChanged = { [weak self] in
+            self?.collectionView.reloadData()
+        }
+    }
     
     // --- Actions ---
     @objc private func backButtonTapped() {
-        navigationController?.popViewController(animated: true)
+        print("salam")
     }
     @objc private func moreButtonTapped() {
         print("More button tapped")

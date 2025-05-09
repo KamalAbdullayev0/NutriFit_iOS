@@ -118,3 +118,23 @@ final class SearchViewModel {
         ]
     }
 }
+// MARK: - Модели данных
+struct DisplayCategory {
+    let id = UUID()
+    let name: String
+}
+
+// Модель для блюда
+struct MenuItem {
+    let id = UUID()
+    let name: String
+    let description: String
+    let price: String
+    let imageName: String
+}
+
+struct MenuSection {
+    let id = UUID()
+    let title: String
+    var items: [MenuItem]
+}
