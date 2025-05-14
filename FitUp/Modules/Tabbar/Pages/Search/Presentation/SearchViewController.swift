@@ -45,7 +45,7 @@ class SearchViewController:  UICollectionViewController, UICollectionViewDelegat
             topSearchView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12),
             topSearchView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             topSearchView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            topSearchView.heightAnchor.constraint(equalToConstant: 64)
+            topSearchView.heightAnchor.constraint(equalToConstant: 72)
         ])
         
         topSearchView.onSearchAreaTap = {
@@ -60,12 +60,14 @@ class SearchViewController:  UICollectionViewController, UICollectionViewDelegat
     
     private func configureCollectionView() {
         collectionView.alwaysBounceVertical = true
-        collectionView.contentInset = UIEdgeInsets(top: 72, left: 16, bottom: 0, right: 16)
+        collectionView.contentInset = UIEdgeInsets(top: 80, left: 16, bottom: 0, right: 16)
     }
     
     private func registerCellsAndHeaders() {
         collectionView.register(CategoryContainerCell.self, forCellWithReuseIdentifier: CategoryContainerCell.reuseIdentifier)
+        
         collectionView.register(MenuItemCell.self, forCellWithReuseIdentifier: MenuItemCell.reuseIdentifier)
+        
         collectionView.register(MenuSectionHeaderView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                 withReuseIdentifier: MenuSectionHeaderView.reuseIdentifier)
@@ -120,25 +122,62 @@ extension SearchViewController /* : UICollectionViewDataSource */ { // Можн�
             }
             cell.configure(with: viewModel.mealCategories, selectedIndex: viewModel.selectedCategoryIndex)
             
-            cell.onCategorySelected = { [weak self] (_, index) in
-                self?.viewModel.selectCategory(at: index)
-            }
-            return cell
-        }
-        else {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MenuItemCell.reuseIdentifier, for: indexPath) as? MenuItemCell else {
-                fatalError("Cannot create MenuItemCell - Check registration and identifier")
-            }
-            if let menuItem = viewModel.menuItem(at: indexPath) {
-                cell.configure(with: menuItem)
-            } else {
-                // Обработка ошибки, если ViewModel вернул nil (быть не должно при правильной логике)
-                print("Error: Could not get menu item from ViewModel for indexPath: \(indexPath)")
-                cell.configure(with: MenuItem(name: "Error", description: "ViewModel Error", price: "", imageName: ""))
-            }
-            return cell
-        }
-    }
+            cell.onCategorySelected = { [weak self] (selectedCategory, indexInHorizontalScroll) in
+                           guard let self = self else { return }
+
+                           // 1. Сообщаем ViewModel о выборе (обновит selectedCategoryIndex и вызовет onDataChanged)
+                           self.viewModel.selectCategory(at: indexInHorizontalScroll)
+
+                           // 2. Получаем целевой индекс секции из ViewModel для прокрутки
+                           if let targetSectionToScroll = self.viewModel.sectionIndexToScroll(forCategory: selectedCategory) {
+                               // Убедимся, что такая секция существует
+                               guard targetSectionToScroll < self.collectionView.numberOfSections else {
+                                   print("Error: Target section \(targetSectionToScroll) is out of bounds.")
+                                   return
+                               }
+
+                               // 3. Прокручиваем UICollectionView
+                               let targetIndexPath = IndexPath(item: 0, section: targetSectionToScroll)
+
+                               // Проверяем, есть ли хедер или элементы для корректной прокрутки
+                               let numberOfItems = self.collectionView(collectionView, numberOfItemsInSection: targetSectionToScroll)
+                               let headerSize = self.collectionView(collectionView, layout: collectionView.collectionViewLayout, referenceSizeForHeaderInSection: targetSectionToScroll)
+
+                               if numberOfItems > 0 {
+                                   self.collectionView.scrollToItem(at: targetIndexPath, at: .top, animated: true)
+                               } else if headerSize.height > 0 {
+                                   // Если нет элементов, но есть хедер, пытаемся прокрутить к хедеру.
+                                   // scrollToItem к IndexPath(item:0, section:X) с at:.top часто сам показывает хедер.
+                                   self.collectionView.scrollToItem(at: targetIndexPath, at: .top, animated: true)
+                                   // Для более точной прокрутки к хедеру:
+                                   // if let attributes = collectionView.layoutAttributesForSupplementaryElement(ofKind: UICollectionView.elementKindSectionHeader, at: targetIndexPath) {
+                                   //    let headerOriginY = attributes.frame.origin.y
+                                   //    // Рассчитываем отступ так, чтобы хедер был виден под TopSearchView
+                                   //    let topSearchViewMaxY = self.topSearchView.frame.maxY
+                                   //    let desiredOffsetY = headerOriginY - topSearchViewMaxY - 10 // 10 - небольшой отступ
+                                   //    collectionView.setContentOffset(CGPoint(x: 0, y: max(0, desiredOffsetY)), animated: true)
+                                   // }
+                               } else {
+                                   print("Section \(targetSectionToScroll) is empty and has no header; cannot scroll effectively.")
+                               }
+                           } else {
+                               print("Could not find section to scroll to for category: \(selectedCategory.name)")
+                           }
+                       }
+                       return cell
+                   } else {
+                       // ... (код для MenuItemCell без изменений) ...
+                       guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MenuItemCell.reuseIdentifier, for: indexPath) as? MenuItemCell else {
+                           fatalError("Cannot create MenuItemCell - Check registration and identifier")
+                       }
+                       if let menuItem = viewModel.menuItem(at: indexPath) {
+                           cell.configure(with: menuItem)
+                       } else {
+                           cell.configure(with: MenuItem(name: "Error", description: "ViewModel Error", price: "", imageName: ""))
+                       }
+                       return cell
+                   }
+               }
     
     override func collectionView(_ collectionView: UICollectionView,viewForSupplementaryElementOfKind kind: String,at indexPath: IndexPath) -> UICollectionReusableView {
         
@@ -185,7 +224,7 @@ extension SearchViewController /* : UICollectionViewDelegateFlowLayout */ {
         
         if indexPath.section == 0 {
             // Ячейка-контейнер категорий
-            return CGSize(width: collectionView.bounds.width, height: 55) // Полная ширина
+            return CGSize(width: collectionView.bounds.width, height: 100) // Полная ширина
         } else {
             // Ячейка блюда
             return CGSize(width: collectionView.bounds.width - 32, height: 110)
@@ -218,11 +257,15 @@ func collectionView(_ collectionView: UICollectionView,
                     insetForSectionAt section: Int) -> UIEdgeInsets {
     
     if section == 0 {
-        // Достаточно одного safe-area + своего небольшого отступа
-        let topPadding = collectionView.adjustedContentInset.top + 10
-        return UIEdgeInsets(top: topPadding, left: 0, bottom: 10, right: 0)
+        return UIEdgeInsets(top: 100,
+                            left: 16,
+                            bottom: 0,
+                            right: 16)
     } else {
-        return UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 16)
+        return UIEdgeInsets(top: 20,    // ↗︎ пространство над секцией
+                            left: 16,
+                            bottom: 20, // ↙︎ пространство под секцией
+                            right: 16)
     }
 }
 

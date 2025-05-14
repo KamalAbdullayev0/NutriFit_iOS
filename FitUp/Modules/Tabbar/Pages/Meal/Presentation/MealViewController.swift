@@ -34,7 +34,7 @@ class MealViewController: UIViewController {
         CategoryEntity(categoryId: "3", categoryName: "Dinner", categoryEmoji: "🥗"),
         CategoryEntity(categoryId: "4", categoryName: "Snack", categoryEmoji: "🍎"),
         CategoryEntity(categoryId: "5", categoryName: "Dessert", categoryEmoji: "🍰"),
-        CategoryEntity(categoryId: "6", categoryName: "Drinks", categoryEmoji: "🍹")
+        CategoryEntity(categoryId: "6", categoryName: "Drink", categoryEmoji: "🍹")
     ]
     
     private lazy var daysView: DaysHorizontalView = {

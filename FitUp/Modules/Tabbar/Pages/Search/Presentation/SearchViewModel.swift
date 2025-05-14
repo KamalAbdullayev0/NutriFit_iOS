@@ -6,6 +6,28 @@
 //
 
 import Foundation
+import UIKit
+
+enum MealCategoryType: String, CaseIterable {
+    case breakfast = "Breakfast"
+    case lunch = "Lunch"
+    case dinner = "Dinner"
+    case snack = "Snack"
+    case dessert = "Dessert"
+    case drinks = "Drink"
+    
+    var sectionTitle: String {
+        switch self {
+        case .breakfast: return "Breakfast"
+        case .lunch: return "Lunch"
+        case .dinner: return "Dinner"
+        case .snack: return "Snack"
+        case .dessert: return "Dessert"
+        case .drinks: return "Drink"
+        }
+    }
+}
+
 
 final class SearchViewModel {
     private let searchUseCase: SearchUseCaseImpl
@@ -13,7 +35,7 @@ final class SearchViewModel {
     init(searchUseCase: SearchUseCaseImpl) {
         self.searchUseCase = searchUseCase
         loadData()
-        filterData()
+        self.filteredSections = self.menuSectionsData
     }
     // MARK: - Public Binding
     var onDataChanged: (() -> Void)?
@@ -27,11 +49,11 @@ final class SearchViewModel {
     
     // Вызывается View Controller при выборе категории
     func selectCategory(at index: Int) {
-        guard index >= 0, index < mealCategories.count, index != selectedCategoryIndex else { return }
+        // Позволяем повторное "выделение" для прокрутки, если пользователь нажал на уже выбранную категорию
+        guard index >= 0, index < mealCategories.count else { return }
         
         selectedCategoryIndex = index
-        filterData() // Фильтруем данные
-        onDataChanged?() // Уведомляем ViewController об изменениях
+        onDataChanged?()
     }
     
     func numberOfSections() -> Int {
@@ -69,33 +91,45 @@ final class SearchViewModel {
     }
     
     
-    private func filterData() {
-        guard selectedCategoryIndex < mealCategories.count else {
-            filteredSections = menuSectionsData
-            print("Warning: selectedCategoryIndex out of bounds, showing all sections.")
-            return
-        }
-        let selectedCategory = mealCategories[selectedCategoryIndex]
-        filteredSections = menuSectionsData.filter { $0.title.localizedCaseInsensitiveCompare(selectedCategory.name) == .orderedSame }
+    //    private func filterData() {
+    //        guard selectedCategoryIndex < mealCategories.count else {
+    //            filteredSections = menuSectionsData
+    //            print("Warning: selectedCategoryIndex out of bounds, showing all sections.")
+    //            return
+    //        }
+    //        let selectedCategory = mealCategories[selectedCategoryIndex]
+    //        filteredSections = menuSectionsData.filter { $0.title.localizedCaseInsensitiveCompare(selectedCategory.name) == .orderedSame }
+    //
+    //        if filteredSections.isEmpty && !menuSectionsData.isEmpty {
+    //            print("Для категории '\(selectedCategory.name)' нет явных секций, показываем все меню.")
+    //            filteredSections = menuSectionsData // Fallback - показать все
+    //        }
+    //        print("[ViewModel] Отфильтровано \(filteredSections.count) секций для категории '\(selectedCategory.name)'")
+    //    }
+    //
+    
+    func sectionIndexToScroll(forCategory category: DisplayCategory) -> Int? {
         
-        if filteredSections.isEmpty && !menuSectionsData.isEmpty {
-            print("Для категории '\(selectedCategory.name)' нет явных секций, показываем все меню.")
-            filteredSections = menuSectionsData // Fallback - показать все
+        if let foundIndexDirect = filteredSections.firstIndex(where: {
+            $0.title.localizedCaseInsensitiveCompare(category.name) == .orderedSame
+        }) {
+            return foundIndexDirect + 1
         }
-        print("[ViewModel] Отфильтровано \(filteredSections.count) секций для категории '\(selectedCategory.name)'")
+        
+        print("Warning: Could not find a section to scroll to for category '\(category.name)'")
+        return nil
     }
+    
     // MARK: - Private
     private func loadData() {
-        // Категории приемов пищи
         mealCategories = [
-            DisplayCategory(name: "Yeniliklər"), // Новинки (как на скриншоте)
-            DisplayCategory(name: "Təkliflər"),  // Предложения
-            DisplayCategory(name: "Burgerlər"), // Бургеры
-            DisplayCategory(name: "Kartof"),    // Картофель
-            DisplayCategory(name: "İçkilər"),   // Напитки
-            DisplayCategory(name: "Desertlər")  // Десерты
+            DisplayCategory(name: MealCategoryType.breakfast.rawValue, icon: UIImage(named: MealCategoryType.breakfast.rawValue)),
+            DisplayCategory(name: MealCategoryType.lunch.rawValue, icon: UIImage(named: MealCategoryType.lunch.rawValue)),
+            DisplayCategory(name: MealCategoryType.dinner.rawValue, icon: UIImage(named: MealCategoryType.dinner.rawValue)),
+            DisplayCategory(name: MealCategoryType.snack.rawValue, icon: UIImage(named: MealCategoryType.snack.rawValue)),
+            DisplayCategory(name: MealCategoryType.dessert.rawValue, icon: UIImage(named: MealCategoryType.dessert.rawValue)),
+            DisplayCategory(name: MealCategoryType.drinks.rawValue, icon: UIImage(named: MealCategoryType.drinks.rawValue)),
         ]
-        
         // Полные данные меню (загрузить один раз)
         let mcRoyalBbq = MenuItem( name: "McRoyal Barbekyu", description: "Karamelləşdirilmiş küncütlü bulkanın arasında 100% mal ətind...", price: "₼8,75", imageName: "burger_placeholder_2")
         let dablMcRoyalBbq = MenuItem( name: "Dabl McRoyal Barbekyu", description: "Karamelləşdirilmiş bulkanın arasında iki ədəd 100% mal ətind...", price: "₼12,40", imageName: "burger_placeholder_1")
@@ -106,15 +140,14 @@ final class SearchViewModel {
         let cola = MenuItem( name:"Coca-Cola", description: "Освежающий напиток", price: "₼2.00", imageName: "burger_placeholder_1") // Заменить картинку
         let iceCream = MenuItem( name: "McFlurry", description: "Мороженое с топпингом", price: "₼4.00", imageName: "burger_placeholder_2") // Заменить картинку
         
-        
         // Распределяем по секциям (имитация полной базы данных)
         menuSectionsData = [
-            MenuSection(title: "Yeniliklər", items: [dablMcRoyalBbq, mcRoyalBbq]), // Связь с категорией Yeniliklər
-            MenuSection(title: "Təkliflər", items: [mcRoyalCombo]), // Связь с категорией Təkliflər
-            MenuSection(title: "Burgerlər", items: [bigMac, cheeseburger, mcRoyalBbq, dablMcRoyalBbq]), // Связь с категорией Burgerlər
-            MenuSection(title: "Kartof", items: [fries]), // Связь с категорией Kartof
-            MenuSection(title: "İçkilər", items: [cola]), // Связь с категорией İçkilər
-            MenuSection(title: "Desertlər", items: [iceCream]) // Связь с категорией Desertlər
+            MenuSection(title: "Breakfast", items: [dablMcRoyalBbq, mcRoyalBbq]), // Связь с категорией Yeniliklər
+            MenuSection(title: "Lunch", items: [mcRoyalCombo]), // Связь с категорией Təkliflər
+            MenuSection(title: "Dinner", items: [bigMac, cheeseburger, mcRoyalBbq, dablMcRoyalBbq]), // Связь с категорией Burgerlər
+            MenuSection(title: "Snack", items: [fries]), // Связь с категорией Kartof
+            MenuSection(title: "Dessert", items: [cola]), // Связь с категорией İçkilər
+            MenuSection(title: "Drinks", items: [iceCream]) // Связь с категорией Desertlər
         ]
     }
 }
@@ -122,6 +155,12 @@ final class SearchViewModel {
 struct DisplayCategory {
     let id = UUID()
     let name: String
+    let icon: UIImage?
+    
+    init(name: String, icon: UIImage? = UIImage(systemName: "questionmark.circle")) {
+        self.name = name
+        self.icon = icon
+    }
 }
 
 // Модель для блюда

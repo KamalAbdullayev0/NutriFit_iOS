@@ -21,32 +21,50 @@ class CategoryContainerCell: UICollectionViewCell,
         super.init(frame: frame)
         setupHorizontalCollectionView()
     }
-    required init?(coder: NSCoder) { fatalError() }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private let trackView: UIView = {
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.backgroundColor = UIColor.secondaryLabel.withAlphaComponent(0.1)
+        return v
+    }()
     
     private func setupHorizontalCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        // Возвращаем estimatedItemSize для внутреннего CollectionView,
-        // чтобы ячейки категорий сами определяли свою ширину по контенту.
-        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize//bunu duzelt
-        layout.minimumInteritemSpacing = 40 // Промежуток между категориями
-        layout.sectionInset = UIEdgeInsets(top: 8, left: 10, bottom: 8, right: 10)
+        
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        layout.minimumLineSpacing = 24
+        //        layout.minimumInteritemSpacing = 24 // vertical siralma ucun
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         
         horizontalCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         horizontalCollectionView.translatesAutoresizingMaskIntoConstraints = false
         horizontalCollectionView.backgroundColor = .clear
+        
         horizontalCollectionView.showsHorizontalScrollIndicator = false
-        horizontalCollectionView.register(DisplayCategoryCell.self, forCellWithReuseIdentifier: DisplayCategoryCell.reuseIdentifier)
+        horizontalCollectionView.register(SearchCategoryCell.self, forCellWithReuseIdentifier: SearchCategoryCell.reuseIdentifier)
         horizontalCollectionView.dataSource = self
         horizontalCollectionView.delegate = self
         
+        
+        
+        contentView.addSubview(trackView)
         contentView.addSubview(horizontalCollectionView)
         NSLayoutConstraint.activate([
+            trackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            trackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            trackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -17),
+            trackView.heightAnchor.constraint(equalToConstant: 4),
+            
             horizontalCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             horizontalCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             horizontalCollectionView.topAnchor.constraint(equalTo: contentView.topAnchor),
             horizontalCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            // Высота контейнера будет задаваться извне, в SearchViewController через layout.itemSize
         ])
     }
     
@@ -54,9 +72,8 @@ class CategoryContainerCell: UICollectionViewCell,
     func configure(with categories: [DisplayCategory], selectedIndex: Int) {
         self.categories = categories
         self.selectedCategoryIndex = selectedIndex
-        horizontalCollectionView.reloadData() // Перезагружаем данные своей коллекции
+        horizontalCollectionView.reloadData()
         
-        // Выделение и прокрутка после перезагрузки
         DispatchQueue.main.async {
             self.selectAndScrollToItem(at: selectedIndex)
         }
@@ -91,7 +108,7 @@ class CategoryContainerCell: UICollectionViewCell,
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DisplayCategoryCell.reuseIdentifier, for: indexPath) as? DisplayCategoryCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchCategoryCell.reuseIdentifier, for: indexPath) as? SearchCategoryCell else {
             fatalError("Cannot create DisplayCategoryCell")
         }
         cell.configure(with: categories[indexPath.item])
@@ -105,26 +122,23 @@ class CategoryContainerCell: UICollectionViewCell,
     // MARK: - UICollectionViewDelegate (для горизонтальной коллекции)
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard indexPath.item < categories.count else { return }
-        let category = categories[indexPath.item]
+        let selectedCategoryObject = categories[indexPath.item]
         
-        // Обновляем только если индекс изменился
+        
         if selectedCategoryIndex != indexPath.item {
-            let previousIndex = selectedCategoryIndex
-            selectedCategoryIndex = indexPath.item
-            
-            // Обновляем визуально ячейки (не обязательно, т.к. selectItem должен сработать)
-            // Но на всякий случай оставим
-            if let previousCell = collectionView.cellForItem(at: IndexPath(item: previousIndex, section: 0)) as? DisplayCategoryCell {
-                previousCell.isSelected = false
-            }
-            if let currentCell = collectionView.cellForItem(at: indexPath) as? DisplayCategoryCell {
-                currentCell.isSelected = true
-            }
-            
-            
-            // Сообщаем главному контроллеру
-            onCategorySelected?(category, indexPath.item)
-        }
-        // Прокрутка не нужна, т.к. ячейки занимают всю ширину
-    }
+                   if let previousCell = collectionView.cellForItem(at: IndexPath(item: selectedCategoryIndex, section: 0)) as? SearchCategoryCell {
+                       previousCell.isSelected = false
+                   }
+                   selectedCategoryIndex = indexPath.item // Обновляем текущий индекс
+               }
+               
+               // Обновляем текущую выбранную ячейку (или повторно, если та же)
+               if let currentCell = collectionView.cellForItem(at: indexPath) as? SearchCategoryCell {
+                   currentCell.isSelected = true
+               }
+
+               onCategorySelected?(selectedCategoryObject, indexPath.item)
+               collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+           }
 }
+
