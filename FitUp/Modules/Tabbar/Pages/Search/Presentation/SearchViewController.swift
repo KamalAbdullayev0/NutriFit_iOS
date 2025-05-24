@@ -164,8 +164,24 @@ extension SearchViewController /* : UICollectionViewDataSource */ { // Можн�
             if let menuItem = viewModel.menuItem(at: indexPath) {
                 cell.configure(with: menuItem)
             } else {
-                cell.configure(with: MenuItem(name: "Error", description: "ViewModel Error", price: "", imageName: ""))
-            }
+                            // ИСПРАВЛЯЕМ ЗАГЛУШКУ:
+                            // Убедись, что поля description и price действительно убраны из MenuItem,
+                            // если да, то удали их и из этого инициализатора.
+                            // Если они остались, то их нужно будет передать.
+                            // Я оставлю их закомментированными, как в твоей последней структуре MenuItem.
+                            let errorMenuItem = MenuItem(
+                                name: "Error",
+                                description: "",
+                                // description: "ViewModel Error", // Если это поле удалено из MenuItem
+                                // price: "",                   // Если это поле удалено из MenuItem
+                                imageName: "",                 // Путь к плейсхолдеру или пустая строка
+                                fatValue: "N/A",
+                                proteinValue: "N/A",
+                                carbsValue: "N/A",
+                                quantityInfo: nil              // или " "
+                            )
+                            cell.configure(with: errorMenuItem)
+                        }
             return cell
         }
     }
@@ -218,7 +234,7 @@ extension SearchViewController /* : UICollectionViewDelegateFlowLayout */ {
             return CGSize(width: collectionView.bounds.width, height: 100) // Полная ширина
         } else {
             // Ячейка блюда
-            return CGSize(width: collectionView.bounds.width, height: 110)
+            return CGSize(width: collectionView.bounds.width, height: 150)
         }
     }
     
@@ -238,7 +254,7 @@ extension SearchViewController /* : UICollectionViewDelegateFlowLayout */ {
             return .zero
         }
         // Стандартный размер хедера
-        return CGSize(width: collectionView.bounds.width, height: 44)
+        return CGSize(width: collectionView.bounds.width, height: 30)
     }
     // Отступы для секции
     func collectionView(_ collectionView: UICollectionView,
@@ -260,7 +276,7 @@ extension SearchViewController /* : UICollectionViewDelegateFlowLayout */ {
     
     // Минимальное вертикальное расстояние между ячейками
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return section == 0 ? 0 : 10
+        return section == 0 ? 0 : 0
     }
 }
 

@@ -11,7 +11,7 @@ class MenuSectionHeaderView: UICollectionReusableView { // Используем 
     let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+        label.font = Resources.AppFont.bold.withSize(28)
         label.textColor = .label
         return label
     }()
@@ -32,13 +32,12 @@ class MenuSectionHeaderView: UICollectionReusableView { // Используем 
         addSubview(titleLabel)
         addSubview(translateButton)
         translateButton.addTarget(self, action: #selector(translateButtonTapped), for: .touchUpInside)
-        NSLayoutConstraint.activate([ /* ... как в примере ... */
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-             titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
-             translateButton.trailingAnchor.constraint(equalTo: trailingAnchor),
-             translateButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
-             titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: translateButton.leadingAnchor, constant: -8)
+        NSLayoutConstraint.activate([
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor,constant: 8),
+             titleLabel.topAnchor.constraint(equalTo: topAnchor),
+
+            translateButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
+            translateButton.trailingAnchor.constraint(equalTo: trailingAnchor,constant: -16)
         ])
     }
     required init?(coder: NSCoder) { fatalError() }

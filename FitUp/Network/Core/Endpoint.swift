@@ -6,40 +6,57 @@
 //
 import Foundation
 
+// EncodingType остается без изменений
 enum EncodingType {
     case url
     case json
 }
 
-enum Endpoint: String {
-    case register = "api/v1/auth/sign-up"
-    case login = "api/v1/auth/sign-in"
-    case refreshToken = "api/v1/auth/refresh-token"
-    case getAuthInfo = "api/v1/auth"
-    
-    case user_info_update = "api/v1/users"
-    
-    
-    
-    case user_nutrition = "api/v1/users/nutrition-requirement"
-    
-    case user_meal = "api/v1/user-meals/by-user"
-    
-    case user_meal_date_add_remove = "api/v1/user-meals"
-    
-    case user = "api/v1/auth/me"
-    
+// Модифицированный Endpoint enum
+enum Endpoint {
+    // Статические эндпоинты
+    case register
+    case login
+    case refreshToken
+    case getAuthInfo
+    case userInfoUpdate          // Рекомендую использовать camelCase для имен кейсов в Swift
+    case userNutrition           // Рекомендую использовать camelCase
+    case userMealByUser          // Рекомендую использовать camelCase
+    case userMealDateAddRemove   // Рекомендую использовать camelCase
+    case userAuthMe              // Рекомендую использовать camelCase
+
+    // Новый эндпоинт с динамической частью
+    case getMealsByType(mealType: String) // mealType будет, например, "BREAKFAST", "LUNCH"
+
+    // Вычисляемое свойство для получения строки пути
+    var path: String {
+        switch self {
+        case .register:
+            return "api/v1/auth/sign-up"
+        case .login:
+            return "api/v1/auth/sign-in"
+        case .refreshToken:
+            return "api/v1/auth/refresh-token"
+        case .getAuthInfo:
+            return "api/v1/auth"
+        case .userInfoUpdate:
+            return "api/v1/users"
+        case .userNutrition:
+            return "api/v1/users/nutrition-requirement"
+        case .userMealByUser:
+            return "api/v1/user-meals/by-user"
+        case .userMealDateAddRemove:
+            return "api/v1/user-meals"
+        case .userAuthMe:
+            return "api/v1/auth/me"
+        
+        case .getMealsByType(let typeValue):
+            return "api/v1/meals/type/\(typeValue)"
+        }
+    }
 }
 
-
-
-
-
-
-
-
-
-
+// NetworkError остается без изменений
 enum NetworkError: Error {
     case invalidResponse
     case unauthorized
@@ -62,4 +79,3 @@ enum NetworkError: Error {
         }
     }
 }
-

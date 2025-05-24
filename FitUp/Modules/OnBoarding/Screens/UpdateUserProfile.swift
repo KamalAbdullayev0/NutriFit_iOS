@@ -18,7 +18,7 @@ class UpdateUserProfileUseCase: UpdateUserProfileUseCaseProtocol {
         print("[UpdateUserProfileUseCase] Executing profile update...")
         do {
              let updatedProfile: UserProfileResponseDTO = try await networkManager.uploadProfile(
-                endpoint: .user_info_update,
+                endpoint: .userInfoUpdate,
                  dto: dto,
                  imageData: imageData,
                  imageFileName: "profile_update.jpg",

@@ -33,7 +33,7 @@ final class GetMealsUseCaseImpl: UserGetMealsUseCaseProtocol, UserProfileUseCase
 
         let parameters = ["date": dateString]
         let response: UserMealDataResponse = try await networkManager.request(
-            endpoint: .user_meal_date_add_remove,
+            endpoint: .userMealDateAddRemove,
             method: .get,
             parameters: parameters,
             encodingType: .url
@@ -44,7 +44,7 @@ final class GetMealsUseCaseImpl: UserGetMealsUseCaseProtocol, UserProfileUseCase
     
     func userNutritionRequirements() async throws -> NutritionRequirementsDTO {
         let response: NutritionRequirementsDTO = try await networkManager.request(
-            endpoint: .user_nutrition,
+            endpoint: .userNutrition,
             method: .get,
             encodingType: .url
         )
@@ -57,7 +57,7 @@ final class GetMealsUseCaseImpl: UserGetMealsUseCaseProtocol, UserProfileUseCase
 
         let parameters = ["date": dateString]
         let response: UserMealDataResponse = try await networkManager.request(
-            endpoint: .user_meal_date_add_remove,
+            endpoint: .userMealDateAddRemove,
             method: .get,
             parameters: parameters,
             encodingType: .url
@@ -67,7 +67,7 @@ final class GetMealsUseCaseImpl: UserGetMealsUseCaseProtocol, UserProfileUseCase
     
     func userData() async throws -> UserProfileDTO {
         let response: UserProfileDTO = try await networkManager.request(
-            endpoint: .user,
+            endpoint: .userAuthMe,
             method: .get,
             encodingType: .url
         )

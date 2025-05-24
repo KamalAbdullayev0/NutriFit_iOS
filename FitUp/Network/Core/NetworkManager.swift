@@ -20,7 +20,7 @@ final class NetworkManager {
         parameters: Parameters? = nil,
         encodingType: EncodingType = .url
     ) async throws -> T {
-        let fullURL = "\(NetworkHelper.shared.baseURL)\(endpoint.rawValue)"
+        let fullURL = "\(NetworkHelper.shared.baseURL)\(endpoint.path)"
         print("[NetworkManager] Starting request to \(fullURL)")
         print("[NetworkManager] Method: \(method.rawValue)")
         print("[NetworkManager] Parameters: \(parameters ?? [:])")
@@ -135,7 +135,7 @@ final class NetworkManager {
                        imageFileName: String? = "profile.jpg",
                        imageMimeType: String? = "image/jpg") async throws -> UserProfileResponseDTO {
         
-        let fullURL = "\(NetworkHelper.shared.baseURL)\(endpoint.rawValue)"
+        let fullURL = "\(NetworkHelper.shared.baseURL)\(endpoint.path)"
         
         let request = AF.upload(multipartFormData: { multipartFormData in
             do {
