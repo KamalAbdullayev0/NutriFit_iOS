@@ -10,6 +10,7 @@
 		471B22752D88929E0015696E /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 471B22742D88929E0015696E /* Alamofire */; };
 		47C7474F2DB33A020017E747 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 47C7474E2DB33A020017E747 /* KeychainAccess */; };
 		47C749632DBBE5BE0017E747 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 47C749622DBBE5BE0017E747 /* Kingfisher */; };
+		47F9B8372DD47C03002332BF /* SwipeCellKit in Frameworks */ = {isa = PBXBuildFile; productRef = 47F9B8362DD47C03002332BF /* SwipeCellKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47F9B8372DD47C03002332BF /* SwipeCellKit in Frameworks */,
 				47C749632DBBE5BE0017E747 /* Kingfisher in Frameworks */,
 				47C7474F2DB33A020017E747 /* KeychainAccess in Frameworks */,
 				471B22752D88929E0015696E /* Alamofire in Frameworks */,
@@ -137,6 +139,7 @@
 				471B22742D88929E0015696E /* Alamofire */,
 				47C7474E2DB33A020017E747 /* KeychainAccess */,
 				47C749622DBBE5BE0017E747 /* Kingfisher */,
+				47F9B8362DD47C03002332BF /* SwipeCellKit */,
 			);
 			productName = FitUp;
 			productReference = 471B21AC2D8892310015696E /* FitUp.app */;
@@ -224,6 +227,7 @@
 				471B22732D88929E0015696E /* XCRemoteSwiftPackageReference "Alamofire" */,
 				47C7474D2DB33A020017E747 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 				47C749612DBBE5BE0017E747 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				47F9B8352DD47C03002332BF /* XCRemoteSwiftPackageReference "SwipeCellKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 471B21AD2D8892310015696E /* Products */;
@@ -618,6 +622,14 @@
 				minimumVersion = 8.3.2;
 			};
 		};
+		47F9B8352DD47C03002332BF /* XCRemoteSwiftPackageReference "SwipeCellKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwipeCellKit/SwipeCellKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.7.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -635,6 +647,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 47C749612DBBE5BE0017E747 /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
+		};
+		47F9B8362DD47C03002332BF /* SwipeCellKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 47F9B8352DD47C03002332BF /* XCRemoteSwiftPackageReference "SwipeCellKit" */;
+			productName = SwipeCellKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

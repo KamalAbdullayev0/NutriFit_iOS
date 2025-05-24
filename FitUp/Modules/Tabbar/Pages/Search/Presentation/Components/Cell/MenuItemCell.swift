@@ -5,8 +5,9 @@
 //  Created by Kamal Abdullayev on 07.05.25.
 //
 import UIKit
+import SwipeCellKit
 
-class MenuItemCell: UICollectionViewCell { // Используем MenuItemCell из первого примера
+class MenuItemCell: SwipeCollectionViewCell { 
     static let reuseIdentifier = "MenuItemCell"
 
     let itemImageView: UIImageView = {

@@ -1,5 +1,5 @@
 {
-  "originHash" : "5a4ee7c3a8eacfae3b01390ed4d949adc882b7cedbee9b638351aa3d5daae056",
+  "originHash" : "5803a710bf3c4f1ccaf27e3efbf809e6fd4eb23cf5cafd73061633fdfed8f06f",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -26,6 +26,15 @@
       "state" : {
         "revision" : "7deda23bbdca612076c5c315003d8638a08ed0f1",
         "version" : "8.3.2"
+      }
+    },
+    {
+      "identity" : "swipecellkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SwipeCellKit/SwipeCellKit",
+      "state" : {
+        "revision" : "7219cad3098637176ace311510d11467dbfb9bb0",
+        "version" : "2.7.1"
       }
     }
   ],

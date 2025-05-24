@@ -8,14 +8,14 @@ import UIKit
 
 class MenuSectionHeaderView: UICollectionReusableView { // Используем хедер из первого примера
     static let reuseIdentifier = "MenuSectionHeaderView"
-    let titleLabel: UILabel = { /* ... как в примере ... */
+    let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         label.textColor = .label
         return label
     }()
-    let translateButton: UIButton = { /* ... как в примере ... */
+    let translateButton: UIButton = {
          let button = UIButton(type: .system)
          button.translatesAutoresizingMaskIntoConstraints = false
          button.setTitle("Translate", for: .normal)

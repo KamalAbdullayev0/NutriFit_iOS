@@ -90,24 +90,6 @@ final class SearchViewModel {
         return filteredSections[menuIndex]
     }
     
-    
-    //    private func filterData() {
-    //        guard selectedCategoryIndex < mealCategories.count else {
-    //            filteredSections = menuSectionsData
-    //            print("Warning: selectedCategoryIndex out of bounds, showing all sections.")
-    //            return
-    //        }
-    //        let selectedCategory = mealCategories[selectedCategoryIndex]
-    //        filteredSections = menuSectionsData.filter { $0.title.localizedCaseInsensitiveCompare(selectedCategory.name) == .orderedSame }
-    //
-    //        if filteredSections.isEmpty && !menuSectionsData.isEmpty {
-    //            print("Для категории '\(selectedCategory.name)' нет явных секций, показываем все меню.")
-    //            filteredSections = menuSectionsData // Fallback - показать все
-    //        }
-    //        print("[ViewModel] Отфильтровано \(filteredSections.count) секций для категории '\(selectedCategory.name)'")
-    //    }
-    //
-    
     func sectionIndexToScroll(forCategory category: DisplayCategory) -> Int? {
         
         if let foundIndexDirect = filteredSections.firstIndex(where: {
