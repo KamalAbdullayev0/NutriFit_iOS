@@ -84,7 +84,8 @@ class SearchViewController:  UICollectionViewController, UICollectionViewDelegat
     }
     private func setupBinding() {
         viewModel.onDataChanged = { [weak self] in
-            self?.collectionView.reloadData()
+            guard let self = self else { return }
+            self.collectionView.reloadData()
         }
     }
     
@@ -127,32 +128,6 @@ extension SearchViewController /* : UICollectionViewDataSource */ { // Можн�
                 
                 // 1. Сообщаем ViewModel о выборе (обновит selectedCategoryIndex и вызовет onDataChanged)
                 self.viewModel.selectCategory(at: indexInHorizontalScroll)
-                
-                // 2. Получаем целевой индекс секции из ViewModel для прокрутки
-                if let targetSectionToScroll = self.viewModel.sectionIndexToScroll(forCategory: selectedCategory) {
-                    // Убедимся, что такая секция существует
-                    guard targetSectionToScroll < self.collectionView.numberOfSections else {
-                        print("Error: Target section \(targetSectionToScroll) is out of bounds.")
-                        return
-                    }
-                    
-                    // 3. Прокручиваем UICollectionView
-                    let targetIndexPath = IndexPath(item: 0, section: targetSectionToScroll)
-                    
-                    // Проверяем, есть ли хедер или элементы для корректной прокрутки
-                    let numberOfItems = self.collectionView(collectionView, numberOfItemsInSection: targetSectionToScroll)
-                    let headerSize = self.collectionView(collectionView, layout: collectionView.collectionViewLayout, referenceSizeForHeaderInSection: targetSectionToScroll)
-                    
-                    if numberOfItems > 0 {
-                        self.collectionView.scrollToItem(at: targetIndexPath, at: .top, animated: true)
-                    } else if headerSize.height > 0 {
-                        self.collectionView.scrollToItem(at: targetIndexPath, at: .top, animated: true)
-                    } else {
-                        print("Section \(targetSectionToScroll) is empty and has no header; cannot scroll effectively.")
-                    }
-                } else {
-                    print("Could not find section to scroll to for category: \(selectedCategory.name)")
-                }
             }
             return cell
         } else {
@@ -164,24 +139,24 @@ extension SearchViewController /* : UICollectionViewDataSource */ { // Можн�
             if let menuItem = viewModel.menuItem(at: indexPath) {
                 cell.configure(with: menuItem)
             } else {
-                            // ИСПРАВЛЯЕМ ЗАГЛУШКУ:
-                            // Убедись, что поля description и price действительно убраны из MenuItem,
-                            // если да, то удали их и из этого инициализатора.
-                            // Если они остались, то их нужно будет передать.
-                            // Я оставлю их закомментированными, как в твоей последней структуре MenuItem.
-                            let errorMenuItem = MenuItem(
-                                name: "Error",
-                                description: "",
-                                // description: "ViewModel Error", // Если это поле удалено из MenuItem
-                                // price: "",                   // Если это поле удалено из MenuItem
-                                imageName: "",                 // Путь к плейсхолдеру или пустая строка
-                                fatValue: "N/A",
-                                proteinValue: "N/A",
-                                carbsValue: "N/A",
-                                quantityInfo: nil              // или " "
-                            )
-                            cell.configure(with: errorMenuItem)
-                        }
+                // ИСПРАВЛЯЕМ ЗАГЛУШКУ:
+                // Убедись, что поля description и price действительно убраны из MenuItem,
+                // если да, то удали их и из этого инициализатора.
+                // Если они остались, то их нужно будет передать.
+                // Я оставлю их закомментированными, как в твоей последней структуре MenuItem.
+                let errorMenuItem = MenuItem(
+                    name: "Error",
+                    description: "",
+                    // description: "ViewModel Error", // Если это поле удалено из MenuItem
+                    // price: "",                   // Если это поле удалено из MenuItem
+                    imageName: "",                 // Путь к плейсхолдеру или пустая строка
+                    fatValue: "N/A",
+                    proteinValue: "N/A",
+                    carbsValue: "N/A",
+                    quantityInfo: nil              // или " "
+                )
+                cell.configure(with: errorMenuItem)
+            }
             return cell
         }
     }
@@ -298,6 +273,9 @@ extension SearchViewController /* : UICollectionViewDelegate */ {
     }
 }
 
+
+
+
 extension SearchViewController: SwipeCollectionViewCellDelegate {
     
     func collectionView(_ collectionView: UICollectionView,
@@ -305,112 +283,114 @@ extension SearchViewController: SwipeCollectionViewCellDelegate {
                         for orientation: SwipeActionsOrientation) -> SwipeOptions {
         
         var options = SwipeOptions()
-        // .drag — кнопки идут за пальцем
-        options.transitionStyle = .border
-        // отступ между кнопками
-        options.buttonSpacing = 4
-        // .selection — полный свайп сразу выполняет действие
-        options.expansionStyle = .selection
-        
-        
-        options.expansionDelegate   = ScaleAndAlphaExpansion.default
+        options.transitionStyle = .reveal
+        options.buttonSpacing = 10
+        options.expansionStyle = .none
+        options.expansionDelegate = nil
         
         if orientation == .left {
-                    // ЛЕВЫЙ СВАЙП (избранное) - более деликатное поведение
-                    options.expansionStyle = SwipeExpansionStyle(
-                        target: .percentage(0.4), // Активация при 40% от ширины экрана
-                        additionalTriggers: [
-                            .touchThreshold(0.25), // Дополнительный триггер при касании в 25% от края
-                            .overscroll(15) // Триггер при перескролле на 15 пикселей
-                        ],
-                        elasticOverscroll: false, // Эластичное поведение при перескролле
-                        completionAnimation: .bounce // Отскок назад после действия
-                    )
-                    
-                } else if orientation == .right {
-                    // ПРАВЫЙ СВАЙП (добавление в корзину) - более агрессивное поведение
-                    options.expansionStyle = SwipeExpansionStyle(
-                        target: .percentage(0.6), // Активация при 60% от ширины экрана
-                        additionalTriggers: [
-                            .touchThreshold(0.7), // Триггер при касании в 70% от края
-                            .overscroll(20) // Триггер при перескролле на 20 пикселей
-                        ],
-                        elasticOverscroll: false,
-                        completionAnimation: .fill(.automatic(.reset, timing: .with)) // Заполнение с автосбросом
-                    )
-                }
-        return options
-
-    }
-    func collectionView(_ collectionView: UICollectionView,
-                            editActionsForItemAt indexPath: IndexPath,
-                            for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
+            options.expansionStyle = SwipeExpansionStyle(
+                target: .percentage(0.3),
+                additionalTriggers: [
+                    .touchThreshold(0.2),
+                    .overscroll(3)
+                ],
+                elasticOverscroll: true,
+                completionAnimation: .bounce
+            )
             
-            // Проверяем валидность индекса и получаем элемент меню
-            guard indexPath.section > 0,
-                  let menuItem = viewModel.menuItem(at: indexPath) else {
-                return nil
-            }
-            
-            switch orientation {
-            case .right:
-                return createRightSwipeActions(for: menuItem, at: indexPath)
-            case .left:
-                return createLeftSwipeActions(for: menuItem, at: indexPath)
-            @unknown default:
-                return nil
-            }
+        } else if orientation == .right {
+            options.expansionStyle = SwipeExpansionStyle(
+                target: .percentage(0.35),
+                additionalTriggers: [
+                    .touchThreshold(0.25),
+                    .overscroll(3)
+                ],
+                elasticOverscroll: false,
+                completionAnimation: .bounce
+            )
         }
+        return options
+    }
     
-    private func createRightSwipeActions(for menuItem: MenuItem, at indexPath: IndexPath) -> [SwipeAction] {
-
-            let addAction = SwipeAction(style: .default, title: "Əlavə et") { [weak self] action, _ in
-                self?.addItemToBasket(menuItem)
-                print("sga isledi")
-                action.fulfill(with: .reset)
-            }
-        addAction.transitionDelegate = ScaleTransition.default
-            addAction.backgroundColor = UIColor.systemBlue
-            addAction.image = UIImage(systemName: "plus.circle.fill")
-            addAction.textColor = .white
-            addAction.font = .systemFont(ofSize: 14, weight: .medium)
-            
-            
-            return [addAction]
+    func collectionView(_ collectionView: UICollectionView,
+                        editActionsForItemAt indexPath: IndexPath,
+                        for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
+        
+        guard indexPath.section > 0,
+              let menuItem = viewModel.menuItem(at: indexPath) else {
+            return nil
         }
         
-        /// Создает действия для левого свайпа (избранное и другие)
-        private func createLeftSwipeActions(for menuItem: MenuItem, at indexPath: IndexPath) -> [SwipeAction] {
-
-            
-            let favoriteAction = SwipeAction(style: .default, title: "Seçilmiş") {[weak self] action, _ in
-                print("sol isledi")
-
-                action.fulfill(with: .reset)
-            }
-                
-                
-                favoriteAction.backgroundColor = .systemRed
-                           //            favoriteAction.image = UIImage(systemName: "heart.fill")
-            favoriteAction.textColor = .white
-            favoriteAction.font = .systemFont(ofSize: 14, weight: .medium)
-            
-            // Дополнительное действие - поделиться
-           
-            
-            return [favoriteAction]
+        switch orientation {
+        case .left:
+            return createLeftSwipeActions(for: menuItem, at: indexPath)
+        case .right:
+            return createRightSwipeActions(for: menuItem, at: indexPath)
+        @unknown default:
+            return nil
         }
-//    // MARK: Сбрасываем фон ячейки после любого окончания свайпа
-//        func collectionView(_ collectionView: UICollectionView,
-//                            didEndEditingItemAt indexPath: IndexPath?,
-//                            for orientation: SwipeActionsOrientation) {
-//            
-//            // Если ячейка ещё видна — возвращаем ей белый фон
-//            if let ip = indexPath,
-//               let cell = collectionView.cellForItem(at: ip) as? SwipeCollectionViewCell {
-//                cell.backgroundColor        = .white
-//                cell.contentView.backgroundColor = .white
-//            }
-//        }
+    }
     
+    private func createLeftSwipeActions(for menuItem: MenuItem, at indexPath: IndexPath) -> [SwipeAction] {
+        
+        let addAction = SwipeAction(style: .default, title: "  Əlavə et") { [weak self] action, _ in
+            self?.addItemToBasket(menuItem)
+            
+            // Добавляем haptic feedback для лучшего UX
+            let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+            impactFeedback.impactOccurred()
+            
+            print("Добавление выполнено")
+            action.fulfill(with: .reset)
+        }
+        
+        addAction.transitionDelegate = nil
+        addAction.backgroundColor = UIColor(red: 0.25, green: 0.25, blue: 0.25, alpha: 1.0)
+        
+        // Увеличенная иконка с отступом
+        if let plusIcon = UIImage(systemName: "plus.circle.fill") {
+            let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .bold) // Увеличенный размер
+            addAction.image = plusIcon.withConfiguration(config)
+        }
+        
+        addAction.textColor = .white
+        addAction.font = .systemFont(ofSize: 16, weight: .semibold)
+        
+        // Отключаем скрытие для плавной анимации
+        addAction.hidesWhenSelected = false
+        
+        return [addAction]
+    }
+    
+    private func createRightSwipeActions(for menuItem: MenuItem, at indexPath: IndexPath) -> [SwipeAction] {
+        
+        let deleteAction = SwipeAction(style: .destructive, title: "Sil") { [weak self] action, _ in
+            // Здесь будет логика удаления
+            print("Удаление выполнено")
+            
+            // Добавляем haptic feedback
+            let impactFeedback = UIImpactFeedbackGenerator(style: .heavy)
+            impactFeedback.impactOccurred()
+            
+            action.fulfill(with: .delete)
+        }
+        
+        // Оптимизация для черного фона - убираем лишние анимации
+        deleteAction.transitionDelegate = nil
+        
+        // Контрастные цвета для черного фона
+        deleteAction.backgroundColor = UIColor(red: 0.9, green: 0.2, blue: 0.2, alpha: 1.0) // Яркий красный
+        deleteAction.textColor = .white // Белый текст для контраста
+        deleteAction.font = .systemFont(ofSize: 16, weight: .bold) // Жирный шрифт для лучшей видимости
+        
+        // Четкая иконка удаления
+        if let trashIcon = UIImage(systemName: "trash.fill") {
+            let config = UIImage.SymbolConfiguration(pointSize: 18, weight: .bold)
+            deleteAction.image = trashIcon.withConfiguration(config)
+        }
+        deleteAction.hidesWhenSelected = false
+        
+        return [deleteAction]
+    }
 }
