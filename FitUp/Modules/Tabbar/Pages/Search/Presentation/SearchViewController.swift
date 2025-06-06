@@ -99,21 +99,21 @@ class SearchViewController:  UICollectionViewController, UICollectionViewDelegat
                        if self.refreshControl.isRefreshing {
                            self.refreshControl.endRefreshing()
                        }
-            viewModel.onMealAddedSuccessfully = { [weak self] in
-                    // Здесь ты можешь показать пользователю алерт об успехе
-                    // Это хорошая практика для UX
-                    let alert = UIAlertController(title: "Успех!", message: "Блюдо добавлено в ваш рацион.", preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                    self?.present(alert, animated: true, completion: nil)
-                }
-                
-                // Что делать при ошибке
-                viewModel.onMealAddFailed = { [weak self] error in
-                    // Показываем алерт с ошибкой
-                    let alert = UIAlertController(title: "Ошибка", message: "Не удалось добавить блюдо: \(error.localizedDescription)", preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                    self?.present(alert, animated: true, completion: nil)
-                }
+//            viewModel.onMealAddedSuccessfully = { [weak self] in
+//                    // Здесь ты можешь показать пользователю алерт об успехе
+//                    // Это хорошая практика для UX
+//                    let alert = UIAlertController(title: "Успех!", message: "Блюдо добавлено в ваш рацион.", preferredStyle: .alert)
+//                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+//                    self?.present(alert, animated: true, completion: nil)
+//                }
+//                
+//                // Что делать при ошибке
+//                viewModel.onMealAddFailed = { [weak self] error in
+//                    // Показываем алерт с ошибкой
+//                    let alert = UIAlertController(title: "Ошибка", message: "Не удалось добавить блюдо: \(error.localizedDescription)", preferredStyle: .alert)
+//                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+//                    self?.present(alert, animated: true, completion: nil)
+//                }
         }
     }
     @objc private func handleRefresh() {
@@ -128,15 +128,16 @@ class SearchViewController:  UICollectionViewController, UICollectionViewDelegat
     @objc private func moreButtonTapped() {
         print("More button tapped")
     }
-    private func addItemToBasket(_ menuItem: MenuItem) {
-        print("SearchViewController: Запрос на добавление в корзину: \(menuItem.name)")
-        viewModel.addMealToUserBasket(menuItem: menuItem)
+    private func addMealFromUser(_ menuItem: MenuItem) {
+        viewModel.addMealToUser(menuItem: menuItem)
+    }
+    private func deleteMealFromUser(_ menuItem: MenuItem) {
+        viewModel.deleteMealFromUser(menuItem: menuItem)
     }
 }
 
-
-extension SearchViewController /* : UICollectionViewDataSource */ { // Можно убрать повторное объявление протокола
-    
+// MARK: - UICollectionViewDataSource
+extension SearchViewController {
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return viewModel.numberOfSections()
     }
@@ -172,22 +173,16 @@ extension SearchViewController /* : UICollectionViewDataSource */ { // Можн�
             if let menuItem = viewModel.menuItem(at: indexPath) {
                 cell.configure(with: menuItem)
             } else {
-                // ИСПРАВЛЯЕМ ЗАГЛУШКУ:
-                // Убедись, что поля description и price действительно убраны из MenuItem,
-                // если да, то удали их и из этого инициализатора.
-                // Если они остались, то их нужно будет передать.
-                // Я оставлю их закомментированными, как в твоей последней структуре MenuItem.
+                
                 let errorMenuItem = MenuItem(
-                    serverId: 100,////////////// teze eledin
+                    serverId: -1,
                     name: "Error",
                     description: "",
-                    // description: "ViewModel Error", // Если это поле удалено из MenuItem
-                    // price: "",                   // Если это поле удалено из MenuItem
-                    imageName: "",                 // Путь к плейсхолдеру или пустая строка
+                    imageName: "",
                     fatValue: "N/A",
                     proteinValue: "N/A",
                     carbsValue: "N/A",
-                    quantityInfo: nil              // или " "
+                    quantityInfo: nil
                 )
                 cell.configure(with: errorMenuItem)
             }
@@ -233,8 +228,10 @@ extension SearchViewController /* : UICollectionViewDataSource */ { // Можн�
     }
     
 }
+
+
 // MARK: - UICollectionViewDelegateFlowLayout
-extension SearchViewController /* : UICollectionViewDelegateFlowLayout */ {
+extension SearchViewController {
     // Размер ячейки
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
@@ -291,7 +288,7 @@ extension SearchViewController /* : UICollectionViewDelegateFlowLayout */ {
 
 
 // MARK: - UICollectionViewDelegate (Swipe Actions & Selection)
-extension SearchViewController /* : UICollectionViewDelegate */ {
+extension SearchViewController {
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("SearchViewController: didSelectItemAt - collectionView.delegate is \(String(describing: collectionView.delegate))")
@@ -369,7 +366,7 @@ extension SearchViewController: SwipeCollectionViewCellDelegate {
     private func createLeftSwipeActions(for menuItem: MenuItem, at indexPath: IndexPath) -> [SwipeAction] {
         
         let addAction = SwipeAction(style: .default, title: "  Əlavə et") { [weak self] action, _ in
-            self?.addItemToBasket(menuItem)
+            self?.addMealFromUser(menuItem)
             
             // Добавляем haptic feedback для лучшего UX
             let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
@@ -400,8 +397,7 @@ extension SearchViewController: SwipeCollectionViewCellDelegate {
     private func createRightSwipeActions(for menuItem: MenuItem, at indexPath: IndexPath) -> [SwipeAction] {
         
         let deleteAction = SwipeAction(style: .destructive, title: "Sil") { [weak self] action, _ in
-            // Здесь будет логика удаления
-            print("Удаление выполнено")
+            self?.deleteMealFromUser(menuItem)
             
             // Добавляем haptic feedback
             let impactFeedback = UIImpactFeedbackGenerator(style: .heavy)

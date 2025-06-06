@@ -9,6 +9,10 @@ import Foundation
 protocol GetSearchMealUseCase {
     func getMealData(for mealType: MealType) async throws -> MealListResponse
 }
+protocol UserMealUseCaseProtocol {
+    func execute(mealId: Int, quantity: Float) async throws -> UserMealResponse
+    func delete(mealId: Int) async throws -> UserMealResponse
+}
 
 final class SearchUseCaseImpl: GetSearchMealUseCase {
     private let networkManager = NetworkManager.shared
@@ -28,33 +32,38 @@ final class SearchUseCaseImpl: GetSearchMealUseCase {
         }
     }
 }
-
-protocol AddUserMealUseCaseProtocol {
-
-    func execute(mealId: Int, quantity: Float) async throws -> UserMealResponse // ИЗМЕНЕНО: Возвращаемый тип
-}
-
-// 2. Обновляем реализацию UseCase
-final class AddUserMealUseCase: AddUserMealUseCaseProtocol {
+final class AddUserMealUseCase: UserMealUseCaseProtocol {
     private let networkManager = NetworkManager.shared
-
-    func execute(mealId: Int, quantity: Float) async throws -> UserMealResponse { // ИЗМЕНЕНО: Возвращаемый тип
-        print("AddUserMealUseCase: Добавление блюда ID: \(mealId), Количество: \(quantity)")
+    
+    func execute(mealId: Int, quantity: Float) async throws -> UserMealResponse {
         let endpoint = Endpoint.addUserMeal(mealId: mealId, quantity: quantity)
-
+        
         do {
-            // Вызываем networkManager.request, УКАЗЫВАЯ ОЖИДАЕМЫЙ ТИП ОТВЕТА
-            let response: UserMealResponse = try await networkManager.request(
+            let addMealResponse: UserMealResponse = try await networkManager.request(
                 endpoint: endpoint,
                 method: .post,
-                // Передаем параметры из Endpoint, чтобы NetworkManager использовал их
                 parameters: endpoint.parameters,
-                encodingType: .url // Как и раньше, для query параметров
+                encodingType: .url
             )
-            print("AddUserMealUseCase: Блюдо успешно добавлено. Ответ от сервера: \(response)")
-            return response // Возвращаем декодированный ответ
+            return addMealResponse
         } catch {
             print("AddUserMealUseCase: Ошибка при добавлении блюда: \(error.localizedDescription)")
+            throw error
+        }
+    }
+    func delete(mealId: Int) async throws -> UserMealResponse {
+        let endpoint = Endpoint.deleteUserMeal(mealId: mealId)
+        
+        do {
+            let addMealResponse: UserMealResponse = try await networkManager.request(
+                endpoint: endpoint,
+                method: .delete,
+                parameters: endpoint.parameters,
+                encodingType: .url
+            )
+            return addMealResponse
+        } catch {
+            print("AddUserMealUseCase: Ошибка при удалении блюда: \(error.localizedDescription)")
             throw error
         }
     }

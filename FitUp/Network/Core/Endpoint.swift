@@ -6,30 +6,28 @@
 //
 import Foundation
 
-// EncodingType остается без изменений
 enum EncodingType {
     case url
     case json
 }
 
-// Модифицированный Endpoint enum
 enum Endpoint {
-    // Статические эндпоинты
+    // satatik endpointler
     case register
     case login
     case refreshToken
     case getAuthInfo
-    case userInfoUpdate          // Рекомендую использовать camelCase для имен кейсов в Swift
-    case userNutrition           // Рекомендую использовать camelCase
-    case userMealByUser          // Рекомендую использовать camelCase
-    case userMealDateAddRemove   // Рекомендую использовать camelCase
-    case userAuthMe              // Рекомендую использовать camelCase
+    case userInfoUpdate
+    case userNutrition
+    case userMealByUser
+    case userMealDateAddRemove
+    case userAuthMe
     
-    // Новый эндпоинт с динамической частью
+    // Dinamik endpointler
     case getMealsByType(mealType: String)
     case addUserMeal(mealId: Int, quantity: Float)
+    case deleteUserMeal(mealId: Int)
     
-    // Вычисляемое свойство для получения строки пути
     var path: String {
         switch self {
         case .register:
@@ -50,24 +48,27 @@ enum Endpoint {
             return "api/v1/user-meals"
         case .userAuthMe:
             return "api/v1/auth/me"
-            
         case .getMealsByType(let typeValue):
             return "api/v1/meals/type/\(typeValue)"
         case .addUserMeal:
             return "api/v1/user-meals"
+        case .deleteUserMeal:
+            return "api/v1/user-meals"
         }
+        
     }
     var parameters: [String: Any]? {
-            switch self {
-            case .addUserMeal(let mealId, let quantity):
-                return ["mealId": mealId, "quantity": quantity]
-            default:
-                return nil
-            }
+        switch self {
+        case .deleteUserMeal(let mealId):
+            return ["mealId": mealId]
+        case .addUserMeal(let mealId, let quantity):
+            return ["mealId": mealId, "quantity": quantity]
+        default:
+            return nil
         }
+    }
 }
 
-// NetworkError остается без изменений
 enum NetworkError: Error {
     case invalidResponse
     case unauthorized

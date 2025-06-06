@@ -13,7 +13,6 @@ final class NetworkManager {
 //    private init() {
 //        print("[NetworkManager] Initialized network manager")
 //    }
-    
     func request<T: Codable>(
         endpoint: Endpoint,
         method: HTTPMethod = .get,
