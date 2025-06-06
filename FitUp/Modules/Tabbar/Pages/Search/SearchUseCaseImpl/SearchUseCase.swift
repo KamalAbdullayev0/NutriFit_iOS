@@ -29,3 +29,33 @@ final class SearchUseCaseImpl: GetSearchMealUseCase {
     }
 }
 
+protocol AddUserMealUseCaseProtocol {
+
+    func execute(mealId: Int, quantity: Float) async throws -> UserMealResponse // ИЗМЕНЕНО: Возвращаемый тип
+}
+
+// 2. Обновляем реализацию UseCase
+final class AddUserMealUseCase: AddUserMealUseCaseProtocol {
+    private let networkManager = NetworkManager.shared
+
+    func execute(mealId: Int, quantity: Float) async throws -> UserMealResponse { // ИЗМЕНЕНО: Возвращаемый тип
+        print("AddUserMealUseCase: Добавление блюда ID: \(mealId), Количество: \(quantity)")
+        let endpoint = Endpoint.addUserMeal(mealId: mealId, quantity: quantity)
+
+        do {
+            // Вызываем networkManager.request, УКАЗЫВАЯ ОЖИДАЕМЫЙ ТИП ОТВЕТА
+            let response: UserMealResponse = try await networkManager.request(
+                endpoint: endpoint,
+                method: .post,
+                // Передаем параметры из Endpoint, чтобы NetworkManager использовал их
+                parameters: endpoint.parameters,
+                encodingType: .url // Как и раньше, для query параметров
+            )
+            print("AddUserMealUseCase: Блюдо успешно добавлено. Ответ от сервера: \(response)")
+            return response // Возвращаем декодированный ответ
+        } catch {
+            print("AddUserMealUseCase: Ошибка при добавлении блюда: \(error.localizedDescription)")
+            throw error
+        }
+    }
+}

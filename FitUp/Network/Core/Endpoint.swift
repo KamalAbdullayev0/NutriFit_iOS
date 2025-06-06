@@ -24,10 +24,11 @@ enum Endpoint {
     case userMealByUser          // Рекомендую использовать camelCase
     case userMealDateAddRemove   // Рекомендую использовать camelCase
     case userAuthMe              // Рекомендую использовать camelCase
-
+    
     // Новый эндпоинт с динамической частью
-    case getMealsByType(mealType: String) // mealType будет, например, "BREAKFAST", "LUNCH"
-
+    case getMealsByType(mealType: String)
+    case addUserMeal(mealId: Int, quantity: Float)
+    
     // Вычисляемое свойство для получения строки пути
     var path: String {
         switch self {
@@ -49,11 +50,21 @@ enum Endpoint {
             return "api/v1/user-meals"
         case .userAuthMe:
             return "api/v1/auth/me"
-        
+            
         case .getMealsByType(let typeValue):
             return "api/v1/meals/type/\(typeValue)"
+        case .addUserMeal:
+            return "api/v1/user-meals"
         }
     }
+    var parameters: [String: Any]? {
+            switch self {
+            case .addUserMeal(let mealId, let quantity):
+                return ["mealId": mealId, "quantity": quantity]
+            default:
+                return nil
+            }
+        }
 }
 
 // NetworkError остается без изменений

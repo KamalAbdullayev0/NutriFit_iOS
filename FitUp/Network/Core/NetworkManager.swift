@@ -119,7 +119,6 @@ final class NetworkManager {
             print("[NetworkManager] Full AuthResponse:")
             print("Access Token: \(response.accessToken)")
             print("Refresh Token: \(response.refreshToken)")
-            print("Profile Image URL: \(response.profileImageUrl)")
             print("Type: \(response.type)")
 
             AuthManager.shared.accessToken = response.accessToken

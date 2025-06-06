@@ -8,9 +8,13 @@ import Foundation
 
 final class SearchViewModel {
     private let searchUseCase: GetSearchMealUseCase
+    private let addUserMealUseCase: AddUserMealUseCaseProtocol
     
     var onDataChanged: (() -> Void)?
     var onErrorOccurred: ((Error) -> Void)?
+    
+    var onMealAddedSuccessfully: (() -> Void)?
+    var onMealAddFailed: ((Error) -> Void)?
     
     @MainActor private(set) var isLoading: Bool = false
     
@@ -21,10 +25,12 @@ final class SearchViewModel {
     
     private var menuSectionsData: [MenuSection] = []
     
-    init(searchUseCase: GetSearchMealUseCase = SearchUseCaseImpl()) {
-        self.searchUseCase = searchUseCase
-        setupInitialDataAndLoadAll()
-    }
+    init(searchUseCase: GetSearchMealUseCase = SearchUseCaseImpl(),
+             addUserMealUseCase: AddUserMealUseCaseProtocol = AddUserMealUseCase()) { // Используем реализацию по умолчанию
+            self.searchUseCase = searchUseCase
+            self.addUserMealUseCase = addUserMealUseCase // Сохраняем зависимость
+            setupInitialDataAndLoadAll()
+        }
     
     private func setupInitialDataAndLoadAll() {
         mealCategories = MealType.allCases.map { DisplayCategory(mealType: $0) }
@@ -35,9 +41,30 @@ final class SearchViewModel {
             await fetchAllCategoriesSequentiallyAndUpdateAll()
         }
     }
+    @MainActor
+        func addMealToUserBasket(menuItem: MenuItem) {
+            Task {
+                do {
+                    let userMealEntry = try await addUserMealUseCase.execute(
+                        mealId: menuItem.serverId,
+                        quantity: 1.0
+                    )
+                    
+                    print("[SearchViewModel] Блюдо '\(menuItem.name)' успешно добавлено. ID записи: \(userMealEntry.id)")
+                    
+                    onMealAddedSuccessfully?()
+                    
+                } catch {
+                    print("[SearchViewModel] Ошибка при добавлении блюда '\(menuItem.name)': \(error)")
+                    
+                    // Уведомляем UI об ошибке
+                    onMealAddFailed?(error)
+                }
+            }
+        }
     
     @MainActor
-    private func fetchAllCategoriesSequentiallyAndUpdateAll() async {
+    func fetchAllCategoriesSequentiallyAndUpdateAll() async {
         isLoading = true
         onDataChanged?()
         
@@ -54,7 +81,7 @@ final class SearchViewModel {
                     var quantityDisp: String? = nil
                     if apiItem.unitType == .PIECE { quantityDisp = "1 pc"}
                     
-                    return MenuItem(name: apiItem.name, description: apiItem.description, imageName: apiItem.image ?? "", fatValue: fatDisplay, proteinValue: proteinDisplay, carbsValue: carbsDisplay, quantityInfo: quantityDisp)
+                    return MenuItem(serverId: apiItem.id,name: apiItem.name, description: apiItem.description, imageName: apiItem.image ?? "", fatValue: fatDisplay, proteinValue: proteinDisplay, carbsValue: carbsDisplay, quantityInfo: quantityDisp)
                 }
                 
                 if index < menuSectionsData.count {

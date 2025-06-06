@@ -21,6 +21,7 @@ struct DisplayCategory: Hashable {
 // Модель для блюда
 struct MenuItem: Hashable {
     let id = UUID()
+    let serverId: Int
     let name: String
     let description: String
     let imageName: String
@@ -93,3 +94,17 @@ struct MealListResponse: Codable {
     let numberOfElements: Int
     let empty: Bool
 }
+
+struct UserMealResponse: Codable {
+    let id: Int
+    let userId: Int
+    let mealId: Int
+    let date: String
+    let meal: MealInfo?
+    let quantity: Float
+    
+    struct MealInfo: Codable {
+        
+    }
+}
+

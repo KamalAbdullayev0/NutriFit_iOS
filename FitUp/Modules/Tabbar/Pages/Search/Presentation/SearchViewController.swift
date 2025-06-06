@@ -12,6 +12,8 @@ class SearchViewController:  UICollectionViewController, UICollectionViewDelegat
     private let viewModel: SearchViewModel
     private let topSearchView = TopSearchView()
     
+    private let refreshControl = UIRefreshControl()
+    
     init(viewModel: SearchViewModel) {
         self.viewModel = viewModel
         let layout = UICollectionViewFlowLayout()
@@ -30,6 +32,7 @@ class SearchViewController:  UICollectionViewController, UICollectionViewDelegat
         setupTopSearchView()
         configureCollectionView()
         registerCellsAndHeaders()
+        setupRefreshControl()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -72,6 +75,13 @@ class SearchViewController:  UICollectionViewController, UICollectionViewDelegat
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                 withReuseIdentifier: MenuSectionHeaderView.reuseIdentifier)
     }
+    private func setupRefreshControl() {
+           refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+           
+           refreshControl.tintColor = .gray
+           
+           collectionView.refreshControl = refreshControl
+       }
     
     
     
@@ -86,9 +96,31 @@ class SearchViewController:  UICollectionViewController, UICollectionViewDelegat
         viewModel.onDataChanged = { [weak self] in
             guard let self = self else { return }
             self.collectionView.reloadData()
+                       if self.refreshControl.isRefreshing {
+                           self.refreshControl.endRefreshing()
+                       }
+            viewModel.onMealAddedSuccessfully = { [weak self] in
+                    // Здесь ты можешь показать пользователю алерт об успехе
+                    // Это хорошая практика для UX
+                    let alert = UIAlertController(title: "Успех!", message: "Блюдо добавлено в ваш рацион.", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    self?.present(alert, animated: true, completion: nil)
+                }
+                
+                // Что делать при ошибке
+                viewModel.onMealAddFailed = { [weak self] error in
+                    // Показываем алерт с ошибкой
+                    let alert = UIAlertController(title: "Ошибка", message: "Не удалось добавить блюдо: \(error.localizedDescription)", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    self?.present(alert, animated: true, completion: nil)
+                }
         }
     }
-    
+    @objc private func handleRefresh() {
+            Task {
+                await viewModel.fetchAllCategoriesSequentiallyAndUpdateAll()
+            }
+        }
     // --- Actions ---
     @objc private func backButtonTapped() {
         print("salam")
@@ -97,7 +129,8 @@ class SearchViewController:  UICollectionViewController, UICollectionViewDelegat
         print("More button tapped")
     }
     private func addItemToBasket(_ menuItem: MenuItem) {
-        print("Добавление в корзину: \(menuItem.name)")
+        print("SearchViewController: Запрос на добавление в корзину: \(menuItem.name)")
+        viewModel.addMealToUserBasket(menuItem: menuItem)
     }
 }
 
@@ -145,6 +178,7 @@ extension SearchViewController /* : UICollectionViewDataSource */ { // Можн�
                 // Если они остались, то их нужно будет передать.
                 // Я оставлю их закомментированными, как в твоей последней структуре MenuItem.
                 let errorMenuItem = MenuItem(
+                    serverId: 100,////////////// teze eledin
                     name: "Error",
                     description: "",
                     // description: "ViewModel Error", // Если это поле удалено из MenuItem
