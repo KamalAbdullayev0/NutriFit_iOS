@@ -76,12 +76,12 @@ class SearchViewController:  UICollectionViewController, UICollectionViewDelegat
                                 withReuseIdentifier: MenuSectionHeaderView.reuseIdentifier)
     }
     private func setupRefreshControl() {
-           refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
-           
-           refreshControl.tintColor = .gray
-           
-           collectionView.refreshControl = refreshControl
-       }
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        
+        refreshControl.tintColor = .gray
+        
+        collectionView.refreshControl = refreshControl
+    }
     
     
     
@@ -96,43 +96,22 @@ class SearchViewController:  UICollectionViewController, UICollectionViewDelegat
         viewModel.onDataChanged = { [weak self] in
             guard let self = self else { return }
             self.collectionView.reloadData()
-                       if self.refreshControl.isRefreshing {
-                           self.refreshControl.endRefreshing()
-                       }
-//            viewModel.onMealAddedSuccessfully = { [weak self] in
-//                    // Здесь ты можешь показать пользователю алерт об успехе
-//                    // Это хорошая практика для UX
-//                    let alert = UIAlertController(title: "Успех!", message: "Блюдо добавлено в ваш рацион.", preferredStyle: .alert)
-//                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-//                    self?.present(alert, animated: true, completion: nil)
-//                }
-//                
-//                // Что делать при ошибке
-//                viewModel.onMealAddFailed = { [weak self] error in
-//                    // Показываем алерт с ошибкой
-//                    let alert = UIAlertController(title: "Ошибка", message: "Не удалось добавить блюдо: \(error.localizedDescription)", preferredStyle: .alert)
-//                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-//                    self?.present(alert, animated: true, completion: nil)
-//                }
+            if self.refreshControl.isRefreshing {
+                self.refreshControl.endRefreshing()
+            }
         }
     }
     @objc private func handleRefresh() {
-            Task {
-                await viewModel.fetchAllCategoriesSequentiallyAndUpdateAll()
-            }
+        Task {
+            await viewModel.fetchAllCategoriesSequentiallyAndUpdateAll()
         }
+    }
     // --- Actions ---
     @objc private func backButtonTapped() {
         print("salam")
     }
     @objc private func moreButtonTapped() {
         print("More button tapped")
-    }
-    private func addMealFromUser(_ menuItem: MenuItem) {
-        viewModel.addMealToUser(menuItem: menuItem)
-    }
-    private func deleteMealFromUser(_ menuItem: MenuItem) {
-        viewModel.deleteMealFromUser(menuItem: menuItem)
     }
 }
 
@@ -366,7 +345,8 @@ extension SearchViewController: SwipeCollectionViewCellDelegate {
     private func createLeftSwipeActions(for menuItem: MenuItem, at indexPath: IndexPath) -> [SwipeAction] {
         
         let addAction = SwipeAction(style: .default, title: "  Əlavə et") { [weak self] action, _ in
-            self?.addMealFromUser(menuItem)
+            self?.viewModel.addMealToUser(menuItem: menuItem)
+            
             
             // Добавляем haptic feedback для лучшего UX
             let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
@@ -397,7 +377,7 @@ extension SearchViewController: SwipeCollectionViewCellDelegate {
     private func createRightSwipeActions(for menuItem: MenuItem, at indexPath: IndexPath) -> [SwipeAction] {
         
         let deleteAction = SwipeAction(style: .destructive, title: "Sil") { [weak self] action, _ in
-            self?.deleteMealFromUser(menuItem)
+            self?.viewModel.deleteMealFromUser(menuItem: menuItem)
             
             // Добавляем haptic feedback
             let impactFeedback = UIImpactFeedbackGenerator(style: .heavy)

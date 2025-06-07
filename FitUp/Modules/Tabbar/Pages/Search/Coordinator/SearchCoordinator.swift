@@ -9,8 +9,8 @@ import UIKit
 final class SearchCoordinator: Coordinator {
     
     override func start() {
-        let searchUseCase = SearchUseCaseImpl()
-        let searchvc = SearchViewController(viewModel: .init(searchUseCase: searchUseCase))
+        let searchUseCase = MealUseCase()
+        let searchvc = SearchViewController(viewModel: .init(mealUseCase: searchUseCase))
         navigationController.setViewControllers([searchvc], animated: false)
         
 

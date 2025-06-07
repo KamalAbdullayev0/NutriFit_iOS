@@ -7,8 +7,7 @@
 import Foundation
 
 final class SearchViewModel {
-    private let searchUseCase: GetSearchMealUseCase
-    private let userMealUseCase: UserMealUseCaseProtocol
+    private let mealUseCase: MealUseCaseProtocol
     
     var didAddNewMeal: (() -> Void)?
     
@@ -30,10 +29,8 @@ final class SearchViewModel {
     
     private var menuSectionsData: [MenuSection] = []
     
-    init(searchUseCase: GetSearchMealUseCase = SearchUseCaseImpl(),
-         addUserMealUseCase: UserMealUseCaseProtocol = AddUserMealUseCase()) {
-        self.searchUseCase = searchUseCase
-        self.userMealUseCase = addUserMealUseCase
+    init(mealUseCase: MealUseCaseProtocol = MealUseCase()) {
+        self.mealUseCase = mealUseCase
         setupInitialDataAndLoadAll()
     }
     
@@ -50,10 +47,11 @@ final class SearchViewModel {
     func addMealToUser(menuItem: MenuItem) {
         Task {
             do {
-                let userMealEntry = try await userMealUseCase.execute(
+                let userMealEntry = try await mealUseCase.addMeal(
                     mealId: menuItem.serverId,
                     quantity: 1.0
                 )
+                print(userMealEntry)
                 onMealAddedSuccessfully?()
             } catch {
                 onMealAddFailed?(error)
@@ -64,7 +62,8 @@ final class SearchViewModel {
     func deleteMealFromUser(menuItem: MenuItem) {
         Task {
             do {
-                let userMealEntry = try await userMealUseCase.delete(mealId: menuItem.serverId)
+                let userMealEntry = try await mealUseCase.deleteMeal(mealId: menuItem.serverId)
+                print(userMealEntry)
                 onMealDeletedSuccessfully?()
             } catch {
                 onMealDeleteFailed?(error)
@@ -81,7 +80,7 @@ final class SearchViewModel {
         for (index, MealType) in MealType.allCases.enumerated() {
             
             do {
-                let mealResponse = try await searchUseCase.getMealData(for: MealType)
+                let mealResponse = try await mealUseCase.getMealData(for: MealType)
                 let uiMenuItems = mealResponse.content.map { apiItem -> MenuItem in
                     let fatDisplay = "\(Int(apiItem.fat.rounded())) g"
                     let proteinDisplay = "\(Int(apiItem.protein.rounded())) g"
