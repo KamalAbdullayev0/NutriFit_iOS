@@ -6,6 +6,10 @@
 //
 import UIKit
 
+enum CellPosition {
+    case first, middle, last, single
+}
+
 class OptionCollectionCell: UICollectionViewCell {
     
     static let reuseIdentifier = "OptionCollectionCell"
@@ -43,10 +47,10 @@ class OptionCollectionCell: UICollectionViewCell {
         $0.tintColor = .systemGray3
     }
     private lazy var separatorView = UIView().configure {
-          $0.translatesAutoresizingMaskIntoConstraints = false
-          $0.backgroundColor = .systemGray4
-      }
-
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.backgroundColor = .systemGray4
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -58,9 +62,7 @@ class OptionCollectionCell: UICollectionViewCell {
     
     // MARK: - UI Setup
     private func setupUI() {
-        // Чтобы ячейка выглядела как в UITableView, мы можем настроить ее фон.
-        // Но с Compositional Layout это будет сделано автоматически.
-        
+        self.backgroundColor = .white
         textStackView.addArrangedSubview(titleLabel)
         textStackView.addArrangedSubview(subtitleLabel)
         
@@ -69,7 +71,7 @@ class OptionCollectionCell: UICollectionViewCell {
         contentView.addSubview(chevronImageView)
         
         contentView.addSubview(separatorView)
-
+        
         
         NSLayoutConstraint.activate([
             iconImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
@@ -83,34 +85,62 @@ class OptionCollectionCell: UICollectionViewCell {
             chevronImageView.leadingAnchor.constraint(equalTo: textStackView.trailingAnchor, constant: 8),
             chevronImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             chevronImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            chevronImageView.widthAnchor.constraint(equalToConstant: 13),
+            chevronImageView.widthAnchor.constraint(equalToConstant: 15),
             chevronImageView.heightAnchor.constraint(equalToConstant: 20),
             
-            separatorView.leadingAnchor.constraint(equalTo: textStackView.leadingAnchor),
+            separatorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             separatorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             separatorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            separatorView.heightAnchor.constraint(equalToConstant: 0.5) // Тонкая линия
+            separatorView.heightAnchor.constraint(equalToConstant: 1)
         ])
     }
     
-//    public func configureCell(icon: UIImage?, title: String, subtitle: String = "") {
-//            iconImageView.image = icon
-//            titleLabel.text = title
-//            subtitleLabel.text = subtitle
-//            subtitleLabel.isHidden = subtitle.isEmpty
-//        }
-    // --- ИСПРАВЛЕННЫЙ МЕТОД: принимает модель MenuOption ---
-        public func configureCell(with option: MenuOption) {
-            iconImageView.image = option.icon
-            titleLabel.text = option.title
-            
-            subtitleLabel.text = option.subtitle
-            subtitleLabel.isHidden = option.subtitle?.isEmpty ?? true
+    
+    // ---roundCorners
+    public func roundCorners(for position: CellPosition, with radius: CGFloat = 12) {
+        let path: UIBezierPath
+        let corners: UIRectCorner
+        
+        switch position {
+        case .first:
+            corners = [.topLeft, .topRight]
+        case .middle:
+            corners = []
+        case .last:
+            corners = [.bottomLeft, .bottomRight]
+        case .single:
+            corners = .allCorners
         }
         
-        // --- НОВЫЙ МЕТОД: для управления видимостью сепаратора ---
-        public func setSeparatorVisibility(isHidden: Bool) {
-            separatorView.isHidden = isHidden
+        // Создаем путь с нужными скругленными углами
+        path = UIBezierPath(roundedRect: self.bounds,
+                            byRoundingCorners: corners,
+                            cornerRadii: CGSize(width: radius, height: radius))
+        
+        // Создаем маску и применяем ее к слою ячейки
+        let mask = CAShapeLayer()
+        mask.path = path.cgPath
+        self.layer.mask = mask
+    }
+    // --- ВАЖНО: Сбрасываем маску при переиспользовании ячейки ---
+        override func prepareForReuse() {
+            super.prepareForReuse()
+            // Если этого не сделать, ячейка сохранит старое скругление при прокрутке
+            self.layer.mask = nil
         }
+    
+    // --- configureCell
+    public func configureCell(with option: MenuOption) {
+        iconImageView.image = option.icon
+        titleLabel.text = option.title
+        
+        subtitleLabel.text = option.subtitle
+        subtitleLabel.isHidden = option.subtitle?.isEmpty ?? true
+    }
+    
+    // --- НОВЫЙ МЕТОД: для управления видимостью сепаратора ---
+    public func setSeparatorVisibility(isHidden: Bool) {
+        separatorView.isHidden = isHidden
+    }
     
 }

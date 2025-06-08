@@ -9,7 +9,7 @@ import UIKit
 
 class ProfileViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     private let menuOptions = MockUserProfile.menuOptions
-
+    
     // MARK: - Lifecycle
     init() {
         let layout = UICollectionViewFlowLayout()
@@ -55,9 +55,6 @@ class ProfileViewController: UICollectionViewController, UICollectionViewDelegat
             forCellWithReuseIdentifier: AITrainerButtonCell.reuseIdentifier
         )
         collectionView.register(OptionCollectionCell.self, forCellWithReuseIdentifier: OptionCollectionCell.reuseIdentifier)
-        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-                    layout.register(SectionBackgroundView.self, forDecorationViewOfKind: "SectionBackground")
-                }
     }
 }
 
@@ -83,11 +80,26 @@ extension ProfileViewController {
         case .header:
             fatalError("Header section should not have items")
         case .optionsMenu:
-                   let cell = collectionView.dequeueReusableCell(withReuseIdentifier: OptionCollectionCell.reuseIdentifier, for: indexPath) as! OptionCollectionCell
-                   cell.configureCell(with: menuOptions[indexPath.item])
-                   cell.setSeparatorVisibility(isHidden: indexPath.item == menuOptions.count - 1)
-                   return cell
-               }
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: OptionCollectionCell.reuseIdentifier, for: indexPath) as! OptionCollectionCell
+            let totalRows = collectionView.numberOfItems(inSection: indexPath.section)
+                   var position: CellPosition
+                   
+                   if totalRows == 1 {
+                       position = .single
+                   } else if indexPath.item == 0 {
+                       position = .first
+                   } else if indexPath.item == totalRows - 1 {
+                       position = .last
+                   } else {
+                       position = .middle
+                   }
+                   
+                   // --- ВЫЗЫВАЕМ НОВЫЕ МЕТОДЫ ---
+                   cell.roundCorners(for: position)
+                   cell.setSeparatorVisibility(isHidden: (position == .last || position == .single))
+            cell.configureCell(with: menuOptions[indexPath.item])
+            return cell
+        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -124,59 +136,59 @@ extension ProfileViewController {
 extension ProfileViewController {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-            guard let section = ProfileSection(rawValue: indexPath.section) else { return .zero }
-            let contentWidth = view.frame.width - 40
-            
-            switch section {
-            case .aiTrainer:
-                return CGSize(width: contentWidth, height: 58) // Немного выше, как на скрине
-            case .optionsMenu:
-                return CGSize(width: contentWidth, height: 70)
-            default:
-                return .zero
-            }
-        }
+        guard let section = ProfileSection(rawValue: indexPath.section) else { return .zero }
+        let contentWidth = view.frame.width - 40
         
-        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-            return section == 0 ? CGSize(width: view.frame.width, height: 320) : .zero
+        switch section {
+        case .aiTrainer:
+            return CGSize(width: contentWidth, height: 58) // Немного выше, как на скрине
+        case .optionsMenu:
+            return CGSize(width: contentWidth, height: 70)
+        default:
+            return .zero
         }
-
-        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-            guard let section = ProfileSection(rawValue: section) else { return .zero }
-            switch section {
-            case .aiTrainer:
-                return UIEdgeInsets(top: 20, left: 20, bottom: 10, right: 20)
-            case .optionsMenu:
-                return UIEdgeInsets(top: 10, left: 20, bottom: 20, right: 20)
-            default:
-                return .zero
-            }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return section == 0 ? CGSize(width: view.frame.width, height: 320) : .zero
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        guard let section = ProfileSection(rawValue: section) else { return .zero }
+        switch section {
+        case .aiTrainer:
+            return UIEdgeInsets(top: 20, left: 20, bottom: 10, right: 20)
+        case .optionsMenu:
+            return UIEdgeInsets(top: 10, left: 20, bottom: 20, right: 20)
+        default:
+            return .zero
         }
-
-        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-            return ProfileSection(rawValue: section) == .optionsMenu ? 0 : 10
-        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return ProfileSection(rawValue: section) == .optionsMenu ? 0 : 10
+    }
+    
+    // MARK: - Delegate (ОБРАБОТКА НАЖАТИЙ)
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // Снимаем выделение для красивой анимации
+        collectionView.deselectItem(at: indexPath, animated: true)
         
-        // MARK: - Delegate (ОБРАБОТКА НАЖАТИЙ)
+        guard let section = ProfileSection(rawValue: indexPath.section) else { return }
         
-        override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-            // Снимаем выделение для красивой анимации
-            collectionView.deselectItem(at: indexPath, animated: true)
+        switch section {
+        case .aiTrainer:
+            print("Нажата кнопка: ★ AI Personal Trainer")
             
-            guard let section = ProfileSection(rawValue: indexPath.section) else { return }
+        case .optionsMenu:
+            let selectedOption = menuOptions[indexPath.item]
+            print("Нажата ячейка: \(selectedOption.title)")
+            // Здесь вы можете добавить код для перехода на другой экран
+            // например, navigationController?.pushViewController(...)
             
-            switch section {
-            case .aiTrainer:
-                print("Нажата кнопка: ★ AI Personal Trainer")
-                
-            case .optionsMenu:
-                let selectedOption = menuOptions[indexPath.item]
-                print("Нажата ячейка: \(selectedOption.title)")
-                // Здесь вы можете добавить код для перехода на другой экран
-                // например, navigationController?.pushViewController(...)
-                
-            default:
-                break
-            }
+        default:
+            break
         }
+    }
 }
