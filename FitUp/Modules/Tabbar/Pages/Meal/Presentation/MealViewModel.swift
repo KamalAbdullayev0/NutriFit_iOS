@@ -8,13 +8,12 @@
 import Foundation
 
 final class MealViewModel {
-    
     private let userMealsUseCase: UserGetMealsUseCaseProtocol
-    private let userProfileUseCase: UserProfileUseCaseProtocol
+    private let userProfileUseCase: GetUserProfileUseCaseProtocol
     
     init(
         userMealsUseCase: UserGetMealsUseCaseProtocol,
-        userProfileUseCase: UserProfileUseCaseProtocol
+        userProfileUseCase: GetUserProfileUseCaseProtocol
     ) {
         self.userMealsUseCase = userMealsUseCase
         self.userProfileUseCase = userProfileUseCase
@@ -22,20 +21,17 @@ final class MealViewModel {
     
     @MainActor
     func fetchMealData(for date: Date) async throws -> (totalMeals: TotalMealValuesDTO, requirements: NutritionRequirementsDTO, usermeal: [UserMealDTO]) {
-        async let totalMealsTask = userMealsUseCase.usersTotalMeal(for: date)
+        async let mealDataTask = userMealsUseCase.fetchUserMealData(for: date)
         async let requirementsTask = userMealsUseCase.userNutritionRequirements()
-        async let usermealTask = userMealsUseCase.userMealData(for: date)
-        
-        let totalMeals = try await totalMealsTask
+        let mealData = try await mealDataTask
         let requirements = try await requirementsTask
-        let usermeal = try await usermealTask
         
-        return (totalMeals, requirements, usermeal)
+        return (mealData.total, requirements, mealData.meals)
         
     }
     
     @MainActor
     func fetchUserProfile() async throws -> UserProfileDTO {
-        return try await userProfileUseCase.userData()
+        return try await userProfileUseCase.fetchUserProfile()
     }
 }

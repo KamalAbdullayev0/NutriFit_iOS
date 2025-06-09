@@ -8,10 +8,19 @@
 import UIKit
 
 class ProfileViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+    
     private let menuOptions = MockUserProfile.menuOptions
     
+    
+    private var imageLoadTask: Task<Void, Error>?
+    
+    private let viewModel: ProfileViewModel
+    private var userProfile: UserProfileDTO?
+    private var userRequirments: NutritionRequirementsDTO?
+    
     // MARK: - Lifecycle
-    init() {
+    init(viewModel: ProfileViewModel) {
+        self.viewModel = viewModel
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         super.init(collectionViewLayout: layout)
@@ -23,11 +32,13 @@ class ProfileViewController: UICollectionViewController, UICollectionViewDelegat
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        collectionView.alwaysBounceVertical = true
         
         setupNavigationBar()
         setupCollectionView()
         registerCells()
         
+        fetchProfileData()
     }
     
     // MARK: - Setup
@@ -56,7 +67,23 @@ class ProfileViewController: UICollectionViewController, UICollectionViewDelegat
         )
         collectionView.register(OptionCollectionCell.self, forCellWithReuseIdentifier: OptionCollectionCell.reuseIdentifier)
     }
+    private func fetchProfileData() {
+        Task {
+            do {
+                let profile = try await viewModel.fetchUserProfile()
+                let requirments = try await viewModel.fetchUserRequirements()
+                self.userRequirments = requirments
+                self.userProfile = profile
+                self.collectionView.reloadSections(IndexSet(integer: 0))
+                
+            } catch {
+                print("❌ Failed to fetch user profile: \(error)")
+            }
+        }
+    }
 }
+
+
 
 // MARK: - UICollectionViewDataSource
 extension ProfileViewController {
@@ -82,37 +109,27 @@ extension ProfileViewController {
         case .optionsMenu:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: OptionCollectionCell.reuseIdentifier, for: indexPath) as! OptionCollectionCell
             let totalRows = collectionView.numberOfItems(inSection: indexPath.section)
-                   var position: CellPosition
-                   
-                   if totalRows == 1 {
-                       position = .single
-                   } else if indexPath.item == 0 {
-                       position = .first
-                   } else if indexPath.item == totalRows - 1 {
-                       position = .last
-                   } else {
-                       position = .middle
-                   }
-                   
-                   // --- ВЫЗЫВАЕМ НОВЫЕ МЕТОДЫ ---
-                   cell.roundCorners(for: position)
-                   cell.setSeparatorVisibility(isHidden: (position == .last || position == .single))
+            var position: CellPosition
+            
+            if totalRows == 1 {
+                position = .single
+            } else if indexPath.item == 0 {
+                position = .first
+            } else if indexPath.item == totalRows - 1 {
+                position = .last
+            } else {
+                position = .middle
+            }
+            
+            // --- ВЫЗЫВАЕМ НОВЫЕ МЕТОДЫ ---
+            cell.roundCorners(for: position)
+            cell.setSeparatorVisibility(isHidden: (position == .last || position == .single))
             cell.configureCell(with: menuOptions[indexPath.item])
             return cell
         }
     }
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        //            guard kind == UICollectionView.elementKindSectionHeader, indexPath.section == 0 else {
-        //                return UICollectionReusableView()
-        //            }
-        //
-        //            let header = collectionView.dequeueReusableSupplementaryView(
-        //                ofKind: kind,
-        //                withReuseIdentifier: ProfileHeaderView.reuseIdentifier,
-        //                for: indexPath
-        //            ) as! ProfileHeaderView
-        //            return header
         guard kind == UICollectionView.elementKindSectionHeader,
               let section = ProfileSection(rawValue: indexPath.section) else {
             return UICollectionReusableView()
@@ -121,8 +138,9 @@ extension ProfileViewController {
         switch section {
         case .header:
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: ProfileHeaderView.reuseIdentifier, for: indexPath) as! ProfileHeaderView
-            // Здесь вы можете передать реальные данные, если они есть
-            // header.configure(with: userProfile)
+            if let userProfile = userProfile, let userRequirments = userRequirments {
+                header.configure(with: userProfile, requirments: userRequirments)
+            }
             return header
         default:
             // Для других секций хедер не нужен

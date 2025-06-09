@@ -112,22 +112,18 @@ class OptionCollectionCell: UICollectionViewCell {
             corners = .allCorners
         }
         
-        // Создаем путь с нужными скругленными углами
         path = UIBezierPath(roundedRect: self.bounds,
                             byRoundingCorners: corners,
                             cornerRadii: CGSize(width: radius, height: radius))
-        
-        // Создаем маску и применяем ее к слою ячейки
         let mask = CAShapeLayer()
         mask.path = path.cgPath
         self.layer.mask = mask
     }
-    // --- ВАЖНО: Сбрасываем маску при переиспользовании ячейки ---
-        override func prepareForReuse() {
-            super.prepareForReuse()
-            // Если этого не сделать, ячейка сохранит старое скругление при прокрутке
-            self.layer.mask = nil
-        }
+    // prepar
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.layer.mask = nil
+    }
     
     // --- configureCell
     public func configureCell(with option: MenuOption) {
@@ -138,9 +134,8 @@ class OptionCollectionCell: UICollectionViewCell {
         subtitleLabel.isHidden = option.subtitle?.isEmpty ?? true
     }
     
-    // --- НОВЫЙ МЕТОД: для управления видимостью сепаратора ---
+    // --- For setSeparatorVisibility
     public func setSeparatorVisibility(isHidden: Bool) {
         separatorView.isHidden = isHidden
     }
-    
 }

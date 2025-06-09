@@ -280,7 +280,7 @@ class MealViewController: UIViewController {
         
         currentDataTask = Task {
             do {
-                let (totalMeals, requirements,usermeal) = try await viewModel.fetchMealData(for: date)
+                let (totalMeals,requirements,usermeal) = try await viewModel.fetchMealData(for: date)
                 try Task.checkCancellation()
                 updateMacroViews(with: totalMeals, requirements: requirements)
                 mealView.configure(with: usermeal)
@@ -331,7 +331,8 @@ class MealViewController: UIViewController {
     @MainActor
     private func updateUI(with profile: UserProfileDTO) {
         titleLabel.text = "Hello, \(profile.fullName)"
-        if let imageUrlString = profile.profileImageUrl, let url = URL(string: imageUrlString) {
+        if let imageUrlString = profile.profileImageUrl,
+           let url = URL(string: imageUrlString) {
             loadImage(from: url)
         } else {
             setDefaultProfileImage()

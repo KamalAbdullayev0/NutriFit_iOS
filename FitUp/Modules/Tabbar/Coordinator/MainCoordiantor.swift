@@ -23,7 +23,7 @@ final class MainCoordinator: Coordinator {
         let albumsCoordinator = NutritionCoordinator(navigationController: UINavigationController())
         let photosCoordinator = SearchCoordinator(navigationController: UINavigationController())
         let postsCoordinator = PostsTabCoordinator(navigationController: UINavigationController())
-        let usersCoordinator = UsersTabCoordinator(navigationController: UINavigationController())
+        let usersCoordinator = ProfileTabCoordinator(navigationController: UINavigationController())
         addChildCoordinator(usersCoordinator) // bunnan isledi coordinator yaddasdan cixmadi
         usersCoordinator.onLogoutTriggered = { [weak self] in
             self?.onLogout?()

@@ -8,16 +8,12 @@
 import Foundation
 
 protocol UserGetMealsUseCaseProtocol {
-    func usersTotalMeal(for date: Date) async throws -> TotalMealValuesDTO
     func userNutritionRequirements() async throws -> NutritionRequirementsDTO
-    func userMealData(for date: Date) async throws -> [UserMealDTO]
-}
-protocol UserProfileUseCaseProtocol {
-    func userData() async throws -> UserProfileDTO
+    func fetchUserMealData(for date: Date) async throws -> (meals: [UserMealDTO], total: TotalMealValuesDTO)
+
 }
 
-
-final class GetMealsUseCaseImpl: UserGetMealsUseCaseProtocol, UserProfileUseCaseProtocol {
+final class GetMealsUseCaseImpl: UserGetMealsUseCaseProtocol {
     private let networkManager = NetworkManager.shared
     
     private let apiDateFormatter: DateFormatter = {
@@ -28,49 +24,24 @@ final class GetMealsUseCaseImpl: UserGetMealsUseCaseProtocol, UserProfileUseCase
         return formatter
     }()
     
-    func usersTotalMeal(for date: Date) async throws -> TotalMealValuesDTO {
-        let dateString = apiDateFormatter.string(from: date)
-
-        let parameters = ["date": dateString]
-        let response: UserMealDataResponse = try await networkManager.request(
-            endpoint: .userMealDateAddRemove,
-            method: .get,
-            parameters: parameters,
-            encodingType: .url
-        )
-
-        return response.totalMealValuesDTO
-    }
-    
     func userNutritionRequirements() async throws -> NutritionRequirementsDTO {
         let response: NutritionRequirementsDTO = try await networkManager.request(
             endpoint: .userNutrition,
             method: .get,
             encodingType: .url
         )
-
         return response
     }
-    
-    func userMealData(for date: Date) async throws -> [UserMealDTO] {
+    func fetchUserMealData(for date: Date) async throws -> (meals: [UserMealDTO], total: TotalMealValuesDTO) {
         let dateString = apiDateFormatter.string(from: date)
-
         let parameters = ["date": dateString]
+        
         let response: UserMealDataResponse = try await networkManager.request(
             endpoint: .userMealDateAddRemove,
             method: .get,
             parameters: parameters,
             encodingType: .url
         )
-        return response.userMealDTOS.content
-    }
-    
-    func userData() async throws -> UserProfileDTO {
-        let response: UserProfileDTO = try await networkManager.request(
-            endpoint: .userAuthMe,
-            method: .get,
-            encodingType: .url
-        )
-        return response
+        return (meals: response.userMealDTOS.content, total: response.totalMealValuesDTO)
     }
 }

@@ -55,24 +55,41 @@ class ProfileHeaderView: UICollectionReusableView {
     }
     
     // MARK: - Configuration
-    func configure(with profile: UserProfile) {
-        welcomeLabel.text = "Welcome, \(profile.name)!"
-        profileImageView.image = profile.avatarImage ?? UIImage(systemName: "person.circle.fill")
+    func configure(with profile: UserProfileDTO, requirments: NutritionRequirementsDTO) {
+        welcomeLabel.text = "Welcome, \(profile.fullName)!"
+        profileImageView.setImageOptimized(
+            from: profile.profileImageUrl,
+                    placeholder: UIImage(systemName: "person.circle.fill")
+                )
         
         // Очищаем старые статистики
         statsStackView.arrangedSubviews.forEach {
             statsStackView.removeArrangedSubview($0)
             $0.removeFromSuperview()
         }
-        addStat(value: "\(profile.stats.record)", label: "Record")
-        addStat(value: "\(profile.stats.calorie)", label: "Calorie")
-        addStat(value: "\(profile.stats.minute)", label: "Minute")
+        addStat(value: "\(requirments.carbs)", label: "Carb")
+        addStat(value: "\(requirments.protein)", label: "Protein")
+        addStat(value: "\(requirments.fat)", label: "Fat")
         
         
     }
-    // MARK: - Mock Configuration (заглушка)
+//    func configure(with profile: UserProfileDTO,) {
+//        welcomeLabel.text = "Welcome, \(profile.name)!"
+//
+//        // Загрузка изображения по URL (URL должен быть в UserProfile)
+//        // profileImageView.setImageOptimized(from: profile.avatarURL, ...)
+//
+//        // Очищаем старые статистики
+//        statsStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+//
+//        // Отображаем статистику из UI-модели
+//        addStat(value: "\(profile.stats.record)", label: "Record")
+//        addStat(value: "\(profile.stats.calorie)", label: "Calorie")
+//        addStat(value: "\(profile.stats.minute)", label: "Minute")
+//    }
+    // MARK: - Mock Configuration
     private func configureMockData() {
-        configure(with: MockUserProfile.defaultProfile)
+        configure(with: MockNetworkData.userProfileDTO,requirments: MockNetworkData.nutritionRequirementsDTO)/*, requirments: NutritionRequirementsDTO*/
     }
     
     // MARK: - UI Setup

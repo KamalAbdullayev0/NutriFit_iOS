@@ -33,11 +33,32 @@ struct MockUserProfile {
         MenuOption(icon: UIImage(systemName: "icloud.and.arrow.up.fill"), title: "Backup & Restore", subtitle: "")
     ]
 }
-//struct OptionItem {
-//    let icon: UIImage?
-//    let title: String
-//    let subtitle: String
-//}
+struct MockNetworkData {
+
+    /// Моковые данные для профиля пользователя, имитирующие ответ от бэкенда.
+    static let userProfileDTO = UserProfileDTO(
+        id: 101,
+        fullName: "Камал Абдуллаев",
+        username: "kamal_dev",
+        profileImageUrl: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260", // Пример URL изображения
+        gender: "male",
+        age: 28,
+        height: 182.5,
+        weight: 81.3,
+        goal: "muscle_gain", // Цель: набор массы
+        activityLevel: "moderately_active" // Уровень активности: умеренно активный
+    )
+
+    /// Моковые данные для пищевых потребностей, имитирующие ответ от бэкенда.
+    static let nutritionRequirementsDTO = NutritionRequirementsDTO(
+        calories: 2500,
+        protein: 180,
+        carbs: 250,
+        fat: 80,
+        sugar: 60
+    )
+}
+
 struct MenuOption {
     let icon: UIImage?
     let title: String
