@@ -28,7 +28,7 @@ final class MainCoordinator: Coordinator {
         usersCoordinator.onLogoutTriggered = { [weak self] in
             self?.onLogout?()
             }
-        childCoordinators = [albumsCoordinator, photosCoordinator, /*postsCoordinator,*/ usersCoordinator]
+        childCoordinators = [albumsCoordinator, photosCoordinator, postsCoordinator, usersCoordinator]
         
         childCoordinators.forEach { $0.start() }
         

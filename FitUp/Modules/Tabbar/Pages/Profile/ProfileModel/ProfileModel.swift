@@ -11,14 +11,14 @@ enum ProfileSection: Int, CaseIterable {
     case header
     case aiTrainer
     case optionsMenu
-
-       var itemCount: Int {
-           switch self {
-           case .header: return 0
-           case .aiTrainer: return 1
-           case .optionsMenu: return 3
-           }
-       }
+    
+    var itemCount: Int {
+        switch self {
+        case .header: return 0
+        case .aiTrainer: return 1
+        case .optionsMenu: return 4
+        }
+    }
 }
 // MARK: - Mock Data для заглушек
 struct MockUserProfile {
@@ -30,11 +30,13 @@ struct MockUserProfile {
     static let menuOptions: [MenuOption] = [
         MenuOption(icon: UIImage(systemName: "dumbbell.fill"), title: "My Workouts", subtitle: "History • Recent"),
         MenuOption(icon: UIImage(systemName: "fork.knife"), title: "My Meal", subtitle: "History • Recent"),
-        MenuOption(icon: UIImage(systemName: "icloud.and.arrow.up.fill"), title: "Backup & Restore", subtitle: "")
+        MenuOption(icon: UIImage(systemName: "icloud.and.arrow.up.fill"), title: "Backup & Restore", subtitle: ""),
+        MenuOption(icon: UIImage(systemName:"rectangle.portrait.and.arrow.right"),title: "Logout", subtitle: "Cixmaq ucun" )
+        
     ]
 }
 struct MockNetworkData {
-
+    
     /// Моковые данные для профиля пользователя, имитирующие ответ от бэкенда.
     static let userProfileDTO = UserProfileDTO(
         id: 101,
@@ -48,7 +50,7 @@ struct MockNetworkData {
         goal: "muscle_gain", // Цель: набор массы
         activityLevel: "moderately_active" // Уровень активности: умеренно активный
     )
-
+    
     /// Моковые данные для пищевых потребностей, имитирующие ответ от бэкенда.
     static let nutritionRequirementsDTO = NutritionRequirementsDTO(
         calories: 2500,

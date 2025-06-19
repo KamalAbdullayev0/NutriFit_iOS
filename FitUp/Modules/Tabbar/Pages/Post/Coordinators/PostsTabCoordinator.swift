@@ -9,8 +9,9 @@ import UIKit
 final class PostsTabCoordinator: Coordinator {
     
     override func start() {
-        let vc = PostsViewController()
-        navigationController.setViewControllers([vc], animated: false)
+        let getUserProfileUseCase = GetUserProfileUseCaseImpl()
+        let PostVC = ProfileViewController(viewModel: .init(userProfileUseCase: getUserProfileUseCase))
+        navigationController.setViewControllers([PostVC], animated: false)
         navigationController.tabBarItem = UITabBarItem(title: "Map", image: UIImage(named: "map"), tag: 0)
     }
 }

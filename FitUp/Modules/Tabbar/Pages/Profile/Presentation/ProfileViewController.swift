@@ -18,6 +18,8 @@ class ProfileViewController: UICollectionViewController, UICollectionViewDelegat
     private var userProfile: UserProfileDTO?
     private var userRequirments: NutritionRequirementsDTO?
     
+    var onLogoutTapped: (() -> Void)?
+    
     // MARK: - Lifecycle
     init(viewModel: ProfileViewModel) {
         self.viewModel = viewModel
@@ -38,6 +40,7 @@ class ProfileViewController: UICollectionViewController, UICollectionViewDelegat
         setupCollectionView()
         registerCells()
         
+        setupViewModelCallbacks()
         fetchProfileData()
     }
     
@@ -81,6 +84,12 @@ class ProfileViewController: UICollectionViewController, UICollectionViewDelegat
             }
         }
     }
+    private func setupViewModelCallbacks() {
+        viewModel.onLogoutSuccess = { [weak self] in
+            print("ProfileViewController: Received logout success from ViewModel. Calling coordinator/parent.")
+            self?.onLogoutTapped?()
+        }
+    }
 }
 
 
@@ -121,7 +130,7 @@ extension ProfileViewController {
                 position = .middle
             }
             
-            // --- ВЫЗЫВАЕМ НОВЫЕ МЕТОДЫ ---
+            // cell konfiq
             cell.roundCorners(for: position)
             cell.setSeparatorVisibility(isHidden: (position == .last || position == .single))
             cell.configureCell(with: menuOptions[indexPath.item])
@@ -143,7 +152,7 @@ extension ProfileViewController {
             }
             return header
         default:
-            // Для других секций хедер не нужен
+            //
             return UICollectionReusableView()
         }
     }
@@ -202,8 +211,14 @@ extension ProfileViewController {
         case .optionsMenu:
             let selectedOption = menuOptions[indexPath.item]
             print("Нажата ячейка: \(selectedOption.title)")
-            // Здесь вы можете добавить код для перехода на другой экран
-            // например, navigationController?.pushViewController(...)
+            if selectedOption.title == "Logout" {
+                let alert = UIAlertController(title: "Logout", message: "Are you sure you want to log out?", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                alert.addAction(UIAlertAction(title: "Logout", style: .destructive, handler: { _ in
+                    self.viewModel.logout()
+                }))
+                present(alert, animated: true)
+            }
             
         default:
             break

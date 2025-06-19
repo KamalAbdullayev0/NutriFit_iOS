@@ -13,10 +13,10 @@ final class ProfileTabCoordinator: Coordinator {
         let getUserProfileUseCase = GetUserProfileUseCaseImpl()
         let ProfileVC = ProfileViewController(viewModel: .init(userProfileUseCase: getUserProfileUseCase))
 
-//        vc.onLogoutTapped = { [weak self] in
-//            self?.onLogoutTriggered?()
-//            print("UsersTabCoordinator: Logout triggered") // ✅
-//        }
+        ProfileVC.onLogoutTapped = { [weak self] in
+            self?.onLogoutTriggered?()
+            print("UsersTabCoordinator: Logout triggered") // ✅
+        }
         navigationController.setViewControllers([ProfileVC], animated: false)
         navigationController.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(named: "person"), tag: 3)
     }
