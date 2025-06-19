@@ -48,11 +48,15 @@ class ProfileViewController: UICollectionViewController, UICollectionViewDelegat
     
     private func setupNavigationBar() {
         navigationItem.title = "Profile"
+        
         navigationController?.navigationBar.prefersLargeTitles = false
+        navigationController?.navigationBar.titleTextAttributes = [
+            .font: Resources.AppFont.bold.withSize(24)
+        ]
     }
     
     private func setupCollectionView() {
-        collectionView.backgroundColor = .systemGray6 // A light gray background
+        collectionView.backgroundColor = .systemGray6
         
     }
     private func registerCells() {
@@ -62,8 +66,6 @@ class ProfileViewController: UICollectionViewController, UICollectionViewDelegat
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: ProfileHeaderView.reuseIdentifier
         )
-        
-        // Register AI Trainer button cell
         collectionView.register(
             AITrainerButtonCell.self,
             forCellWithReuseIdentifier: AITrainerButtonCell.reuseIdentifier
@@ -168,7 +170,7 @@ extension ProfileViewController {
         
         switch section {
         case .aiTrainer:
-            return CGSize(width: contentWidth, height: 58) // Немного выше, как на скрине
+            return CGSize(width: contentWidth, height: 58)
         case .optionsMenu:
             return CGSize(width: contentWidth, height: 70)
         default:
@@ -177,14 +179,14 @@ extension ProfileViewController {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return section == 0 ? CGSize(width: view.frame.width, height: 320) : .zero
+        return section == 0 ? CGSize(width: view.frame.width, height: 330) : .zero
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         guard let section = ProfileSection(rawValue: section) else { return .zero }
         switch section {
         case .aiTrainer:
-            return UIEdgeInsets(top: 20, left: 20, bottom: 10, right: 20)
+            return UIEdgeInsets(top: 0, left: 20, bottom: 10, right: 20)
         case .optionsMenu:
             return UIEdgeInsets(top: 10, left: 20, bottom: 20, right: 20)
         default:

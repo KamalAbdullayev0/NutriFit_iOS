@@ -76,13 +76,10 @@ class ProfileHeaderView: UICollectionReusableView {
 //    func configure(with profile: UserProfileDTO,) {
 //        welcomeLabel.text = "Welcome, \(profile.name)!"
 //
-//        // Загрузка изображения по URL (URL должен быть в UserProfile)
 //        // profileImageView.setImageOptimized(from: profile.avatarURL, ...)
 //
-//        // Очищаем старые статистики
 //        statsStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
 //
-//        // Отображаем статистику из UI-модели
 //        addStat(value: "\(profile.stats.record)", label: "Record")
 //        addStat(value: "\(profile.stats.calorie)", label: "Calorie")
 //        addStat(value: "\(profile.stats.minute)", label: "Minute")
@@ -120,7 +117,7 @@ class ProfileHeaderView: UICollectionReusableView {
         let textLabel = UILabel().configure {
             $0.text = label
             $0.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-            $0.textColor = .secondaryLabel // Используем системный цвет для второстепенного текста
+            $0.textColor = .secondaryLabel
             $0.textAlignment = .center
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -144,7 +141,7 @@ class ProfileHeaderView: UICollectionReusableView {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            containerView.topAnchor.constraint(equalTo: self.topAnchor, constant: 20),
+            containerView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0),
             containerView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
             containerView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
             containerView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20),

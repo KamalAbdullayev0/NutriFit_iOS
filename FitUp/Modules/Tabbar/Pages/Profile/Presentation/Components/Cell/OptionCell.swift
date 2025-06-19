@@ -59,6 +59,13 @@ class OptionCollectionCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    override var isHighlighted: Bool {
+        didSet {
+            UIView.animate(withDuration: 0.5) {
+                self.backgroundColor = self.isHighlighted ? .systemGray5 : .white
+            }
+        }
+    }
     
     // MARK: - UI Setup
     private func setupUI() {

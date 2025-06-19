@@ -26,11 +26,8 @@ final class ProfileViewModel {
     }
     
     func logout() {
-            
-            print("ProfileViewModel: Clearing user session data...")
-           
-            DispatchQueue.main.async {
-                self.onLogoutSuccess?()
-            }
+        DispatchQueue.main.async {
+            self.onLogoutSuccess?()
         }
+    }
 }
